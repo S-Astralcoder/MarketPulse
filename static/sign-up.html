@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — Market Pulse</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- =========================================================================
+       STICKY HEADER (Shared)
+       ========================================================================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-logo">
+        <span class="logo-badge">
+          <i class="fa-solid fa-wave-square"></i>
+        </span>
+        <span>Market<span style="color: var(--accent-purple);">Pulse</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html#how-it-works" class="nav-link">How It Works</a>
+        <a href="index.html#pipelines" class="nav-link">Analytical Pipelines</a>
+        <a href="index.html#risk-levels" class="nav-link">Risk Stratification</a>
+        <a href="index.html#about" class="nav-link">About Us</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="sign-in.html" class="btn btn-sm btn-outline">Sign In</a>
+        <a href="sign-up.html" class="btn btn-sm btn-primary active">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       SIGN UP BODY (Baseline Scaffolding)
+       ========================================================================= -->
+  <main class="auth-page-container">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <h1 class="auth-card-title">Create Account</h1>
+        <p class="auth-card-subtitle">Get started with verified market safety intelligence</p>
+      </div>
+
+      <form id="sign-up-form" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label class="form-label" for="username">Username</label>
+          <input class="form-input" type="text" id="username" placeholder="trader_alex" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email Address</label>
+          <input class="form-input" type="email" id="reg-email" placeholder="name@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Password</label>
+          <input class="form-input" type="password" id="reg-password" placeholder="Create a strong password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+          <span>Register Account</span>
+          <i class="fa-solid fa-user-plus"></i>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span>Already have an account?</span>
+        <a href="sign-in.html">Sign In</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Minimal Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>&copy; 2026 Market Pulse. All rights reserved.</span>
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="sign-in.html">Sign In</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
