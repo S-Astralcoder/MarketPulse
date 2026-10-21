@@ -96,7 +96,10 @@ Each stock card in the grid features:
 
 ---
 
-## 8. Next Session / Immediate Action Plan
-- Scaffold initial semantic HTML, typography links, and Font Awesome in `static/index.html`.
-- Build CSS design tokens and base styles for the Obsidian Purple palette, grid, and card glows.
-- Implement the split-view layout with the sticky header and right-side inspector drawer.
+## 8. Current Progress & Immediate Next Steps
+- [x] Scaffolding vanilla HTML/CSS/JS frontend baseline (`static/css/style.css`, `static/js/main.js`).
+- [x] Implemented sticky header and responsive layout in `static/index.html`.
+- [x] Polished landing page copy (low-profile, disciplined tone) and visual badge alignments.
+- [x] Basic shells for `static/sign-in.html` and `static/sign-up.html` with shared header.
+- [ ] Implement active dashboard view with stock cards and the right-side inspector drawer.
+- [ ] Wire up sign-in / sign-up forms and authentication flows.
