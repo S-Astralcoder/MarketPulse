@@ -22,8 +22,13 @@ AsyncSessionFactory = async_sessionmaker(
 
 async def get_db() -> AsyncGenerator[AsyncSession]:
     async with AsyncSessionFactory() as session:
-        yield session
-
+        try:
+            yield session
+            await session.commit()
+        except Exception:  # noqa: BLE001
+            await session.rollback()
+        else:
+            await session.close()
 
 class Base(DeclarativeBase):
     pass
