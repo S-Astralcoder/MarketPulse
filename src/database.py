@@ -30,19 +30,25 @@ async def get_db() -> AsyncGenerator[AsyncSession]:
         else:
             await session.close()
 
+
 class Base(DeclarativeBase):
     pass
+
 
 class User(Base):
     __tablename__ = "user"
 
-    uuid : Mapped[UUID] = mapped_column(Uuid, default=uuid4, primary_key=True, nullable=False)    
-    username : Mapped[str] = mapped_column(String(100), nullable=False)
-    email : Mapped[EmailStr] = mapped_column(String(254), unique=True, nullable=False)
-    hash_password : Mapped[str] = mapped_column(String(100), nullable=False)
-    created_date : Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-    updated_date : Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    uuid: Mapped[UUID] = mapped_column(
+        Uuid, default=uuid4, primary_key=True, nullable=False
+    )
+    username: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[EmailStr] = mapped_column(String(254), unique=True, nullable=False)
+    hash_password: Mapped[str] = mapped_column(String(100), nullable=False)
+    created_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
     __table_args__ = (UniqueConstraint("username", "email"),)
-
-
