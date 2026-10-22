@@ -5,9 +5,11 @@ description = "A Fullstack application build to provide organized maker status t
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aiosqlite>=0.22.1",
+    "alembic>=1.20.1",
     "fastapi[standard]>=0.143.0",
     "pydantic>=2.13.5",
-    "sqlalchemy>=2.1.4",
+    "sqlalchemy[asyncio]>=2.1.4",
     "uvicorn>=0.54.0",
 ]
 
@@ -19,3 +21,5 @@ dev = [
 
 [tool.fastapi]
 entrypoint="src.app:app"
+
+
