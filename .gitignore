@@ -221,3 +221,8 @@ __marimo__/
 .workspace
 
 *.db
+
+
+.github/agents
+.github/hooks
+.github/skills
