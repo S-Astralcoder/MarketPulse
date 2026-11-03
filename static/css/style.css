@@ -276,7 +276,20 @@ button {
 
 /* --- Hero Section (15:14) --- */
 .hero-section {
+  min-height: calc(100vh - var(--header-height));
+  min-height: calc(100dvh - var(--header-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
   text-align: center;
+  position: relative;
+  background-color: var(--bg-canvas);
+  background-image: url('/assets/hero-chart-bg.svg');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
 }
 
 .hero-headline {
@@ -302,176 +315,6 @@ button {
   align-items: center;
   justify-content: center;
   gap: 16px;
-}
-
-/* Hero Visual: Trade Market Chart with Risk Calculations */
-.hero-chart-card {
-  max-width: 920px;
-  margin: 28px auto 0;
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  text-align: left;
-}
-
-.chart-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--border-subtle);
-  background-color: var(--bg-surface-subtle);
-}
-
-.chart-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.chart-ticker {
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.chart-name {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.chart-price {
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-left: 6px;
-}
-
-.chart-change {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--signal-steady);
-}
-
-.chart-strategy-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  background-color: var(--bg-surface-inset);
-  padding: 3px 10px;
-  border-radius: 9999px;
-  border: 1px solid var(--border-subtle);
-}
-
-.chart-strategy-badge .badge-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--accent-purple);
-}
-
-.chart-risk-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-}
-
-.risk-label {
-  color: var(--text-muted);
-}
-
-.risk-score {
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.risk-tag {
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.risk-tag.steady {
-  background-color: var(--signal-steady-bg);
-  color: var(--signal-steady);
-}
-
-.chart-canvas-wrap {
-  position: relative;
-  width: 100%;
-  height: 180px;
-  background-color: var(--bg-surface-inset);
-  overflow: hidden;
-}
-
-.chart-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.chart-annotation {
-  position: absolute;
-  transform: translate(-50%, -100%);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.annotation-warning {
-  background-color: rgba(224, 108, 117, 0.15);
-  border: 1px solid rgba(224, 108, 117, 0.35);
-  color: var(--signal-warning);
-}
-
-.annotation-steady {
-  background-color: rgba(82, 183, 136, 0.15);
-  border: 1px solid rgba(82, 183, 136, 0.35);
-  color: var(--signal-steady);
-}
-
-.chart-footer-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  padding: 10px 18px;
-  border-top: 1px solid var(--border-subtle);
-  background-color: var(--bg-surface-subtle);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-}
-
-.metric-pill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.pill-k {
-  color: var(--text-muted);
-}
-
-.pill-v {
-  color: var(--text-primary);
-  font-weight: 600;
 }
 
 /* --- Section Title Reusable --- */
@@ -1004,21 +847,6 @@ button {
   
   .hero-actions .btn {
     width: 100%;
-  }
-
-  .chart-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .chart-strategy-badge {
-    display: none;
-  }
-
-  .chart-footer-metrics {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
   }
   
   .telemetry-content {
