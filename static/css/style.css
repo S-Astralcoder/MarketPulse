@@ -68,7 +68,7 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
   scroll-padding-top: var(--header-height);
   background-color: var(--bg-canvas);
   color: var(--text-primary);
@@ -716,7 +716,11 @@ button {
 
 /* --- "End" / Disclaimer & Footer (15:44) --- */
 .end-section {
-  padding: 40px 0 28px;
+  padding: 64px 0 32px;
+  border-top: 1px solid var(--border-subtle);
+  min-height: auto;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
 }
 
 .disclaimer-card {

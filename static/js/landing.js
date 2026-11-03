@@ -1,62 +1,51 @@
 /**
- * MarketPulse — Controlled Section Snap & Center-Lock Navigation
- * Provides controlled page-by-page scrolling with center-point snapping and smooth transitions.
+ * MarketPulse — Fluid Section Snap & Navigation Controller
+ * Provides natural, unblocked scrolling with native CSS proximity snapping,
+ * keyboard controls, and active section tracking.
  */
 
 (function () {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', initSnapNavigation);
+  document.addEventListener('DOMContentLoaded', initLandingNavigation);
 
-  function initSnapNavigation() {
-    const sections = Array.from(document.querySelectorAll('.snap-section'));
-    if (!sections.length) return;
+  function initLandingNavigation() {
+    const snapSections = Array.from(document.querySelectorAll('.snap-section'));
+    if (!snapSections.length) return;
 
     const navLinks = Array.from(document.querySelectorAll('.nav-link'));
     const header = document.querySelector('.site-header');
     const headerHeight = header ? header.offsetHeight : 72;
 
     let currentIndex = 0;
-    let isLocked = false;
-    let lockTimer = null;
 
-    // --- 1. Center-Point Scroll Function ---
-    function scrollToSection(index, smooth = true) {
-      if (index < 0 || index >= sections.length) return;
+    // --- 1. Center-Point Scroll Function for programmatic navigation ---
+    function scrollToSection(index) {
+      if (index < 0 || index >= snapSections.length) return;
 
       currentIndex = index;
-      const target = sections[index];
+      const target = snapSections[index];
 
-      // Calculate scroll position so the section is centered in the visible viewport
+      // Center section within available viewport excluding header
       const targetRect = target.getBoundingClientRect();
       const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const viewportHeight = window.innerHeight;
       const sectionHeight = target.offsetHeight;
 
-      // Available height excluding sticky header
       const availableHeight = viewportHeight - headerHeight;
       const verticalOffset = Math.max(0, (availableHeight - sectionHeight) / 2);
       const destination = currentScrollTop + targetRect.top - headerHeight - verticalOffset;
 
-      isLocked = true;
-      clearTimeout(lockTimer);
-
       window.scrollTo({
         top: Math.max(0, destination),
-        behavior: smooth ? 'smooth' : 'auto'
+        behavior: 'smooth'
       });
 
-      // Update active classes
-      sections.forEach((sec, i) => {
+      snapSections.forEach((sec, i) => {
         sec.classList.toggle('is-active', i === index);
       });
 
       updateNavLinks(target.id);
-
-      // Cooldown timer to prevent gesture chaining
-      lockTimer = setTimeout(() => {
-        isLocked = false;
-      }, 750);
     }
 
     // --- 2. Update Nav Links ---
@@ -72,38 +61,13 @@
       });
     }
 
-    // --- 3. Wheel Event Listener (Controlled Snap Scroll) ---
-    // Only lock wheel on pointer devices (desktop/laptops) where fine scroll occurs
-    let touchStartY = 0;
-
-    window.addEventListener('wheel', (e) => {
-      // Do not block user if inspecting an internal scrollable container
-      if (Math.abs(e.deltaY) < 15) return;
-
-      if (isLocked) {
-        e.preventDefault();
-        return;
-      }
-
-      if (e.deltaY > 0) {
-        // Scroll down
-        if (currentIndex < sections.length - 1) {
-          e.preventDefault();
-          scrollToSection(currentIndex + 1);
-        }
-      } else {
-        // Scroll up
-        if (currentIndex > 0) {
-          e.preventDefault();
-          scrollToSection(currentIndex - 1);
-        }
-      }
-    }, { passive: false });
-
-    // --- 4. Keyboard Navigation ---
+    // --- 3. Keyboard Navigation (Arrow Keys / Page Keys) ---
     window.addEventListener('keydown', (e) => {
-      if (['ArrowDown', 'PageDown', 'Space'].includes(e.code)) {
-        if (currentIndex < sections.length - 1) {
+      // Do not interfere if user is typing in an input
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+      if (['ArrowDown', 'PageDown'].includes(e.code)) {
+        if (currentIndex < snapSections.length - 1) {
           e.preventDefault();
           scrollToSection(currentIndex + 1);
         }
@@ -115,45 +79,51 @@
       } else if (e.code === 'Home') {
         e.preventDefault();
         scrollToSection(0);
-      } else if (e.code === 'End') {
-        e.preventDefault();
-        scrollToSection(sections.length - 1);
       }
     });
 
-    // --- 5. Nav Anchor Link Clicks ---
+    // --- 4. Smooth Anchor Clicks ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         const targetId = this.getAttribute('href').slice(1);
-        const targetSecIndex = sections.findIndex(sec => sec.id === targetId);
+        const targetSecIndex = snapSections.findIndex(sec => sec.id === targetId);
 
         if (targetSecIndex !== -1) {
           e.preventDefault();
           scrollToSection(targetSecIndex);
+        } else {
+          // Non-snap section anchor (e.g. #end or others)
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            e.preventDefault();
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+          }
         }
       });
     });
 
-    // --- 6. Intersection Observer for Scroll Detection ---
+    // --- 5. Intersection Observer for Smooth Section State ---
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting && !isLocked) {
-          const index = sections.indexOf(entry.target);
+        if (entry.isIntersecting) {
+          const index = snapSections.indexOf(entry.target);
           if (index !== -1) {
             currentIndex = index;
-            sections.forEach((sec, i) => sec.classList.toggle('is-active', i === index));
+            snapSections.forEach((sec, i) => sec.classList.toggle('is-active', i === index));
             updateNavLinks(entry.target.id);
           }
         }
       });
     }, {
-      rootMargin: `-${headerHeight}px 0px -40% 0px`,
-      threshold: 0.2
+      rootMargin: `-${headerHeight}px 0px -35% 0px`,
+      threshold: 0.25
     });
 
-    sections.forEach(sec => observer.observe(sec));
+    snapSections.forEach(sec => observer.observe(sec));
 
-    // Initialize first section as active
-    sections[0].classList.add('is-active');
+    // Ensure hero is active initially
+    if (snapSections[0]) {
+      snapSections[0].classList.add('is-active');
+    }
   }
 })();
