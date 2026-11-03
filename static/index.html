@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MarketPulse</title>
   <meta name="description" content="MarketPulse delivers objective market signals, volatility tracking, and risk warnings. No price predictions. No trade calls. We show the data, you make the decisions.">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css?v=2.2">
 </head>
 <body data-node-id="15:9" data-name="index.html">
 
@@ -35,8 +35,8 @@
       </nav>
 
       <div class="header-actions">
-        <a href="#signin" class="action-signin" id="openSignInBtn">Sign In</a>
-        <a href="#dashboard" class="btn btn-primary" id="openSignUpBtn">Launch App</a>
+        <a href="#signin" class="action-signin" id="openSignInBtn" onclick="event.preventDefault(); window.openAuthModal && window.openAuthModal('signin');">Sign In</a>
+        <a href="#dashboard" class="btn btn-primary" id="openSignUpBtn" onclick="event.preventDefault(); window.openAuthModal && window.openAuthModal('signup');">Launch App</a>
       </div>
     </div>
   </header>
@@ -483,9 +483,9 @@
   <!-- =========================================================================
        8. Authentication Modal Popup (Figma 29:12)
        ========================================================================= -->
-  <div class="auth-modal-overlay" id="authModal" aria-hidden="true" role="dialog" aria-modal="true" data-node-id="29:12" data-name="sign in/out popup">
+  <div class="auth-modal-overlay" id="authModal" aria-hidden="true" role="dialog" aria-modal="true" data-node-id="29:12" data-name="sign in/out popup" onclick="if(event.target === this) window.closeAuthModal && window.closeAuthModal();">
     <div class="auth-modal" data-node-id="29:20" data-name="Frame 1">
-      <button class="auth-modal-close" id="closeAuthModalBtn" aria-label="Close authentication dialog">
+      <button class="auth-modal-close" id="closeAuthModalBtn" aria-label="Close authentication dialog" onclick="window.closeAuthModal && window.closeAuthModal();">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -497,8 +497,8 @@
         <div class="auth-modal-form-col">
           <!-- Segmented Tab Header Bar (Figma 30:33 Rectangle 35) -->
           <div class="auth-tabs" data-node-id="30:33" data-name="Rectangle 35" role="tablist">
-            <button type="button" class="auth-tab is-active" id="tabSignIn" role="tab" aria-selected="true" data-tab="signin">Sign In</button>
-            <button type="button" class="auth-tab" id="tabSignUp" role="tab" aria-selected="false" data-tab="signup">Create Account</button>
+            <button type="button" class="auth-tab is-active" id="tabSignIn" role="tab" aria-selected="true" data-tab="signin" onclick="window.switchAuthTab && window.switchAuthTab('signin');">Sign In</button>
+            <button type="button" class="auth-tab" id="tabSignUp" role="tab" aria-selected="false" data-tab="signup" onclick="window.switchAuthTab && window.switchAuthTab('signup');">Create Account</button>
           </div>
 
           <!-- Sign In Form -->
@@ -506,6 +506,21 @@
             <div class="auth-form-header">
               <h2 class="auth-form-title">Terminal Access</h2>
               <p class="auth-form-desc">Authenticate to access live market regime signals and telemetry feeds.</p>
+            </div>
+
+            <!-- Google Sign-In Placeholder -->
+            <button type="button" class="btn btn-social-google btn-block" id="googleSignInBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            <div class="auth-divider">
+              <span>or sign in with email</span>
             </div>
 
             <div class="form-group">
@@ -542,7 +557,7 @@
 
             <div class="auth-switch-prompt">
               <span>Need access?</span>
-              <button type="button" class="auth-switch-btn" id="switchToSignUp">Register for account</button>
+              <button type="button" class="auth-switch-btn" id="switchToSignUp" onclick="window.switchAuthTab && window.switchAuthTab('signup');">Register for account</button>
             </div>
           </form>
 
@@ -551,6 +566,21 @@
             <div class="auth-form-header">
               <h2 class="auth-form-title">Create Account</h2>
               <p class="auth-form-desc">Initialize your credentials for unbiased market telemetry and risk monitors.</p>
+            </div>
+
+            <!-- Google Sign-Up Placeholder -->
+            <button type="button" class="btn btn-social-google btn-block" id="googleSignUpBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"/>
+              </svg>
+              <span>Sign up with Google</span>
+            </button>
+
+            <div class="auth-divider">
+              <span>or register with email</span>
             </div>
 
             <div class="form-group">
@@ -591,7 +621,7 @@
 
             <div class="auth-switch-prompt">
               <span>Already registered?</span>
-              <button type="button" class="auth-switch-btn" id="switchToSignIn">Sign in to existing account</button>
+              <button type="button" class="auth-switch-btn" id="switchToSignIn" onclick="window.switchAuthTab && window.switchAuthTab('signin');">Sign in to existing account</button>
             </div>
           </form>
         </div>
@@ -665,6 +695,6 @@
     </div>
   </div>
 
-  <script src="/js/landing.js"></script>
+  <script src="/js/landing.js?v=2.2"></script>
 </body>
 </html>

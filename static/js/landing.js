@@ -7,10 +7,82 @@
 (function () {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', () => {
+  // --- Global Modal Handlers (guaranteed immediate availability) ---
+  window.openAuthModal = function (tab) {
+    const modal = document.getElementById('authModal');
+    if (!modal) return;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (window.switchAuthTab) window.switchAuthTab(tab || 'signin');
+  };
+
+  window.closeAuthModal = function () {
+    const modal = document.getElementById('authModal');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  window.switchAuthTab = function (tab) {
+    const tabSignIn = document.getElementById('tabSignIn');
+    const tabSignUp = document.getElementById('tabSignUp');
+    const formSignIn = document.getElementById('formSignIn');
+    const formSignUp = document.getElementById('formSignUp');
+
+    if (tab === 'signup') {
+      if (tabSignUp) {
+        tabSignUp.classList.add('is-active');
+        tabSignUp.setAttribute('aria-selected', 'true');
+      }
+      if (tabSignIn) {
+        tabSignIn.classList.remove('is-active');
+        tabSignIn.setAttribute('aria-selected', 'false');
+      }
+      if (formSignUp) formSignUp.classList.add('is-active');
+      if (formSignIn) formSignIn.classList.remove('is-active');
+      const input = formSignUp ? formSignUp.querySelector('input') : null;
+      if (input) setTimeout(() => input.focus(), 60);
+    } else {
+      if (tabSignIn) {
+        tabSignIn.classList.add('is-active');
+        tabSignIn.setAttribute('aria-selected', 'true');
+      }
+      if (tabSignUp) {
+        tabSignUp.classList.remove('is-active');
+        tabSignUp.setAttribute('aria-selected', 'false');
+      }
+      if (formSignIn) formSignIn.classList.add('is-active');
+      if (formSignUp) formSignUp.classList.remove('is-active');
+      const input = formSignIn ? formSignIn.querySelector('input') : null;
+      if (input) setTimeout(() => input.focus(), 60);
+    }
+  };
+
+  // Immediate global click delegation for any auth trigger
+  document.addEventListener('click', function (e) {
+    const trigger = e.target.closest('#openSignInBtn, #openSignUpBtn, [data-open-modal], a[href="#signin"], a[href="#signup"]');
+    if (trigger) {
+      e.preventDefault();
+      const isSignUp = trigger.id === 'openSignUpBtn' ||
+                       trigger.getAttribute('href') === '#signup' ||
+                       trigger.getAttribute('data-open-modal') === 'signup';
+      window.openAuthModal(isSignUp ? 'signup' : 'signin');
+    }
+  });
+
+  // Self-booting lifecycle
+  function boot() {
     initLandingNavigation();
     initAuthModal();
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 
   function initLandingNavigation() {
     const snapSections = Array.from(document.querySelectorAll('.snap-section'));
@@ -227,6 +299,24 @@
       switchToSignIn.addEventListener('click', () => switchTab('signin'));
     }
 
+    // Social login simulation (Google placeholder)
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
+    const googleSignUpBtn = document.getElementById('googleSignUpBtn');
+    [googleSignInBtn, googleSignUpBtn].forEach(btn => {
+      if (!btn) return;
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const originalContent = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span>Connecting to Google OAuth...</span>`;
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = originalContent;
+          window.closeAuthModal();
+        }, 800);
+      });
+    });
+
     // Gentle submission simulation
     [formSignIn, formSignUp].forEach(form => {
       if (!form) return;
@@ -240,7 +330,7 @@
           setTimeout(() => {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalContent;
-            closeModal();
+            window.closeAuthModal();
           }, 800);
         }
       });
