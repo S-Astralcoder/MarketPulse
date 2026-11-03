@@ -223,7 +223,12 @@ button {
 
 /* --- Hero Section (15:14) --- */
 .hero-section {
-  padding: 96px 0 80px;
+  min-height: calc(100vh - 72px);
+  min-height: calc(100dvh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
   text-align: center;
   position: relative;
 }
