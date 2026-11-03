@@ -163,19 +163,18 @@ Loud multi-stop linear gradients, radioactive neon glows, excessive glassmorphic
 - **Container (`29:20`, Frame 1, 1063×577px):**
   - Centered dialog with obsidian surface (`--bg-surface`, `#140F22`), 16px radius, and subtle backdrop blur.
   - 50/50 bisected split divided by vertical line (`29:19`, Line 2).
-- **Left Column: Form Controls:**
+- **Left Column: Form Controls (Symmetric 2-Field Architecture):**
   - Segmented tab bar (`30:33`, Rectangle 35, 407×40px): Toggle between `Sign In` and `Create Account`.
-  - Sign In: Email, password, "Keep session active", "Forgot password?", and `Access Terminal` CTA.
-  - Create Account: Name/handle, email, password, telemetry disclosure acknowledgement, and `Initialize Account` CTA.
-  - Responsive inputs with obsidian focus highlight (`--accent-purple`).
+  - Google Social Auth button placeholder (`.btn-social-google`) + clean uppercase divider line.
+  - Sign In: Email, password, "Keep session active" checkbox + "Forgot password?", and `Access Terminal` CTA.
+  - Create Account: Email, password, telemetry disclosure acknowledgement checkbox, and `Initialize Account` CTA (Handle/name collected during post-login profile onboarding).
+  - 100% vertical coordinate alignment across both tabs with zero layout shift or visual gaps.
 - **Right Column: System Telemetry Info Panel:**
   - Deep matte background (`--bg-canvas`, `#0D031B`).
-  - Terminal status badge: `TELEMETRY GATEWAY • NODE 01-PROD`.
   - Core telemetry overview: Volatility Regime Tracking, Regulatory Disclosure Radar, and Strictly Advisory-Free boundary.
-  - Live system status footer (`LATENCY: 24ms • FEED STATUS: NOMINAL`).
 - **Interactions:**
   - Triggered by header buttons (`#openSignInBtn`, `#openSignUpBtn`).
-  - Tab switching between Sign In and Sign Up.
+  - Tab switching between Sign In and Sign Up with zero container resizing.
   - Dismissible via close button (`×`), outside click, and `Escape` key with body scroll lock.
 
 ---

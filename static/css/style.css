@@ -870,7 +870,7 @@ button {
   display: grid;
   grid-template-columns: 1.05fr 1px 0.95fr;
   align-items: stretch;
-  min-height: 535px;
+  min-height: 465px;
 }
 
 /* --- Form Column --- */
@@ -878,7 +878,7 @@ button {
   padding: 24px 30px;
   display: flex;
   flex-direction: column;
-  min-height: 535px;
+  min-height: 465px;
   box-sizing: border-box;
 }
 
@@ -1226,7 +1226,7 @@ button {
 
   .auth-modal-form-col {
     padding: 24px 20px;
-    min-height: 520px;
+    min-height: 450px;
   }
 
   .auth-modal {
