@@ -35,8 +35,8 @@
       </nav>
 
       <div class="header-actions">
-        <a href="#signin" class="action-signin">Sign In</a>
-        <a href="#dashboard" class="btn btn-primary">Launch App</a>
+        <a href="#signin" class="action-signin" id="openSignInBtn">Sign In</a>
+        <a href="#dashboard" class="btn btn-primary" id="openSignUpBtn">Launch App</a>
       </div>
     </div>
   </header>
@@ -479,6 +479,191 @@
       </div>
     </section>
   </main>
+
+  <!-- =========================================================================
+       8. Authentication Modal Popup (Figma 29:12)
+       ========================================================================= -->
+  <div class="auth-modal-overlay" id="authModal" aria-hidden="true" role="dialog" aria-modal="true" data-node-id="29:12" data-name="sign in/out popup">
+    <div class="auth-modal" data-node-id="29:20" data-name="Frame 1">
+      <button class="auth-modal-close" id="closeAuthModalBtn" aria-label="Close authentication dialog">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="auth-modal-split">
+        <!-- Left Side: Form Container -->
+        <div class="auth-modal-form-col">
+          <!-- Segmented Tab Header Bar (Figma 30:33 Rectangle 35) -->
+          <div class="auth-tabs" data-node-id="30:33" data-name="Rectangle 35" role="tablist">
+            <button type="button" class="auth-tab is-active" id="tabSignIn" role="tab" aria-selected="true" data-tab="signin">Sign In</button>
+            <button type="button" class="auth-tab" id="tabSignUp" role="tab" aria-selected="false" data-tab="signup">Create Account</button>
+          </div>
+
+          <!-- Sign In Form -->
+          <form class="auth-form is-active" id="formSignIn" autocomplete="on">
+            <div class="auth-form-header">
+              <h2 class="auth-form-title">Terminal Access</h2>
+              <p class="auth-form-desc">Authenticate to access live market regime signals and telemetry feeds.</p>
+            </div>
+
+            <div class="form-group">
+              <label for="signinEmail" class="form-label">Email Address</label>
+              <div class="form-input-wrap">
+                <input type="email" id="signinEmail" name="email" class="form-input" placeholder="trader@domain.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="form-label-row">
+                <label for="signinPassword" class="form-label">Password</label>
+                <a href="#forgot-password" class="form-inline-link">Forgot password?</a>
+              </div>
+              <div class="form-input-wrap">
+                <input type="password" id="signinPassword" name="password" class="form-input" placeholder="••••••••••••" required autocomplete="current-password">
+              </div>
+            </div>
+
+            <div class="form-meta-row">
+              <label class="form-checkbox-label">
+                <input type="checkbox" id="signinRemember" name="remember" class="form-checkbox">
+                <span>Keep session active</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block auth-submit-btn">
+              <span>Access Terminal</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+
+            <div class="auth-switch-prompt">
+              <span>Need access?</span>
+              <button type="button" class="auth-switch-btn" id="switchToSignUp">Register for account</button>
+            </div>
+          </form>
+
+          <!-- Create Account Form -->
+          <form class="auth-form" id="formSignUp" autocomplete="on">
+            <div class="auth-form-header">
+              <h2 class="auth-form-title">Create Account</h2>
+              <p class="auth-form-desc">Initialize your credentials for unbiased market telemetry and risk monitors.</p>
+            </div>
+
+            <div class="form-group">
+              <label for="signupName" class="form-label">Full Name or Handle</label>
+              <div class="form-input-wrap">
+                <input type="text" id="signupName" name="name" class="form-input" placeholder="A. Turing" required autocomplete="name">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupEmail" class="form-label">Work / Primary Email</label>
+              <div class="form-input-wrap">
+                <input type="email" id="signupEmail" name="email" class="form-input" placeholder="trader@domain.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupPassword" class="form-label">Password</label>
+              <div class="form-input-wrap">
+                <input type="password" id="signupPassword" name="password" class="form-input" placeholder="Minimum 8 characters" required autocomplete="new-password">
+              </div>
+            </div>
+
+            <div class="form-meta-row">
+              <label class="form-checkbox-label">
+                <input type="checkbox" id="signupDisclaimer" name="disclaimer_ack" class="form-checkbox" required>
+                <span>I understand MarketPulse provides telemetry data, not investment advice.</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block auth-submit-btn">
+              <span>Initialize Account</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+
+            <div class="auth-switch-prompt">
+              <span>Already registered?</span>
+              <button type="button" class="auth-switch-btn" id="switchToSignIn">Sign in to existing account</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Center Divider (Figma 29:19 Line 2) -->
+        <div class="auth-modal-divider" data-node-id="29:19" data-name="Line 2" aria-hidden="true"></div>
+
+        <!-- Right Side: System Telemetry Info Panel -->
+        <div class="auth-modal-info-col">
+          <div class="auth-info-header">
+            <div class="auth-status-badge">
+              <span class="auth-status-dot"></span>
+              <span>TELEMETRY GATEWAY</span>
+            </div>
+            <span class="auth-env-tag">NODE 01-PROD</span>
+          </div>
+
+          <div class="auth-info-body">
+            <h3 class="auth-info-heading">Disciplined Context.<br>Zero Manufactured Hype.</h3>
+            <p class="auth-info-text">
+              Every metric on MarketPulse is derived directly from empirical volume, price dispersion, and regulatory disclosures.
+            </p>
+
+            <ul class="auth-feature-list">
+              <li class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <strong>Volatility Regime Tracking</strong>
+                  <span>ATR expansion alerts and dynamic volatility envelopes.</span>
+                </div>
+              </li>
+              <li class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <strong>Regulatory Disclosure Radar</strong>
+                  <span>Automated ingestion of institutional 13F and insider filings.</span>
+                </div>
+              </li>
+              <li class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <strong>Strictly Advisory-Free</strong>
+                  <span>Mathematical outputs only. No speculative price targets.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="auth-info-footer">
+            <div class="auth-footer-indicator">
+              <span class="auth-pulse-dot"></span>
+              <span>LATENCY: 24ms &bull; FEED STATUS: NOMINAL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="/js/landing.js"></script>
 </body>

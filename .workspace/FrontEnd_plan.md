@@ -158,8 +158,30 @@ Loud multi-stop linear gradients, radioactive neon glows, excessive glassmorphic
 
 ---
 
+### 3.8 Authentication Modal Popup (`data-node-id="29:12"`, "sign in/out popup")
+- **Status:** **Active Build**
+- **Container (`29:20`, Frame 1, 1063×577px):**
+  - Centered dialog with obsidian surface (`--bg-surface`, `#140F22`), 16px radius, and subtle backdrop blur.
+  - 50/50 bisected split divided by vertical line (`29:19`, Line 2).
+- **Left Column: Form Controls:**
+  - Segmented tab bar (`30:33`, Rectangle 35, 407×40px): Toggle between `Sign In` and `Create Account`.
+  - Sign In: Email, password, "Keep session active", "Forgot password?", and `Access Terminal` CTA.
+  - Create Account: Name/handle, email, password, telemetry disclosure acknowledgement, and `Initialize Account` CTA.
+  - Responsive inputs with obsidian focus highlight (`--accent-purple`).
+- **Right Column: System Telemetry Info Panel:**
+  - Deep matte background (`--bg-canvas`, `#0D031B`).
+  - Terminal status badge: `TELEMETRY GATEWAY • NODE 01-PROD`.
+  - Core telemetry overview: Volatility Regime Tracking, Regulatory Disclosure Radar, and Strictly Advisory-Free boundary.
+  - Live system status footer (`LATENCY: 24ms • FEED STATUS: NOMINAL`).
+- **Interactions:**
+  - Triggered by header buttons (`#openSignInBtn`, `#openSignUpBtn`).
+  - Tab switching between Sign In and Sign Up.
+  - Dismissible via close button (`×`), outside click, and `Escape` key with body scroll lock.
+
+---
+
 ## 4. Next Implementation Step
 
-1. Scaffold semantic HTML structure in `static/index.html` reflecting these 7 sections.
-2. Create `static/css/style.css` with the soft obsidian/purple variables and clean typography (`Plus Jakarta Sans`).
-3. Leave Section 4 (`UI display`) cleanly reserved and Section 6 (`Pricing`) with minimal mock cards.
+1. Scaffold semantic HTML structure in `static/index.html` reflecting these 7 sections plus the Auth Modal (`29:12`).
+2. Add modal styles to `static/css/style.css` with the soft obsidian/purple variables.
+3. Wire modal controllers and tab management in `static/js/landing.js`.

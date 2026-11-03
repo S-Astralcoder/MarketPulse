@@ -7,7 +7,10 @@
 (function () {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', initLandingNavigation);
+  document.addEventListener('DOMContentLoaded', () => {
+    initLandingNavigation();
+    initAuthModal();
+  });
 
   function initLandingNavigation() {
     const snapSections = Array.from(document.querySelectorAll('.snap-section'));
@@ -85,6 +88,7 @@
     // --- 4. Smooth Anchor Clicks ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
+        if (this.id === 'openSignInBtn' || this.id === 'openSignUpBtn') return;
         const targetId = this.getAttribute('href').slice(1);
         const targetSecIndex = snapSections.findIndex(sec => sec.id === targetId);
 
@@ -125,5 +129,121 @@
     if (snapSections[0]) {
       snapSections[0].classList.add('is-active');
     }
+  }
+
+  // --- Authentication Modal Controller (Figma 29:12) ---
+  function initAuthModal() {
+    const modal = document.getElementById('authModal');
+    if (!modal) return;
+
+    const openSignInBtn = document.getElementById('openSignInBtn');
+    const openSignUpBtn = document.getElementById('openSignUpBtn');
+    const closeBtn = document.getElementById('closeAuthModalBtn');
+    const tabSignIn = document.getElementById('tabSignIn');
+    const tabSignUp = document.getElementById('tabSignUp');
+    const formSignIn = document.getElementById('formSignIn');
+    const formSignUp = document.getElementById('formSignUp');
+    const switchToSignUp = document.getElementById('switchToSignUp');
+    const switchToSignIn = document.getElementById('switchToSignIn');
+
+    function openModal(tab) {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      switchTab(tab || 'signin');
+    }
+
+    function closeModal() {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    function switchTab(tab) {
+      if (tab === 'signin') {
+        tabSignIn.classList.add('is-active');
+        tabSignIn.setAttribute('aria-selected', 'true');
+        tabSignUp.classList.remove('is-active');
+        tabSignUp.setAttribute('aria-selected', 'false');
+        formSignIn.classList.add('is-active');
+        formSignUp.classList.remove('is-active');
+        const input = formSignIn.querySelector('input');
+        if (input) setTimeout(() => input.focus(), 60);
+      } else {
+        tabSignUp.classList.add('is-active');
+        tabSignUp.setAttribute('aria-selected', 'true');
+        tabSignIn.classList.remove('is-active');
+        tabSignIn.setAttribute('aria-selected', 'false');
+        formSignUp.classList.add('is-active');
+        formSignIn.classList.remove('is-active');
+        const input = formSignUp.querySelector('input');
+        if (input) setTimeout(() => input.focus(), 60);
+      }
+    }
+
+    if (openSignInBtn) {
+      openSignInBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal('signin');
+      });
+    }
+
+    if (openSignUpBtn) {
+      openSignUpBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal('signup');
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal);
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+        closeModal();
+      }
+    });
+
+    if (tabSignIn) {
+      tabSignIn.addEventListener('click', () => switchTab('signin'));
+    }
+
+    if (tabSignUp) {
+      tabSignUp.addEventListener('click', () => switchTab('signup'));
+    }
+
+    if (switchToSignUp) {
+      switchToSignUp.addEventListener('click', () => switchTab('signup'));
+    }
+
+    if (switchToSignIn) {
+      switchToSignIn.addEventListener('click', () => switchTab('signin'));
+    }
+
+    // Gentle submission simulation
+    [formSignIn, formSignUp].forEach(form => {
+      if (!form) return;
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const submitBtn = form.querySelector('.auth-submit-btn');
+        if (submitBtn) {
+          const originalContent = submitBtn.innerHTML;
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `<span>Connecting to Terminal...</span>`;
+          setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalContent;
+            closeModal();
+          }, 800);
+        }
+      });
+    });
   }
 })();
