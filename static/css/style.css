@@ -870,6 +870,7 @@ button {
   display: grid;
   grid-template-columns: 1.05fr 1px 0.95fr;
   align-items: stretch;
+  min-height: 535px;
 }
 
 /* --- Form Column --- */
@@ -877,6 +878,8 @@ button {
   padding: 24px 30px;
   display: flex;
   flex-direction: column;
+  min-height: 535px;
+  box-sizing: border-box;
 }
 
 /* Tabs (Figma 30:33 Rectangle 35) */
@@ -916,10 +919,11 @@ button {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Forms */
+/* Forms (Locked to uniform height to prevent jump) */
 .auth-form {
   display: none;
   flex-direction: column;
+  flex: 1;
 }
 
 .auth-form.is-active {
@@ -1102,7 +1106,8 @@ button {
   gap: 5px;
   font-size: 0.78rem;
   color: var(--text-muted);
-  padding-top: 4px;
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 .auth-switch-btn {
@@ -1208,6 +1213,7 @@ button {
 @media (max-width: 860px) {
   .auth-modal-split {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .auth-modal-divider {
@@ -1220,6 +1226,7 @@ button {
 
   .auth-modal-form-col {
     padding: 24px 20px;
+    min-height: 520px;
   }
 
   .auth-modal {
