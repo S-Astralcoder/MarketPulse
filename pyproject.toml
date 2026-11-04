@@ -1,7 +1,7 @@
 [project]
 name = "marketpulse"
 version = "0.1.0"
-description = "A Fullstack application build to provide organized maker status to make better decisions when investing or trading."
+description = "A Fullstack application build to provide organized market status to make better decisions when investing or trading."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
