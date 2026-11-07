@@ -7,14 +7,14 @@
   <meta name="description" content="MarketPulse real-time objective risk telemetry. 4-factor regime detection via EMA, ATR, ADX (Regime), and RSI without predictive bias.">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/dashboard.css?v=2.0">
+  <link rel="stylesheet" href="/css/dashboard.css?v=3.0">
 </head>
 <body data-node-id="40:2" data-name="Dashboard">
 
   <div class="dashboard-shell">
 
     <!-- =========================================================================
-         1. Category Navigation Panel
+         1. Category Navigation Sidebar (Auto-scroll triggers)
          ========================================================================= -->
     <aside class="nav-panel" data-node-id="42:31" data-name="Navigation Panel">
       
@@ -29,13 +29,13 @@
           <span class="brand-title">MarketPulse</span>
         </a>
 
-        <!-- Category Navigation Stack -->
+        <!-- Category Auto-Scroll Navigation -->
         <nav>
           <ul class="category-nav-list" id="categoryNavList">
             <li>
-              <button class="nav-item-btn" data-category="bookmarked">
+              <button class="nav-item-btn" data-target="bookmarked">
                 <span class="nav-label-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                   </svg>
                   <span>Bookmarked</span>
@@ -44,9 +44,9 @@
               </button>
             </li>
             <li>
-              <button class="nav-item-btn active" data-category="trending">
+              <button class="nav-item-btn active" data-target="trending">
                 <span class="nav-label-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
                     <polyline points="17 6 23 6 23 12"/>
                   </svg>
@@ -56,9 +56,9 @@
               </button>
             </li>
             <li>
-              <button class="nav-item-btn" data-category="top">
+              <button class="nav-item-btn" data-target="top-stocks">
                 <span class="nav-label-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                   </svg>
                   <span>Top Stocks</span>
@@ -67,9 +67,9 @@
               </button>
             </li>
             <li>
-              <button class="nav-item-btn" data-category="risky">
+              <button class="nav-item-btn" data-target="risky-stocks">
                 <span class="nav-label-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                     <line x1="12" y1="9" x2="12" y2="13"/>
                     <line x1="12" y1="17" x2="12.01" y2="17"/>
@@ -80,9 +80,9 @@
               </button>
             </li>
             <li>
-              <button class="nav-item-btn" data-category="safe">
+              <button class="nav-item-btn" data-target="safe-stocks">
                 <span class="nav-label-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                   </svg>
                   <span>Safe Stocks</span>
@@ -91,9 +91,9 @@
               </button>
             </li>
             <li>
-              <button class="nav-item-btn" data-category="average">
+              <button class="nav-item-btn" data-target="average-stocks">
                 <span class="nav-label-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="8" x2="12" y2="12"/>
                     <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -108,7 +108,7 @@
       </div>
 
       <!-- Bottom User Panel -->
-      <div class="user-panel" data-node-id="45:106" data-name="user panel">
+      <div class="user-panel" data-node-id="45:106">
         
         <!-- Refresh Countdown -->
         <div class="refresh-box">
@@ -116,8 +116,8 @@
           <span class="timer-digits tabular-num" id="refreshTimer">00:42</span>
         </div>
 
-        <!-- Clean Alerts Button -->
-        <div class="alert-pill" id="alertsToggle" title="Click to show flagged risky stocks">
+        <!-- Alerts Action Pill (Scrolls to Risky Stocks) -->
+        <div class="alert-pill" id="alertsToggle" title="Click to jump to risky stock alerts">
           <div class="alert-pill-left">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -193,383 +193,793 @@
 
       </header>
 
-      <!-- Scrollable Viewport (Figma 42:33) -->
-      <div class="dashboard-viewport" data-node-id="42:33">
+      <!-- Scrollable Viewport with Sequential Category Sections -->
+      <div class="dashboard-viewport" id="dashboardViewport">
         
-        <!-- Section Header -->
-        <section class="section-header-row">
+        <!-- ===================================================================
+             1. Bookmarked Section
+             =================================================================== -->
+        <section class="category-section" id="bookmarked">
           <div class="section-title-line">
             <div class="section-title-box">
-              <h1 class="section-heading" id="currentCategoryHeading">Trending</h1>
-              <span class="section-badge" id="currentCountBadge">3 stocks</span>
+              <h2 class="section-heading">Bookmarked</h2>
+              <span class="section-badge">0 stocks</span>
             </div>
           </div>
           <div class="section-divider"></div>
+          <div class="empty-state visible">
+            No cards marked yet. Tag or bookmark cards to view them here.
+          </div>
         </section>
 
-        <!-- Hardcoded Cards Container (Figma 42:48) -->
-        <div class="cards-grid" id="stocksCardContainer">
-
-          <!-- -----------------------------------------------------------------
-               CARD 1: NVIDIA Corp (NVDA) - Trending, Top, Risky
-               ----------------------------------------------------------------- -->
-          <article class="stock-card" data-ticker="NVDA" data-categories="trending,top,risky" data-risk="78">
-            <div class="card-header">
-              <div class="ticker-logo">NV</div>
-              <div class="stock-meta">
-                <div class="stock-name-box" tabindex="0">
-                  <span class="stock-name">NVIDIA Corporation</span>
-                  <div class="stock-name-popover">NVIDIA Corporation</div>
-                </div>
-                <span class="stock-ticker">NVDA</span>
-              </div>
-              <div class="risk-badge high">
-                <span class="risk-pill tabular-num">Risk 78/100</span>
-              </div>
+        <!-- ===================================================================
+             2. Trending Section
+             =================================================================== -->
+        <section class="category-section" id="trending">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Trending</h2>
+              <span class="section-badge">3 stocks</span>
             </div>
+          </div>
+          <div class="section-divider"></div>
+          
+          <div class="cards-grid">
+            
+            <!-- NVIDIA Corp (NVDA) -->
+            <article class="stock-card" data-ticker="NVDA" data-name="NVIDIA Corporation" data-risk="78">
+              <div class="card-header">
+                <div class="ticker-logo">NV</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">NVIDIA Corporation</span>
+                    <div class="stock-name-popover">NVIDIA Corporation</div>
+                  </div>
+                  <span class="stock-ticker">NVDA</span>
+                </div>
+                <div class="risk-badge high">
+                  <span class="risk-pill tabular-num">Risk 78/100</span>
+                </div>
+              </div>
 
-            <div class="market-status-row">
-              <span class="status-dot-pulse elevated"></span>
-              <span class="status-text">Market is currently open and volatile</span>
+              <div class="market-status-row">
+                <span class="status-dot-pulse elevated"></span>
+                <span class="status-text">Market is currently open and volatile</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">74.2</span>
+                      <span class="metric-delta tabular-num positive">+3.1</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">14.80</span>
+                      <span class="metric-delta tabular-num negative">+0.8</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">612.4</span>
+                      <span class="metric-delta bullish">Bullish</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">84%</span>
+                      <span class="metric-delta strong">Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Tesla Inc (TSLA) -->
+            <article class="stock-card" data-ticker="TSLA" data-name="Tesla Inc." data-risk="85">
+              <div class="card-header">
+                <div class="ticker-logo">TS</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">Tesla Inc.</span>
+                    <div class="stock-name-popover">Tesla Inc.</div>
+                  </div>
+                  <span class="stock-ticker">TSLA</span>
+                </div>
+                <div class="risk-badge high">
+                  <span class="risk-pill tabular-num">Risk 85/100</span>
+                </div>
+              </div>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse elevated"></span>
+                <span class="status-text">Heavy breakout volume • High turbulence</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">81.0</span>
+                      <span class="metric-delta tabular-num negative">+5.4</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">18.90</span>
+                      <span class="metric-delta tabular-num negative">+2.1</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">244.1</span>
+                      <span class="metric-delta negative">Divergence</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">89%</span>
+                      <span class="metric-delta strong">Extreme</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Advanced Micro Devices (AMD) -->
+            <article class="stock-card" data-ticker="AMD" data-name="Advanced Micro Devices" data-risk="64">
+              <div class="card-header">
+                <div class="ticker-logo">AM</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">Advanced Micro Devices</span>
+                    <div class="stock-name-popover">Advanced Micro Devices</div>
+                  </div>
+                  <span class="stock-ticker">AMD</span>
+                </div>
+                <div class="risk-badge high">
+                  <span class="risk-pill tabular-num">Risk 64/100</span>
+                </div>
+              </div>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse elevated"></span>
+                <span class="status-text">Volatility expansion on momentum test</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">62.8</span>
+                      <span class="metric-delta tabular-num positive">+1.7</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">9.40</span>
+                      <span class="metric-delta tabular-num negative">+0.6</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">172.5</span>
+                      <span class="metric-delta bullish">Bullish</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">71%</span>
+                      <span class="metric-delta strong">Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             3. Top Stocks Section
+             =================================================================== -->
+        <section class="category-section" id="top-stocks">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Top Stocks</h2>
+              <span class="section-badge">3 stocks</span>
             </div>
+          </div>
+          <div class="section-divider"></div>
 
-            <div class="metrics-grid">
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">RSI (14)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">74.2</span>
-                    <span class="metric-delta tabular-num positive">+3.1</span>
+          <div class="cards-grid">
+            
+            <!-- NVIDIA Corp (NVDA) -->
+            <article class="stock-card" data-ticker="NVDA" data-name="NVIDIA Corporation" data-risk="78">
+              <div class="card-header">
+                <div class="ticker-logo">NV</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">NVIDIA Corporation</span>
+                    <div class="stock-name-popover">NVIDIA Corporation</div>
+                  </div>
+                  <span class="stock-ticker">NVDA</span>
+                </div>
+                <div class="risk-badge high">
+                  <span class="risk-pill tabular-num">Risk 78/100</span>
+                </div>
+              </div>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse elevated"></span>
+                <span class="status-text">Market is currently open and volatile</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">74.2</span>
+                      <span class="metric-delta tabular-num positive">+3.1</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">14.80</span>
+                      <span class="metric-delta tabular-num negative">+0.8</span>
+                    </div>
                   </div>
                 </div>
-                <div class="metric-block">
-                  <span class="metric-label">ATR</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">14.80</span>
-                    <span class="metric-delta tabular-num negative">+0.8</span>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">612.4</span>
+                      <span class="metric-delta bullish">Bullish</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">84%</span>
+                      <span class="metric-delta strong">Strong</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">EMA (50)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">612.4</span>
-                    <span class="metric-delta bullish">Bullish</span>
+            </article>
+
+            <!-- Apple Inc (AAPL) -->
+            <article class="stock-card" data-ticker="AAPL" data-name="Apple Inc." data-risk="42">
+              <div class="card-header">
+                <div class="ticker-logo">AP</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">Apple Inc.</span>
+                    <div class="stock-name-popover">Apple Inc.</div>
+                  </div>
+                  <span class="stock-ticker">AAPL</span>
+                </div>
+                <div class="risk-badge moderate">
+                  <span class="risk-pill tabular-num">Risk 42/100</span>
+                </div>
+              </div>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse"></span>
+                <span class="status-text">Order flow balanced • Mild compression</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">58.4</span>
+                      <span class="metric-delta tabular-num positive">+0.9</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">4.20</span>
+                      <span class="metric-delta tabular-num positive">-0.2</span>
+                    </div>
                   </div>
                 </div>
-                <div class="metric-block">
-                  <span class="metric-label">Strength</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">84%</span>
-                    <span class="metric-delta strong">Strong</span>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">228.6</span>
+                      <span class="metric-delta neutral">Neutral</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">46%</span>
+                      <span class="metric-delta moderate">Moderate</span>
+                    </div>
                   </div>
                 </div>
               </div>
+            </article>
+
+            <!-- Microsoft Corp (MSFT) -->
+            <article class="stock-card" data-ticker="MSFT" data-name="Microsoft Corporation" data-risk="31">
+              <div class="card-header">
+                <div class="ticker-logo">MS</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">Microsoft Corporation</span>
+                    <div class="stock-name-popover">Microsoft Corporation</div>
+                  </div>
+                  <span class="stock-ticker">MSFT</span>
+                </div>
+                <div class="risk-badge low">
+                  <span class="risk-pill tabular-num">Risk 31/100</span>
+                </div>
+              </div>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse"></span>
+                <span class="status-text">Consolidated range • Low volatility</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">49.2</span>
+                      <span class="metric-delta tabular-num positive">-0.6</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">6.10</span>
+                      <span class="metric-delta tabular-num positive">+0.1</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">422.3</span>
+                      <span class="metric-delta bullish">Bullish</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">52%</span>
+                      <span class="metric-delta strong">Steady</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             4. Risky Stocks Section
+             =================================================================== -->
+        <section class="category-section" id="risky-stocks">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Risky Stocks</h2>
+              <span class="section-badge">3 stocks</span>
             </div>
-          </article>
+          </div>
+          <div class="section-divider"></div>
 
-          <!-- -----------------------------------------------------------------
-               CARD 2: Apple Inc (AAPL) - Top, Average
-               ----------------------------------------------------------------- -->
-          <article class="stock-card" data-ticker="AAPL" data-categories="top,average" data-risk="42">
-            <div class="card-header">
-              <div class="ticker-logo">AP</div>
-              <div class="stock-meta">
-                <div class="stock-name-box" tabindex="0">
-                  <span class="stock-name">Apple Inc.</span>
-                  <div class="stock-name-popover">Apple Inc.</div>
+          <div class="cards-grid">
+            
+            <!-- Tesla Inc (TSLA) -->
+            <article class="stock-card" data-ticker="TSLA" data-name="Tesla Inc." data-risk="85">
+              <div class="card-header">
+                <div class="ticker-logo">TS</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">Tesla Inc.</span>
+                    <div class="stock-name-popover">Tesla Inc.</div>
+                  </div>
+                  <span class="stock-ticker">TSLA</span>
                 </div>
-                <span class="stock-ticker">AAPL</span>
+                <div class="risk-badge high">
+                  <span class="risk-pill tabular-num">Risk 85/100</span>
+                </div>
               </div>
-              <div class="risk-badge moderate">
-                <span class="risk-pill tabular-num">Risk 42/100</span>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse elevated"></span>
+                <span class="status-text">Heavy breakout volume • High turbulence</span>
               </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">81.0</span>
+                      <span class="metric-delta tabular-num negative">+5.4</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">18.90</span>
+                      <span class="metric-delta tabular-num negative">+2.1</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">244.1</span>
+                      <span class="metric-delta negative">Divergence</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">89%</span>
+                      <span class="metric-delta strong">Extreme</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- NVIDIA Corp (NVDA) -->
+            <article class="stock-card" data-ticker="NVDA" data-name="NVIDIA Corporation" data-risk="78">
+              <div class="card-header">
+                <div class="ticker-logo">NV</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">NVIDIA Corporation</span>
+                    <div class="stock-name-popover">NVIDIA Corporation</div>
+                  </div>
+                  <span class="stock-ticker">NVDA</span>
+                </div>
+                <div class="risk-badge high">
+                  <span class="risk-pill tabular-num">Risk 78/100</span>
+                </div>
+              </div>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse elevated"></span>
+                <span class="status-text">Market is currently open and volatile</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">74.2</span>
+                      <span class="metric-delta tabular-num positive">+3.1</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">14.80</span>
+                      <span class="metric-delta tabular-num negative">+0.8</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">612.4</span>
+                      <span class="metric-delta bullish">Bullish</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">84%</span>
+                      <span class="metric-delta strong">Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Advanced Micro Devices (AMD) -->
+            <article class="stock-card" data-ticker="AMD" data-name="Advanced Micro Devices" data-risk="64">
+              <div class="card-header">
+                <div class="ticker-logo">AM</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">Advanced Micro Devices</span>
+                    <div class="stock-name-popover">Advanced Micro Devices</div>
+                  </div>
+                  <span class="stock-ticker">AMD</span>
+                </div>
+                <div class="risk-badge high">
+                  <span class="risk-pill tabular-num">Risk 64/100</span>
+                </div>
+              </div>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse elevated"></span>
+                <span class="status-text">Volatility expansion on momentum test</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">62.8</span>
+                      <span class="metric-delta tabular-num positive">+1.7</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">9.40</span>
+                      <span class="metric-delta tabular-num negative">+0.6</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">172.5</span>
+                      <span class="metric-delta bullish">Bullish</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">71%</span>
+                      <span class="metric-delta strong">Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             5. Safe Stocks Section
+             =================================================================== -->
+        <section class="category-section" id="safe-stocks">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Safe Stocks</h2>
+              <span class="section-badge">2 stocks</span>
             </div>
+          </div>
+          <div class="section-divider"></div>
 
-            <div class="market-status-row">
-              <span class="status-dot-pulse"></span>
-              <span class="status-text">Order flow balanced • Mild compression</span>
+          <div class="cards-grid">
+            
+            <!-- SPDR S&P 500 ETF (SPY) -->
+            <article class="stock-card" data-ticker="SPY" data-name="SPDR S&P 500 ETF Trust" data-risk="28">
+              <div class="card-header">
+                <div class="ticker-logo">SP</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">SPDR S&P 500 ETF Trust</span>
+                    <div class="stock-name-popover">SPDR S&P 500 ETF Trust</div>
+                  </div>
+                  <span class="stock-ticker">SPY</span>
+                </div>
+                <div class="risk-badge low">
+                  <span class="risk-pill tabular-num">Risk 28/100</span>
+                </div>
+              </div>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse"></span>
+                <span class="status-text">Broad market baseline • Controlled range</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">53.6</span>
+                      <span class="metric-delta tabular-num positive">+0.4</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">5.80</span>
+                      <span class="metric-delta tabular-num positive">+0.0</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">574.8</span>
+                      <span class="metric-delta bullish">Bullish</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">38%</span>
+                      <span class="metric-delta moderate">Consolidating</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Microsoft Corp (MSFT) -->
+            <article class="stock-card" data-ticker="MSFT" data-name="Microsoft Corporation" data-risk="31">
+              <div class="card-header">
+                <div class="ticker-logo">MS</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">Microsoft Corporation</span>
+                    <div class="stock-name-popover">Microsoft Corporation</div>
+                  </div>
+                  <span class="stock-ticker">MSFT</span>
+                </div>
+                <div class="risk-badge low">
+                  <span class="risk-pill tabular-num">Risk 31/100</span>
+                </div>
+              </div>
+
+              <div class="market-status-row">
+                <span class="status-dot-pulse"></span>
+                <span class="status-text">Consolidated range • Low volatility</span>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">49.2</span>
+                      <span class="metric-delta tabular-num positive">-0.6</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">6.10</span>
+                      <span class="metric-delta tabular-num positive">+0.1</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">422.3</span>
+                      <span class="metric-delta bullish">Bullish</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">52%</span>
+                      <span class="metric-delta strong">Steady</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             6. Average Stocks Section
+             =================================================================== -->
+        <section class="category-section" id="average-stocks">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Average Stocks</h2>
+              <span class="section-badge">1 stock</span>
             </div>
+          </div>
+          <div class="section-divider"></div>
 
-            <div class="metrics-grid">
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">RSI (14)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">58.4</span>
-                    <span class="metric-delta tabular-num positive">+0.9</span>
+          <div class="cards-grid">
+            
+            <!-- Apple Inc (AAPL) -->
+            <article class="stock-card" data-ticker="AAPL" data-name="Apple Inc." data-risk="42">
+              <div class="card-header">
+                <div class="ticker-logo">AP</div>
+                <div class="stock-meta">
+                  <div class="stock-name-box" tabindex="0">
+                    <span class="stock-name">Apple Inc.</span>
+                    <div class="stock-name-popover">Apple Inc.</div>
                   </div>
+                  <span class="stock-ticker">AAPL</span>
                 </div>
-                <div class="metric-block">
-                  <span class="metric-label">ATR</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">4.20</span>
-                    <span class="metric-delta tabular-num positive">-0.2</span>
-                  </div>
-                </div>
-              </div>
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">EMA (50)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">228.6</span>
-                    <span class="metric-delta neutral">Neutral</span>
-                  </div>
-                </div>
-                <div class="metric-block">
-                  <span class="metric-label">Strength</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">46%</span>
-                    <span class="metric-delta moderate">Moderate</span>
-                  </div>
+                <div class="risk-badge moderate">
+                  <span class="risk-pill tabular-num">Risk 42/100</span>
                 </div>
               </div>
-            </div>
-          </article>
 
-          <!-- -----------------------------------------------------------------
-               CARD 3: Tesla Inc (TSLA) - Trending, Risky
-               ----------------------------------------------------------------- -->
-          <article class="stock-card" data-ticker="TSLA" data-categories="trending,risky" data-risk="85">
-            <div class="card-header">
-              <div class="ticker-logo">TS</div>
-              <div class="stock-meta">
-                <div class="stock-name-box" tabindex="0">
-                  <span class="stock-name">Tesla Inc.</span>
-                  <div class="stock-name-popover">Tesla Inc.</div>
-                </div>
-                <span class="stock-ticker">TSLA</span>
+              <div class="market-status-row">
+                <span class="status-dot-pulse"></span>
+                <span class="status-text">Order flow balanced • Mild compression</span>
               </div>
-              <div class="risk-badge high">
-                <span class="risk-pill tabular-num">Risk 85/100</span>
-              </div>
-            </div>
 
-            <div class="market-status-row">
-              <span class="status-dot-pulse elevated"></span>
-              <span class="status-text">Heavy breakout volume • High turbulence</span>
-            </div>
+              <div class="metrics-grid">
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">RSI (14)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">58.4</span>
+                      <span class="metric-delta tabular-num positive">+0.9</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">ATR</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">4.20</span>
+                      <span class="metric-delta tabular-num positive">-0.2</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="metrics-row">
+                  <div class="metric-block">
+                    <span class="metric-label">EMA (50)</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">228.6</span>
+                      <span class="metric-delta neutral">Neutral</span>
+                    </div>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-label">Strength</span>
+                    <div class="metric-data-row">
+                      <span class="metric-value tabular-num">46%</span>
+                      <span class="metric-delta moderate">Moderate</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
 
-            <div class="metrics-grid">
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">RSI (14)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">81.0</span>
-                    <span class="metric-delta tabular-num negative">+5.4</span>
-                  </div>
-                </div>
-                <div class="metric-block">
-                  <span class="metric-label">ATR</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">18.90</span>
-                    <span class="metric-delta tabular-num negative">+2.1</span>
-                  </div>
-                </div>
-              </div>
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">EMA (50)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">244.1</span>
-                    <span class="metric-delta negative">Divergence</span>
-                  </div>
-                </div>
-                <div class="metric-block">
-                  <span class="metric-label">Strength</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">89%</span>
-                    <span class="metric-delta strong">Extreme</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- -----------------------------------------------------------------
-               CARD 4: Microsoft Corp (MSFT) - Top, Safe
-               ----------------------------------------------------------------- -->
-          <article class="stock-card" data-ticker="MSFT" data-categories="top,safe" data-risk="31">
-            <div class="card-header">
-              <div class="ticker-logo">MS</div>
-              <div class="stock-meta">
-                <div class="stock-name-box" tabindex="0">
-                  <span class="stock-name">Microsoft Corporation</span>
-                  <div class="stock-name-popover">Microsoft Corporation</div>
-                </div>
-                <span class="stock-ticker">MSFT</span>
-              </div>
-              <div class="risk-badge low">
-                <span class="risk-pill tabular-num">Risk 31/100</span>
-              </div>
-            </div>
-
-            <div class="market-status-row">
-              <span class="status-dot-pulse"></span>
-              <span class="status-text">Consolidated range • Low volatility</span>
-            </div>
-
-            <div class="metrics-grid">
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">RSI (14)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">49.2</span>
-                    <span class="metric-delta tabular-num positive">-0.6</span>
-                  </div>
-                </div>
-                <div class="metric-block">
-                  <span class="metric-label">ATR</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">6.10</span>
-                    <span class="metric-delta tabular-num positive">+0.1</span>
-                  </div>
-                </div>
-              </div>
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">EMA (50)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">422.3</span>
-                    <span class="metric-delta bullish">Bullish</span>
-                  </div>
-                </div>
-                <div class="metric-block">
-                  <span class="metric-label">Strength</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">52%</span>
-                    <span class="metric-delta strong">Steady</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- -----------------------------------------------------------------
-               CARD 5: Advanced Micro Devices (AMD) - Trending, Risky
-               ----------------------------------------------------------------- -->
-          <article class="stock-card" data-ticker="AMD" data-categories="trending,risky" data-risk="64">
-            <div class="card-header">
-              <div class="ticker-logo">AM</div>
-              <div class="stock-meta">
-                <div class="stock-name-box" tabindex="0">
-                  <span class="stock-name">Advanced Micro Devices</span>
-                  <div class="stock-name-popover">Advanced Micro Devices</div>
-                </div>
-                <span class="stock-ticker">AMD</span>
-              </div>
-              <div class="risk-badge high">
-                <span class="risk-pill tabular-num">Risk 64/100</span>
-              </div>
-            </div>
-
-            <div class="market-status-row">
-              <span class="status-dot-pulse elevated"></span>
-              <span class="status-text">Volatility expansion on momentum test</span>
-            </div>
-
-            <div class="metrics-grid">
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">RSI (14)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">62.8</span>
-                    <span class="metric-delta tabular-num positive">+1.7</span>
-                  </div>
-                </div>
-                <div class="metric-block">
-                  <span class="metric-label">ATR</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">9.40</span>
-                    <span class="metric-delta tabular-num negative">+0.6</span>
-                  </div>
-                </div>
-              </div>
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">EMA (50)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">172.5</span>
-                    <span class="metric-delta bullish">Bullish</span>
-                  </div>
-                </div>
-                <div class="metric-block">
-                  <span class="metric-label">Strength</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">71%</span>
-                    <span class="metric-delta strong">Strong</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- -----------------------------------------------------------------
-               CARD 6: SPDR S&P 500 ETF (SPY) - Safe
-               ----------------------------------------------------------------- -->
-          <article class="stock-card" data-ticker="SPY" data-categories="safe" data-risk="28">
-            <div class="card-header">
-              <div class="ticker-logo">SP</div>
-              <div class="stock-meta">
-                <div class="stock-name-box" tabindex="0">
-                  <span class="stock-name">SPDR S&P 500 ETF Trust</span>
-                  <div class="stock-name-popover">SPDR S&P 500 ETF Trust</div>
-                </div>
-                <span class="stock-ticker">SPY</span>
-              </div>
-              <div class="risk-badge low">
-                <span class="risk-pill tabular-num">Risk 28/100</span>
-              </div>
-            </div>
-
-            <div class="market-status-row">
-              <span class="status-dot-pulse"></span>
-              <span class="status-text">Broad market baseline • Controlled range</span>
-            </div>
-
-            <div class="metrics-grid">
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">RSI (14)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">53.6</span>
-                    <span class="metric-delta tabular-num positive">+0.4</span>
-                  </div>
-                </div>
-                <div class="metric-block">
-                  <span class="metric-label">ATR</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">5.80</span>
-                    <span class="metric-delta tabular-num positive">+0.0</span>
-                  </div>
-                </div>
-              </div>
-              <div class="metrics-row">
-                <div class="metric-block">
-                  <span class="metric-label">EMA (50)</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">574.8</span>
-                    <span class="metric-delta bullish">Bullish</span>
-                  </div>
-                </div>
-                <div class="metric-block">
-                  <span class="metric-label">Strength</span>
-                  <div class="metric-data-row">
-                    <span class="metric-value tabular-num">38%</span>
-                    <span class="metric-delta moderate">Consolidating</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-        </div>
-
-        <!-- Empty State Container -->
-        <div class="empty-state" id="emptyStateBox">
-          No stocks found in this category.
-        </div>
+          </div>
+        </section>
 
       </div>
 
@@ -638,6 +1048,6 @@
     </article>
   </template>
 
-  <script src="/js/dashboard.js?v=2.0"></script>
+  <script src="/js/dashboard.js?v=3.0"></script>
 </body>
 </html>

@@ -1,17 +1,16 @@
 /**
- * MarketPulse — Category Navigation, Telemetry Filtering & Card Utilities
+ * MarketPulse — Single-Page Sequential Dashboard with Auto-Scroll Navigation
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initRefreshTimer();
-  initCategoryNavigation();
-  initAlertsToggle();
+  initAutoScrollNavigation();
+  initAlertsJump();
   initSearch();
 });
 
 /**
- * 1. Fixed Monospaced Refresh Timer
- * Loops 42 -> 0 without causing horizontal layout shifts.
+ * 1. Fixed Monospaced Refresh Timer Tick
  */
 function initRefreshTimer() {
   const timerEl = document.getElementById('refreshTimer');
@@ -30,140 +29,113 @@ function initRefreshTimer() {
 }
 
 /**
- * 2. Category Navigation Panel
- * Categories: Bookmarked, Trending, Top Stocks, Risky Stocks, Safe Stocks, Average Stocks
+ * 2. Auto-Scroll Navigation Sidebar
+ * Clicking any category button smoothly scrolls the single-page viewport to that section.
+ * An IntersectionObserver continuously tracks which section is in view and updates the active state.
  */
-let currentCategory = 'trending';
-let isAlertsActive = false;
-let currentSearchQuery = '';
-
-const CATEGORY_TITLES = {
-  bookmarked: 'Bookmarked Stocks',
-  trending: 'Trending Stocks',
-  top: 'Top Stocks',
-  risky: 'Risky Stocks',
-  safe: 'Safe Stocks',
-  average: 'Average Stocks'
-};
-
-function filterDisplay() {
-  const cardContainer = document.getElementById('stocksCardContainer');
-  const emptyState = document.getElementById('emptyStateBox');
-  const headingEl = document.getElementById('currentCategoryHeading');
-  const countBadgeEl = document.getElementById('currentCountBadge');
-
-  if (!cardContainer) return;
-
-  const cards = cardContainer.querySelectorAll('.stock-card');
-  let visibleCount = 0;
-
-  if (isAlertsActive) {
-    if (headingEl) headingEl.textContent = 'Risky Alerts';
-  } else {
-    if (headingEl) headingEl.textContent = CATEGORY_TITLES[currentCategory] || 'Stocks';
-  }
-
-  cards.forEach((card) => {
-    const ticker = (card.getAttribute('data-ticker') || '').toLowerCase();
-    const name = (card.querySelector('.stock-name')?.textContent || '').toLowerCase();
-    const categories = (card.getAttribute('data-categories') || '').split(',');
-    const risk = parseInt(card.getAttribute('data-risk') || '0', 10);
-
-    const matchesSearch = !currentSearchQuery || ticker.includes(currentSearchQuery) || name.includes(currentSearchQuery);
-
-    let matchesCategory = false;
-    if (isAlertsActive) {
-      matchesCategory = risk >= 60;
-    } else {
-      matchesCategory = categories.includes(currentCategory);
-    }
-
-    if (matchesSearch && matchesCategory) {
-      card.style.display = 'flex';
-      visibleCount++;
-    } else {
-      card.style.display = 'none';
-    }
-  });
-
-  if (countBadgeEl) {
-    countBadgeEl.textContent = `${visibleCount} stocks`;
-  }
-
-  if (emptyState) {
-    if (visibleCount === 0) {
-      emptyState.style.display = 'block';
-      if (currentCategory === 'bookmarked' && !isAlertsActive) {
-        emptyState.textContent = 'No cards marked yet. Tag or bookmark cards to view them here.';
-      } else {
-        emptyState.textContent = 'No stocks match the selected filter or search query.';
-      }
-    } else {
-      emptyState.style.display = 'none';
-    }
-  }
-}
-
-function initCategoryNavigation() {
+function initAutoScrollNavigation() {
   const navBtns = document.querySelectorAll('#categoryNavList .nav-item-btn');
-  const alertsToggle = document.getElementById('alertsToggle');
+  const sections = document.querySelectorAll('.category-section');
+  const viewport = document.getElementById('dashboardViewport');
 
+  if (!viewport || sections.length === 0) return;
+
+  // Click to smooth-scroll
   navBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      // Deactivate alerts mode when clicking a category
-      isAlertsActive = false;
-      if (alertsToggle) alertsToggle.classList.remove('active');
+      const targetId = btn.getAttribute('data-target');
+      const targetSection = document.getElementById(targetId);
 
-      navBtns.forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
+      if (targetSection) {
+        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
 
-      currentCategory = btn.getAttribute('data-category') || 'trending';
-      filterDisplay();
+  // Track active section on scroll
+  const observerOptions = {
+    root: viewport,
+    rootMargin: '0px 0px -60% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navBtns.forEach((btn) => {
+          if (btn.getAttribute('data-target') === id) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach((section) => observer.observe(section));
+}
+
+/**
+ * 3. Alerts Jump Action
+ * Clicking "Alerts" smoothly scrolls directly to the Risky Stocks section.
+ */
+function initAlertsJump() {
+  const alertsToggle = document.getElementById('alertsToggle');
+  const riskySection = document.getElementById('risky-stocks');
+
+  if (!alertsToggle || !riskySection) return;
+
+  alertsToggle.addEventListener('click', () => {
+    riskySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
+/**
+ * 4. Real-time Search Filter Across All Single-Page Sections
+ */
+function initSearch() {
+  const searchInput = document.getElementById('stockSearchInput');
+  const allCards = document.querySelectorAll('.stock-card');
+  const sections = document.querySelectorAll('.category-section');
+
+  if (!searchInput) return;
+
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.trim().toLowerCase();
+
+    allCards.forEach((card) => {
+      const ticker = (card.getAttribute('data-ticker') || '').toLowerCase();
+      const name = (card.getAttribute('data-name') || '').toLowerCase();
+
+      const matches = !query || ticker.includes(query) || name.includes(query);
+      card.style.display = matches ? 'flex' : 'none';
+    });
+
+    // Check each section if all cards are hidden
+    sections.forEach((sec) => {
+      if (sec.id === 'bookmarked') return;
+      const visibleCards = sec.querySelectorAll('.stock-card[style="display: flex;"]');
+      const emptyState = sec.querySelector('.empty-state');
+
+      if (query && visibleCards.length === 0) {
+        if (!emptyState) {
+          const tempEmpty = document.createElement('div');
+          tempEmpty.className = 'empty-state visible search-empty-msg';
+          tempEmpty.textContent = 'No matching stocks in this category.';
+          sec.appendChild(tempEmpty);
+        }
+      } else {
+        const tempEmpty = sec.querySelector('.search-empty-msg');
+        if (tempEmpty) tempEmpty.remove();
+      }
     });
   });
 }
 
 /**
- * 3. Alerts Toggle Action
- * When clicked, highlights all red-flagged/risky cards (risk >= 60).
- */
-function initAlertsToggle() {
-  const alertsToggle = document.getElementById('alertsToggle');
-  const navBtns = document.querySelectorAll('#categoryNavList .nav-item-btn');
-
-  if (!alertsToggle) return;
-
-  alertsToggle.addEventListener('click', () => {
-    isAlertsActive = !isAlertsActive;
-    alertsToggle.classList.toggle('active', isAlertsActive);
-
-    if (isAlertsActive) {
-      navBtns.forEach((b) => b.classList.remove('active'));
-    } else {
-      // Restore active category button
-      const activeBtn = document.querySelector(`#categoryNavList .nav-item-btn[data-category="${currentCategory}"]`);
-      if (activeBtn) activeBtn.classList.add('active');
-    }
-
-    filterDisplay();
-  });
-}
-
-/**
- * 4. Search Filter
- */
-function initSearch() {
-  const searchInput = document.getElementById('stockSearchInput');
-  if (!searchInput) return;
-
-  searchInput.addEventListener('input', (e) => {
-    currentSearchQuery = e.target.value.trim().toLowerCase();
-    filterDisplay();
-  });
-}
-
-/**
- * 5. Template Instantiation Helper for Dynamic Cards
+ * 5. Reusable Template Instantiation
  */
 window.renderStockCardFromTemplate = function (stock) {
   const template = document.getElementById('stock-card-template');
@@ -173,7 +145,7 @@ window.renderStockCardFromTemplate = function (stock) {
   const card = clone.querySelector('.stock-card');
 
   card.setAttribute('data-ticker', stock.ticker);
-  card.setAttribute('data-categories', (stock.categories || []).join(','));
+  card.setAttribute('data-name', stock.name);
   card.setAttribute('data-risk', String(stock.risk));
 
   clone.querySelector('.tpl-logo').textContent = stock.logo || stock.ticker.slice(0, 2);
