@@ -214,6 +214,14 @@ button {
   color: var(--text-primary);
 }
 
+.brand-icon-img {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: block;
+  flex-shrink: 0;
+}
+
 .brand-icon {
   width: 32px;
   height: 32px;

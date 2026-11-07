@@ -14,6 +14,7 @@ class DashboardTestCase(unittest.TestCase):
         self.assertIn("Trending", response.text)
         self.assertIn("stock-card-template", response.text)
         self.assertIn('data-node-id="40:2"', response.text)
+        self.assertIn('/assets/favicon.svg', response.text)
 
     def test_dashboard_css_served(self):
         response = self.client.get("/css/dashboard.css")
