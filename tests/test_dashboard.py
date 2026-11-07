@@ -11,10 +11,9 @@ class DashboardTestCase(unittest.TestCase):
     def test_dashboard_served(self):
         response = self.client.get("/dashboard.html")
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Active Asset Telemetry", response.text)
+        self.assertIn("Trending", response.text)
         self.assertIn("stock-card-template", response.text)
         self.assertIn('data-node-id="40:2"', response.text)
-        self.assertIn('data-node-id="42:35"', response.text)
 
     def test_dashboard_css_served(self):
         response = self.client.get("/css/dashboard.css")

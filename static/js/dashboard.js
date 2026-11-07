@@ -1,17 +1,17 @@
 /**
- * MarketPulse — Dashboard Interactions & Template Utilities
- * Provides search filtering, risk sorting, live timer tick, and reusable card template instantiation.
+ * MarketPulse — Category Navigation, Telemetry Filtering & Card Utilities
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initRefreshTimer();
-  initSearchAndFilter();
-  initRiskySortToggle();
+  initCategoryNavigation();
+  initAlertsToggle();
+  initSearch();
 });
 
 /**
- * 1. Monospaced Refresh Timer Tick
- * Ticks from 42 seconds downwards to 0, formatting without causing layout shifts.
+ * 1. Fixed Monospaced Refresh Timer
+ * Loops 42 -> 0 without causing horizontal layout shifts.
  */
 function initRefreshTimer() {
   const timerEl = document.getElementById('refreshTimer');
@@ -30,130 +30,140 @@ function initRefreshTimer() {
 }
 
 /**
- * 2. Search & Category Filter Navigation
+ * 2. Category Navigation Panel
+ * Categories: Bookmarked, Trending, Top Stocks, Risky Stocks, Safe Stocks, Average Stocks
  */
-function initSearchAndFilter() {
-  const searchInput = document.getElementById('stockSearchInput');
-  const filterPills = document.querySelectorAll('#categoryFilterBar .filter-pill');
+let currentCategory = 'trending';
+let isAlertsActive = false;
+let currentSearchQuery = '';
+
+const CATEGORY_TITLES = {
+  bookmarked: 'Bookmarked Stocks',
+  trending: 'Trending Stocks',
+  top: 'Top Stocks',
+  risky: 'Risky Stocks',
+  safe: 'Safe Stocks',
+  average: 'Average Stocks'
+};
+
+function filterDisplay() {
   const cardContainer = document.getElementById('stocksCardContainer');
   const emptyState = document.getElementById('emptyStateBox');
+  const headingEl = document.getElementById('currentCategoryHeading');
+  const countBadgeEl = document.getElementById('currentCountBadge');
 
   if (!cardContainer) return;
 
-  let currentCategory = 'all';
-  let currentSearch = '';
+  const cards = cardContainer.querySelectorAll('.stock-card');
+  let visibleCount = 0;
 
-  function applyFilters() {
-    const cards = cardContainer.querySelectorAll('.stock-card');
-    let visibleCount = 0;
-
-    cards.forEach((card) => {
-      const ticker = (card.getAttribute('data-ticker') || '').toLowerCase();
-      const name = (card.querySelector('.stock-name')?.textContent || '').toLowerCase();
-      const category = (card.getAttribute('data-category') || '').toLowerCase();
-      const risk = parseInt(card.getAttribute('data-risk') || '0', 10);
-
-      // Search matching
-      const matchesSearch = !currentSearch || ticker.includes(currentSearch) || name.includes(currentSearch);
-
-      // Category matching
-      let matchesCategory = true;
-      if (currentCategory === 'tech') {
-        matchesCategory = category === 'tech';
-      } else if (currentCategory === 'index') {
-        matchesCategory = category === 'index';
-      } else if (currentCategory === 'high-risk') {
-        matchesCategory = risk >= 60;
-      }
-
-      if (matchesSearch && matchesCategory) {
-        card.style.display = 'flex';
-        visibleCount++;
-      } else {
-        card.style.display = 'none';
-      }
-    });
-
-    if (emptyState) {
-      emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-    }
+  if (isAlertsActive) {
+    if (headingEl) headingEl.textContent = 'Risky Alerts';
+  } else {
+    if (headingEl) headingEl.textContent = CATEGORY_TITLES[currentCategory] || 'Stocks';
   }
 
-  // Bind Search input
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      currentSearch = e.target.value.trim().toLowerCase();
-      applyFilters();
-    });
-  }
+  cards.forEach((card) => {
+    const ticker = (card.getAttribute('data-ticker') || '').toLowerCase();
+    const name = (card.querySelector('.stock-name')?.textContent || '').toLowerCase();
+    const categories = (card.getAttribute('data-categories') || '').split(',');
+    const risk = parseInt(card.getAttribute('data-risk') || '0', 10);
 
-  // Bind Category pills
-  filterPills.forEach((pill) => {
-    pill.addEventListener('click', () => {
-      filterPills.forEach((p) => p.classList.remove('active'));
-      pill.classList.add('active');
-      currentCategory = pill.getAttribute('data-filter') || 'all';
-      applyFilters();
-    });
-  });
-}
+    const matchesSearch = !currentSearchQuery || ticker.includes(currentSearchQuery) || name.includes(currentSearchQuery);
 
-/**
- * 3. Sort Risky Cards First Toggle
- */
-function initRiskySortToggle() {
-  const toggleBtn = document.getElementById('riskyFilterToggle');
-  const cardContainer = document.getElementById('stocksCardContainer');
-  if (!toggleBtn || !cardContainer) return;
-
-  let isRiskyFirst = false;
-
-  toggleBtn.addEventListener('click', () => {
-    isRiskyFirst = !isRiskyFirst;
-    toggleBtn.classList.toggle('active', isRiskyFirst);
-
-    const cards = Array.from(cardContainer.querySelectorAll('.stock-card'));
-
-    if (isRiskyFirst) {
-      cards.sort((a, b) => {
-        const riskA = parseInt(a.getAttribute('data-risk') || '0', 10);
-        const riskB = parseInt(b.getAttribute('data-risk') || '0', 10);
-        return riskB - riskA;
-      });
+    let matchesCategory = false;
+    if (isAlertsActive) {
+      matchesCategory = risk >= 60;
     } else {
-      // Revert to initial order (by ticker attribute sequence)
-      const defaultOrder = ['NVDA', 'AAPL', 'TSLA', 'MSFT', 'AMD', 'SPY'];
-      cards.sort((a, b) => {
-        const tickerA = a.getAttribute('data-ticker') || '';
-        const tickerB = b.getAttribute('data-ticker') || '';
-        return defaultOrder.indexOf(tickerA) - defaultOrder.indexOf(tickerB);
-      });
+      matchesCategory = categories.includes(currentCategory);
     }
 
-    cards.forEach((card) => cardContainer.appendChild(card));
+    if (matchesSearch && matchesCategory) {
+      card.style.display = 'flex';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  if (countBadgeEl) {
+    countBadgeEl.textContent = `${visibleCount} stocks`;
+  }
+
+  if (emptyState) {
+    if (visibleCount === 0) {
+      emptyState.style.display = 'block';
+      if (currentCategory === 'bookmarked' && !isAlertsActive) {
+        emptyState.textContent = 'No cards marked yet. Tag or bookmark cards to view them here.';
+      } else {
+        emptyState.textContent = 'No stocks match the selected filter or search query.';
+      }
+    } else {
+      emptyState.style.display = 'none';
+    }
+  }
+}
+
+function initCategoryNavigation() {
+  const navBtns = document.querySelectorAll('#categoryNavList .nav-item-btn');
+  const alertsToggle = document.getElementById('alertsToggle');
+
+  navBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      // Deactivate alerts mode when clicking a category
+      isAlertsActive = false;
+      if (alertsToggle) alertsToggle.classList.remove('active');
+
+      navBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      currentCategory = btn.getAttribute('data-category') || 'trending';
+      filterDisplay();
+    });
   });
 }
 
 /**
- * 4. Helper to Clone and Render Card via <template id="stock-card-template">
- * Exposed on window for future backend integrations.
- *
- * @param {Object} stock
- * @param {string} stock.ticker e.g. "NVDA"
- * @param {string} stock.name e.g. "NVIDIA Corp"
- * @param {string} stock.logo e.g. "NV"
- * @param {number} stock.risk e.g. 78
- * @param {string} stock.category e.g. "tech"
- * @param {string} stock.statusText e.g. "Market open • Elevated volatility"
- * @param {boolean} stock.isElevatedStatus
- * @param {string} stock.rsi e.g. "74.2"
- * @param {string} stock.rsiDelta e.g. "+3.1"
- * @param {string} stock.atr e.g. "14.80"
- * @param {string} stock.atrDelta e.g. "+0.8"
- * @param {string} stock.ema e.g. "612.4"
- * @param {string} stock.emaState e.g. "Bullish"
- * @param {string} stock.strength e.g. "84%"
- * @param {string} stock.strengthState e.g. "Strong"
+ * 3. Alerts Toggle Action
+ * When clicked, highlights all red-flagged/risky cards (risk >= 60).
+ */
+function initAlertsToggle() {
+  const alertsToggle = document.getElementById('alertsToggle');
+  const navBtns = document.querySelectorAll('#categoryNavList .nav-item-btn');
+
+  if (!alertsToggle) return;
+
+  alertsToggle.addEventListener('click', () => {
+    isAlertsActive = !isAlertsActive;
+    alertsToggle.classList.toggle('active', isAlertsActive);
+
+    if (isAlertsActive) {
+      navBtns.forEach((b) => b.classList.remove('active'));
+    } else {
+      // Restore active category button
+      const activeBtn = document.querySelector(`#categoryNavList .nav-item-btn[data-category="${currentCategory}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    filterDisplay();
+  });
+}
+
+/**
+ * 4. Search Filter
+ */
+function initSearch() {
+  const searchInput = document.getElementById('stockSearchInput');
+  if (!searchInput) return;
+
+  searchInput.addEventListener('input', (e) => {
+    currentSearchQuery = e.target.value.trim().toLowerCase();
+    filterDisplay();
+  });
+}
+
+/**
+ * 5. Template Instantiation Helper for Dynamic Cards
  */
 window.renderStockCardFromTemplate = function (stock) {
   const template = document.getElementById('stock-card-template');
@@ -163,11 +173,12 @@ window.renderStockCardFromTemplate = function (stock) {
   const card = clone.querySelector('.stock-card');
 
   card.setAttribute('data-ticker', stock.ticker);
-  card.setAttribute('data-category', stock.category || 'general');
+  card.setAttribute('data-categories', (stock.categories || []).join(','));
   card.setAttribute('data-risk', String(stock.risk));
 
   clone.querySelector('.tpl-logo').textContent = stock.logo || stock.ticker.slice(0, 2);
   clone.querySelector('.tpl-name').textContent = stock.name;
+  clone.querySelector('.tpl-popover').textContent = stock.name;
   clone.querySelector('.tpl-ticker').textContent = stock.ticker;
 
   const riskBadge = clone.querySelector('.tpl-risk-badge');
