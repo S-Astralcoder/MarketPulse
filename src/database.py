@@ -22,7 +22,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-from model import RiskLevel, RsiMovementStatus, Trend, VolitilityStatus
+from src.model import RiskLevel, RsiMovementStatus, Trend, VolitilityStatus
 
 async_engine = create_async_engine(
     url="sqlite+aiosqlite:///./database.db", echo=True, pool_pre_ping=True
