@@ -32,7 +32,8 @@ class DashboardTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('id="alertsToggle"', response.text)
         self.assertIn('id="alertCount"', response.text)
-        self.assertIn('data-action="toggle-track"', response.text)
+        self.assertIn('id="cardContextMenu"', response.text)
+        self.assertIn('id="contextTrackBtn"', response.text)
         self.assertIn('id="bookmarkedCardsGrid"', response.text)
 
     def test_landing_page_links_to_dashboard(self):

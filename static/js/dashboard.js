@@ -1,11 +1,11 @@
 /**
- * MarketPulse — Single-Page Dashboard with Tracked Stock Telemetry & Alerts
+ * MarketPulse — Single-Page Dashboard with Right-Click Context Menu Tracking & Alerts
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initRefreshTimer();
   initAutoScrollNavigation();
-  initTrackingSystem();
+  initRightClickTracking();
   initAlertsAction();
   initSearch();
 });
@@ -77,10 +77,12 @@ function initAutoScrollNavigation() {
 }
 
 /**
- * 3. Tracking & Bookmarking System
- * Alert button strictly accounts for TRACKED stock cards only.
+ * 3. Right-Click Context Menu & Tracking System
+ * Right-clicking any stock card reveals Track / Untrack options.
+ * Alert counter strictly calculates from tracked stocks only.
  */
 const trackedTickers = new Set();
+let activeContextMenuTicker = null;
 
 function updateTrackedTelemetry() {
   const sidebarCountEl = document.getElementById('sidebarBookmarkedCount');
@@ -122,18 +124,19 @@ function updateTrackedTelemetry() {
         const origCard = document.querySelector(`.category-section:not(#bookmarked) .stock-card[data-ticker="${ticker}"]`);
         if (origCard) {
           const clone = origCard.cloneNode(true);
-          const trackBtn = clone.querySelector('.track-btn');
-          if (trackBtn) {
-            trackBtn.classList.add('active');
-            trackBtn.addEventListener('click', () => {
-              toggleTrack(ticker);
-            });
-          }
           bookmarkedGrid.appendChild(clone);
         }
       });
     }
   }
+
+  // Sync `.is-tracked` class on all card instances
+  document.querySelectorAll('.stock-card').forEach((card) => {
+    const ticker = card.getAttribute('data-ticker');
+    if (ticker) {
+      card.classList.toggle('is-tracked', trackedTickers.has(ticker));
+    }
+  });
 }
 
 function toggleTrack(ticker) {
@@ -142,24 +145,77 @@ function toggleTrack(ticker) {
   } else {
     trackedTickers.add(ticker);
   }
-
-  // Sync all track buttons for this ticker across all sections
-  document.querySelectorAll(`.stock-card[data-ticker="${ticker}"] .track-btn`).forEach((btn) => {
-    btn.classList.toggle('active', trackedTickers.has(ticker));
-  });
-
   updateTrackedTelemetry();
 }
 
-function initTrackingSystem() {
-  document.addEventListener('click', (e) => {
-    const trackBtn = e.target.closest('.track-btn');
-    if (!trackBtn) return;
+function initRightClickTracking() {
+  const contextMenu = document.getElementById('cardContextMenu');
+  const contextTrackBtn = document.getElementById('contextTrackBtn');
+  const contextTrackText = document.getElementById('contextTrackText');
 
-    const card = trackBtn.closest('.stock-card');
-    const ticker = card?.getAttribute('data-ticker');
-    if (ticker) {
-      toggleTrack(ticker);
+  if (!contextMenu || !contextTrackBtn) return;
+
+  function closeMenu() {
+    contextMenu.style.display = 'none';
+    activeContextMenuTicker = null;
+  }
+
+  // Listen for right click on any stock card
+  document.addEventListener('contextmenu', (e) => {
+    const card = e.target.closest('.stock-card');
+    if (!card) {
+      closeMenu();
+      return;
+    }
+
+    e.preventDefault();
+    const ticker = card.getAttribute('data-ticker');
+    if (!ticker) return;
+
+    activeContextMenuTicker = ticker;
+    const isTracked = trackedTickers.has(ticker);
+
+    if (isTracked) {
+      contextTrackText.textContent = 'Untrack Stock';
+      contextTrackBtn.classList.add('untrack');
+    } else {
+      contextTrackText.textContent = 'Track Stock';
+      contextTrackBtn.classList.remove('untrack');
+    }
+
+    // Position menu with viewport edge safety
+    const menuWidth = 160;
+    const menuHeight = 44;
+    const posX = Math.min(e.clientX, window.innerWidth - menuWidth - 10);
+    const posY = Math.min(e.clientY, window.innerHeight - menuHeight - 10);
+
+    contextMenu.style.left = `${posX}px`;
+    contextMenu.style.top = `${posY}px`;
+    contextMenu.style.display = 'block';
+  });
+
+  // Menu action button click
+  contextTrackBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (activeContextMenuTicker) {
+      toggleTrack(activeContextMenuTicker);
+    }
+    closeMenu();
+  });
+
+  // Close context menu on outside click, window resize, scroll, or Escape
+  document.addEventListener('click', (e) => {
+    if (!contextMenu.contains(e.target)) {
+      closeMenu();
+    }
+  });
+
+  window.addEventListener('scroll', closeMenu, true);
+  window.addEventListener('resize', closeMenu);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeMenu();
     }
   });
 }
@@ -175,11 +231,9 @@ function initAlertsAction() {
   if (!alertsToggle) return;
 
   alertsToggle.addEventListener('click', () => {
-    // If user has tracked stocks, scroll to Bookmarked where their alerts reside
     if (trackedTickers.size > 0 && bookmarkedSection) {
       bookmarkedSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (riskySection) {
-      // If no tracked stocks yet, scroll to general Risky stocks section
       riskySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
@@ -206,7 +260,6 @@ function initSearch() {
       card.style.display = matches ? 'flex' : 'none';
     });
 
-    // Check each section if all cards are hidden
     sections.forEach((sec) => {
       if (sec.id === 'bookmarked') return;
       const visibleCards = sec.querySelectorAll('.stock-card[style="display: flex;"]');
