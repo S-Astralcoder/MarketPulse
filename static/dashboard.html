@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketPulse — Dashboard & Telemetry</title>
+  <meta name="description" content="MarketPulse real-time objective risk telemetry. 4-factor regime detection via EMA, ATR, ADX (Regime), and RSI without predictive bias.">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/css/dashboard.css?v=1.0">
+</head>
+<body data-node-id="40:2" data-name="Dashboard">
+
+  <div class="dashboard-shell">
+
+    <!-- =========================================================================
+         1. Left Sidebar (Figma 42:31)
+         ========================================================================= -->
+    <aside class="sidebar" data-node-id="42:31" data-name="Side Bar">
+      
+      <div class="sidebar-top">
+        <!-- Brand / Header Slot (Figma 40:9) -->
+        <a href="/" class="sidebar-brand" data-node-id="40:9" title="Return to Landing Page">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12h4l3 8 4-16 3 8h4"/>
+            </svg>
+          </div>
+          <div class="brand-meta">
+            <span class="brand-title">MarketPulse</span>
+            <span class="brand-sub">Risk Telemetry Engine</span>
+          </div>
+        </a>
+
+        <!-- Navigation Stack (Figma 42:216 to 42:232) -->
+        <nav>
+          <ul class="sidebar-nav">
+            <li>
+              <a href="#overview" class="nav-link active" data-node-id="42:216">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7"/>
+                  <rect x="14" y="3" width="7" height="7"/>
+                  <rect x="14" y="14" width="7" height="7"/>
+                  <rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li>
+              <a href="#watchlist" class="nav-link" data-node-id="42:227">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                <span>Watchlist</span>
+              </a>
+            </li>
+            <li>
+              <a href="#signals" class="nav-link" data-node-id="42:229">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                <span>Signals & Regimes</span>
+              </a>
+            </li>
+            <li>
+              <a href="#risk-telemetry" class="nav-link" data-node-id="42:231">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span>Risk Model</span>
+              </a>
+            </li>
+            <li>
+              <a href="#analytics" class="nav-link" data-node-id="42:232">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+                <span>Analytics</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Bottom User & Monitor Panel (Figma 45:106) -->
+      <div class="user-panel" data-node-id="45:106" data-name="user pannel">
+        
+        <!-- Monitoring Header (Figma 45:108) -->
+        <div class="monitor-header" data-node-id="45:108" data-name="header">
+          <span class="monitor-label" data-node-id="45:109">Monitor</span>
+          <div class="monitor-mode-pill" data-node-id="45:110" data-name="connection">
+            <span class="status-dot-sm" data-node-id="45:111"></span>
+            <span data-node-id="45:112">Demo</span>
+          </div>
+        </div>
+
+        <!-- Refresh & Alert Controls (Figma 45:113) -->
+        <div class="refresh-row" data-node-id="45:113" data-name="refresh-row">
+          
+          <!-- Refresh Countdown Timer (Figma 45:114) -->
+          <div class="refresh-counter" data-node-id="45:114" data-name="refresh-timer">
+            <span class="counter-label" data-node-id="45:115">Next refresh</span>
+            <span class="timer-digits tabular-num" id="refreshTimer" data-node-id="45:116">00:42</span>
+          </div>
+
+          <!-- Alert Action: Risky Cards First (Figma 45:117) -->
+          <div class="alert-action-pill" id="riskyFilterToggle" data-node-id="45:117" data-name="alert-action" title="Click to sort elevated risk cards first">
+            <div class="alert-icon-box" data-node-id="45:118" data-name="alert-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-node-id="45:132">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+            </div>
+            <div class="alert-meta" data-node-id="45:120" data-name="alert-copy">
+              <span class="alert-title" data-node-id="45:121">Risky cards first</span>
+              <span class="alert-scope" data-node-id="45:122">Tagscope: US Tech</span>
+            </div>
+            <div class="badge-count tabular-num" data-node-id="45:123" data-name="alert-count">
+              <span data-node-id="45:124" id="riskyCount">3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile (Figma 45:125) -->
+        <div class="user-profile-row" data-node-id="45:125" data-name="profile">
+          <div class="user-avatar" data-node-id="45:126" data-name="avatar">
+            <span data-node-id="45:127">AL</span>
+          </div>
+          <div class="user-info" data-node-id="45:128" data-name="profile-copy">
+            <span class="user-name" data-node-id="45:129">Alex Lane</span>
+            <span class="user-role" data-node-id="45:130">Analyst</span>
+          </div>
+        </div>
+
+      </div>
+
+    </aside>
+
+    <!-- =========================================================================
+         2. Main Application Body
+         ========================================================================= -->
+    <main class="main-wrapper">
+
+      <!-- Top Header Controls (Figma 46:106) -->
+      <header class="dashboard-header" data-node-id="46:106" data-name="header controls">
+        
+        <!-- Search Input (Figma 46:107) -->
+        <div class="search-container" data-node-id="46:107" data-name="search bar">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input 
+            type="text" 
+            id="stockSearchInput" 
+            class="search-input-box" 
+            placeholder="Search tickers (NVDA, AAPL...), company names, or risk regimes..." 
+            data-node-id="46:108"
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
+
+        <!-- Utility Button Cluster (Figma 46:109) -->
+        <div class="utility-cluster" data-node-id="46:109" data-name="utility cluster">
+          <button class="btn-icon" data-node-id="46:110" data-name="btn-alerts" title="Telemetry Alerts" aria-label="Alerts">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-node-id="46:117">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </button>
+          <button class="btn-icon" data-node-id="46:112" data-name="btn-settings" title="System Settings" aria-label="Settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-node-id="46:120">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+          <button class="btn-icon active" data-node-id="46:114" data-name="btn-collection" title="Grid Layout View" aria-label="View Mode">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-node-id="46:123">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </button>
+        </div>
+
+      </header>
+
+      <!-- Scrollable Viewport (Figma 42:33) -->
+      <div class="dashboard-viewport" data-node-id="42:33" data-name="Stocks cards body">
+        
+        <!-- Primary Telemetry Section Header (Figma 42:5 / Line 5) -->
+        <section class="section-header-row">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h1 class="section-heading" data-node-id="42:5">Active Asset Telemetry</h1>
+              <span class="section-badge">4-Strategy Risk Matrix</span>
+            </div>
+            <div class="filter-meta-note">
+              Model: <strong>EMA (50) • ATR • Regime (ADX 14) • RSI (14)</strong>
+            </div>
+          </div>
+
+          <!-- Section Divider Line (Figma 42:3) -->
+          <div class="section-divider" data-node-id="42:3"></div>
+
+          <!-- Filter Navigation Tabs -->
+          <div class="filter-bar">
+            <div class="filter-pills" id="categoryFilterBar">
+              <button class="filter-pill active" data-filter="all">All Watched (6)</button>
+              <button class="filter-pill" data-filter="tech">US Tech (5)</button>
+              <button class="filter-pill" data-filter="index">Indices (1)</button>
+              <button class="filter-pill" data-filter="high-risk">Elevated Risk (3)</button>
+            </div>
+            <span class="filter-meta-note">Fixed telemetry dataset • No predictive bias</span>
+          </div>
+        </section>
+
+        <!-- Hardcoded Cards Container (Figma 42:48) -->
+        <div class="cards-grid" id="stocksCardContainer" data-node-id="42:48">
+
+          <!-- -----------------------------------------------------------------
+               CARD 1: NVIDIA Corp (NVDA) - Figma 42:42
+               ----------------------------------------------------------------- -->
+          <article class="stock-card" data-node-id="42:42" data-ticker="NVDA" data-category="tech" data-risk="78">
+            <div class="card-header" data-node-id="43:41">
+              <div class="ticker-logo" data-node-id="43:42">
+                <span data-node-id="43:43">NV</span>
+              </div>
+              <div class="stock-meta" data-node-id="43:44">
+                <span class="stock-name" data-node-id="43:45">NVIDIA Corp</span>
+                <span class="stock-ticker" data-node-id="43:46">NVDA</span>
+              </div>
+              <div class="risk-badge high" data-node-id="43:47">
+                <span class="risk-pill tabular-num" data-node-id="43:48">Risk 78/100</span>
+              </div>
+            </div>
+
+            <div class="market-status-row" data-node-id="43:49">
+              <span class="status-dot-pulse elevated" data-node-id="43:50"></span>
+              <span class="status-text" data-node-id="43:51">Market is currently open and volatile</span>
+            </div>
+
+            <div class="metrics-grid" data-node-id="43:52">
+              <div class="metrics-row" data-node-id="43:53">
+                <div class="metric-block" data-node-id="43:54">
+                  <span class="metric-label" data-node-id="43:55">RSI (14)</span>
+                  <div class="metric-data-row" data-node-id="43:56">
+                    <span class="metric-value tabular-num" data-node-id="43:57">74.2</span>
+                    <span class="metric-delta tabular-num positive" data-node-id="43:58">+3.1</span>
+                  </div>
+                </div>
+                <div class="metric-block" data-node-id="43:59">
+                  <span class="metric-label" data-node-id="43:60">ATR</span>
+                  <div class="metric-data-row" data-node-id="43:61">
+                    <span class="metric-value tabular-num" data-node-id="43:62">14.80</span>
+                    <span class="metric-delta tabular-num negative" data-node-id="43:63">+0.8</span>
+                  </div>
+                </div>
+              </div>
+              <div class="metrics-row" data-node-id="43:64">
+                <div class="metric-block" data-node-id="43:65">
+                  <span class="metric-label" data-node-id="43:66">EMA (50)</span>
+                  <div class="metric-data-row" data-node-id="43:67">
+                    <span class="metric-value tabular-num" data-node-id="43:68">612.4</span>
+                    <span class="metric-delta bullish" data-node-id="43:69">Bullish</span>
+                  </div>
+                </div>
+                <div class="metric-block" data-node-id="43:70">
+                  <span class="metric-label" data-node-id="43:71">Strength</span>
+                  <div class="metric-data-row" data-node-id="43:72">
+                    <span class="metric-value tabular-num" data-node-id="43:73">84%</span>
+                    <span class="metric-delta strong" data-node-id="43:74">Strong</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- -----------------------------------------------------------------
+               CARD 2: Apple Inc (AAPL) - Figma 42:44
+               ----------------------------------------------------------------- -->
+          <article class="stock-card" data-node-id="42:44" data-ticker="AAPL" data-category="tech" data-risk="42">
+            <div class="card-header">
+              <div class="ticker-logo">
+                <span>AP</span>
+              </div>
+              <div class="stock-meta">
+                <span class="stock-name">Apple Inc</span>
+                <span class="stock-ticker">AAPL</span>
+              </div>
+              <div class="risk-badge moderate">
+                <span class="risk-pill tabular-num">Risk 42/100</span>
+              </div>
+            </div>
+
+            <div class="market-status-row">
+              <span class="status-dot-pulse"></span>
+              <span class="status-text">Order flow balanced • Mild compression</span>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">RSI (14)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">58.4</span>
+                    <span class="metric-delta tabular-num positive">+0.9</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">ATR</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">4.20</span>
+                    <span class="metric-delta tabular-num positive">-0.2</span>
+                  </div>
+                </div>
+              </div>
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">EMA (50)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">228.6</span>
+                    <span class="metric-delta neutral">Neutral</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">Strength</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">46%</span>
+                    <span class="metric-delta moderate">Moderate</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- -----------------------------------------------------------------
+               CARD 3: Tesla Inc (TSLA) - Figma 42:46
+               ----------------------------------------------------------------- -->
+          <article class="stock-card" data-node-id="42:46" data-ticker="TSLA" data-category="tech" data-risk="85">
+            <div class="card-header">
+              <div class="ticker-logo">
+                <span>TS</span>
+              </div>
+              <div class="stock-meta">
+                <span class="stock-name">Tesla Inc</span>
+                <span class="stock-ticker">TSLA</span>
+              </div>
+              <div class="risk-badge high">
+                <span class="risk-pill tabular-num">Risk 85/100</span>
+              </div>
+            </div>
+
+            <div class="market-status-row">
+              <span class="status-dot-pulse elevated"></span>
+              <span class="status-text">Heavy breakout volume • High turbulence</span>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">RSI (14)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">81.0</span>
+                    <span class="metric-delta tabular-num negative">+5.4</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">ATR</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">18.90</span>
+                    <span class="metric-delta tabular-num negative">+2.1</span>
+                  </div>
+                </div>
+              </div>
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">EMA (50)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">244.1</span>
+                    <span class="metric-delta negative">Divergence</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">Strength</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">89%</span>
+                    <span class="metric-delta strong">Extreme</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- -----------------------------------------------------------------
+               CARD 4: Microsoft Corp (MSFT)
+               ----------------------------------------------------------------- -->
+          <article class="stock-card" data-ticker="MSFT" data-category="tech" data-risk="31">
+            <div class="card-header">
+              <div class="ticker-logo">
+                <span>MS</span>
+              </div>
+              <div class="stock-meta">
+                <span class="stock-name">Microsoft Corp</span>
+                <span class="stock-ticker">MSFT</span>
+              </div>
+              <div class="risk-badge low">
+                <span class="risk-pill tabular-num">Risk 31/100</span>
+              </div>
+            </div>
+
+            <div class="market-status-row">
+              <span class="status-dot-pulse"></span>
+              <span class="status-text">Consolidated range • Low volatility</span>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">RSI (14)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">49.2</span>
+                    <span class="metric-delta tabular-num positive">-0.6</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">ATR</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">6.10</span>
+                    <span class="metric-delta tabular-num positive">+0.1</span>
+                  </div>
+                </div>
+              </div>
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">EMA (50)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">422.3</span>
+                    <span class="metric-delta bullish">Bullish</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">Strength</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">52%</span>
+                    <span class="metric-delta strong">Steady</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- -----------------------------------------------------------------
+               CARD 5: Advanced Micro Devices (AMD)
+               ----------------------------------------------------------------- -->
+          <article class="stock-card" data-ticker="AMD" data-category="tech" data-risk="64">
+            <div class="card-header">
+              <div class="ticker-logo">
+                <span>AM</span>
+              </div>
+              <div class="stock-meta">
+                <span class="stock-name">Advanced Micro Devices</span>
+                <span class="stock-ticker">AMD</span>
+              </div>
+              <div class="risk-badge high">
+                <span class="risk-pill tabular-num">Risk 64/100</span>
+              </div>
+            </div>
+
+            <div class="market-status-row">
+              <span class="status-dot-pulse elevated"></span>
+              <span class="status-text">Volatility expansion on momentum test</span>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">RSI (14)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">62.8</span>
+                    <span class="metric-delta tabular-num positive">+1.7</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">ATR</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">9.40</span>
+                    <span class="metric-delta tabular-num negative">+0.6</span>
+                  </div>
+                </div>
+              </div>
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">EMA (50)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">172.5</span>
+                    <span class="metric-delta bullish">Bullish</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">Strength</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">71%</span>
+                    <span class="metric-delta strong">Strong</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- -----------------------------------------------------------------
+               CARD 6: SPDR S&P 500 ETF (SPY)
+               ----------------------------------------------------------------- -->
+          <article class="stock-card" data-ticker="SPY" data-category="index" data-risk="28">
+            <div class="card-header">
+              <div class="ticker-logo">
+                <span>SP</span>
+              </div>
+              <div class="stock-meta">
+                <span class="stock-name">SPDR S&P 500 ETF</span>
+                <span class="stock-ticker">SPY</span>
+              </div>
+              <div class="risk-badge low">
+                <span class="risk-pill tabular-num">Risk 28/100</span>
+              </div>
+            </div>
+
+            <div class="market-status-row">
+              <span class="status-dot-pulse"></span>
+              <span class="status-text">Broad market baseline • Controlled range</span>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">RSI (14)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">53.6</span>
+                    <span class="metric-delta tabular-num positive">+0.4</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">ATR</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">5.80</span>
+                    <span class="metric-delta tabular-num positive">+0.0</span>
+                  </div>
+                </div>
+              </div>
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <span class="metric-label">EMA (50)</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">574.8</span>
+                    <span class="metric-delta bullish">Bullish</span>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <span class="metric-label">Strength</span>
+                  <div class="metric-data-row">
+                    <span class="metric-value tabular-num">38%</span>
+                    <span class="metric-delta moderate">Consolidating</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- No Results Empty State -->
+        <div class="empty-state" id="emptyStateBox">
+          No tracked assets match your current search query or filter.
+        </div>
+
+        <!-- Secondary Section (Figma 42:7 / Line 6) -->
+        <section class="secondary-section">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading" data-node-id="42:7">Benchmark & Macro Conditions</h2>
+              <span class="section-badge">Structural Overview</span>
+            </div>
+          </div>
+          <div class="section-divider" data-node-id="42:6"></div>
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- =========================================================================
+       REUSABLE STOCK CARD HTML TEMPLATE (Figma 42:35)
+       Can be cloned and populated dynamically via JS when connecting real backend
+       ========================================================================= -->
+  <template id="stock-card-template">
+    <article class="stock-card" data-node-id="42:35" data-name="Stock Card">
+      <div class="card-header" data-node-id="43:41" data-name="header">
+        <div class="ticker-logo" data-node-id="43:42" data-name="logo">
+          <span class="tpl-logo" data-node-id="43:43">--</span>
+        </div>
+        <div class="stock-meta" data-node-id="43:44" data-name="stock-info">
+          <span class="stock-name tpl-name" data-node-id="43:45">Company Name</span>
+          <span class="stock-ticker tpl-ticker" data-node-id="43:46">TICKER</span>
+        </div>
+        <div class="risk-badge tpl-risk-badge" data-node-id="43:47" data-name="risk-badge">
+          <span class="risk-pill tabular-num tpl-risk-text" data-node-id="43:48">Risk --/100</span>
+        </div>
+      </div>
+
+      <div class="market-status-row" data-node-id="43:49" data-name="market-status">
+        <span class="status-dot-pulse tpl-status-dot" data-node-id="43:50"></span>
+        <span class="status-text tpl-status-text" data-node-id="43:51">Market status description</span>
+      </div>
+
+      <div class="metrics-grid" data-node-id="43:52" data-name="metrics-grid">
+        <div class="metrics-row" data-node-id="43:53" data-name="row-1">
+          <div class="metric-block" data-node-id="43:54" data-name="metric-rsi">
+            <span class="metric-label" data-node-id="43:55">RSI (14)</span>
+            <div class="metric-data-row" data-node-id="43:56">
+              <span class="metric-value tabular-num tpl-rsi-val" data-node-id="43:57">00.0</span>
+              <span class="metric-delta tabular-num tpl-rsi-delta" data-node-id="43:58">+0.0</span>
+            </div>
+          </div>
+          <div class="metric-block" data-node-id="43:59" data-name="metric-atr">
+            <span class="metric-label" data-node-id="43:60">ATR</span>
+            <div class="metric-data-row" data-node-id="43:61">
+              <span class="metric-value tabular-num tpl-atr-val" data-node-id="43:62">00.00</span>
+              <span class="metric-delta tabular-num tpl-atr-delta" data-node-id="43:63">+0.0</span>
+            </div>
+          </div>
+        </div>
+        <div class="metrics-row" data-node-id="43:64" data-name="row-2">
+          <div class="metric-block" data-node-id="43:65" data-name="metric-ema">
+            <span class="metric-label" data-node-id="43:66">EMA (50)</span>
+            <div class="metric-data-row" data-node-id="43:67">
+              <span class="metric-value tabular-num tpl-ema-val" data-node-id="43:68">000.0</span>
+              <span class="metric-delta tpl-ema-delta" data-node-id="43:69">Regime</span>
+            </div>
+          </div>
+          <div class="metric-block" data-node-id="43:70" data-name="metric-strength">
+            <span class="metric-label" data-node-id="43:71">Strength</span>
+            <div class="metric-data-row" data-node-id="43:72">
+              <span class="metric-value tabular-num tpl-adx-val" data-node-id="43:73">00%</span>
+              <span class="metric-delta tpl-adx-delta" data-node-id="43:74">State</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <!-- Dashboard Client Scripts -->
+  <script src="/js/dashboard.js?v=1.0"></script>
+</body>
+</html>
