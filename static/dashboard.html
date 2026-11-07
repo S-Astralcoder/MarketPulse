@@ -7,7 +7,7 @@
   <meta name="description" content="MarketPulse real-time objective risk telemetry. 4-factor regime detection via EMA, ATR, ADX (Regime), and RSI without predictive bias.">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/dashboard.css?v=3.0">
+  <link rel="stylesheet" href="/css/dashboard.css?v=3.1">
 </head>
 <body data-node-id="40:2" data-name="Dashboard">
 
@@ -40,7 +40,7 @@
                   </svg>
                   <span>Bookmarked</span>
                 </span>
-                <span class="nav-count tabular-num">0</span>
+                <span class="nav-count tabular-num" id="sidebarBookmarkedCount">0</span>
               </button>
             </li>
             <li>
@@ -116,8 +116,8 @@
           <span class="timer-digits tabular-num" id="refreshTimer">00:42</span>
         </div>
 
-        <!-- Alerts Action Pill (Scrolls to Risky Stocks) -->
-        <div class="alert-pill" id="alertsToggle" title="Click to jump to risky stock alerts">
+        <!-- Alerts Action Pill (Only accounts for tracked/booked cards) -->
+        <div class="alert-pill" id="alertsToggle" title="Alerts for tracked stocks">
           <div class="alert-pill-left">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -125,7 +125,7 @@
             </svg>
             <span class="alert-pill-title">Alerts</span>
           </div>
-          <span class="badge-count tabular-num" id="alertCount">3</span>
+          <span class="badge-count tabular-num" id="alertCount">0</span>
         </div>
 
         <!-- User Profile -->
@@ -197,19 +197,20 @@
       <div class="dashboard-viewport" id="dashboardViewport">
         
         <!-- ===================================================================
-             1. Bookmarked Section
+             1. Bookmarked Section (Populated dynamically on track)
              =================================================================== -->
         <section class="category-section" id="bookmarked">
           <div class="section-title-line">
             <div class="section-title-box">
               <h2 class="section-heading">Bookmarked</h2>
-              <span class="section-badge">0 stocks</span>
+              <span class="section-badge" id="bookmarkedCountBadge">0 stocks</span>
             </div>
           </div>
           <div class="section-divider"></div>
-          <div class="empty-state visible">
-            No cards marked yet. Tag or bookmark cards to view them here.
+          <div class="empty-state visible" id="bookmarkedEmptyState">
+            No cards marked yet. Click the bookmark icon on any card to track it.
           </div>
+          <div class="cards-grid" id="bookmarkedCardsGrid" style="display: none;"></div>
         </section>
 
         <!-- ===================================================================
@@ -237,6 +238,11 @@
                   </div>
                   <span class="stock-ticker">NVDA</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge high">
                   <span class="risk-pill tabular-num">Risk 78/100</span>
                 </div>
@@ -294,6 +300,11 @@
                   </div>
                   <span class="stock-ticker">TSLA</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge high">
                   <span class="risk-pill tabular-num">Risk 85/100</span>
                 </div>
@@ -351,6 +362,11 @@
                   </div>
                   <span class="stock-ticker">AMD</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge high">
                   <span class="risk-pill tabular-num">Risk 64/100</span>
                 </div>
@@ -425,6 +441,11 @@
                   </div>
                   <span class="stock-ticker">NVDA</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge high">
                   <span class="risk-pill tabular-num">Risk 78/100</span>
                 </div>
@@ -482,6 +503,11 @@
                   </div>
                   <span class="stock-ticker">AAPL</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge moderate">
                   <span class="risk-pill tabular-num">Risk 42/100</span>
                 </div>
@@ -539,6 +565,11 @@
                   </div>
                   <span class="stock-ticker">MSFT</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge low">
                   <span class="risk-pill tabular-num">Risk 31/100</span>
                 </div>
@@ -613,6 +644,11 @@
                   </div>
                   <span class="stock-ticker">TSLA</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge high">
                   <span class="risk-pill tabular-num">Risk 85/100</span>
                 </div>
@@ -670,6 +706,11 @@
                   </div>
                   <span class="stock-ticker">NVDA</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge high">
                   <span class="risk-pill tabular-num">Risk 78/100</span>
                 </div>
@@ -727,6 +768,11 @@
                   </div>
                   <span class="stock-ticker">AMD</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge high">
                   <span class="risk-pill tabular-num">Risk 64/100</span>
                 </div>
@@ -801,6 +847,11 @@
                   </div>
                   <span class="stock-ticker">SPY</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge low">
                   <span class="risk-pill tabular-num">Risk 28/100</span>
                 </div>
@@ -858,6 +909,11 @@
                   </div>
                   <span class="stock-ticker">MSFT</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge low">
                   <span class="risk-pill tabular-num">Risk 31/100</span>
                 </div>
@@ -932,6 +988,11 @@
                   </div>
                   <span class="stock-ticker">AAPL</span>
                 </div>
+                <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
                 <div class="risk-badge moderate">
                   <span class="risk-pill tabular-num">Risk 42/100</span>
                 </div>
@@ -1001,6 +1062,11 @@
           </div>
           <span class="stock-ticker tpl-ticker">TICKER</span>
         </div>
+        <button class="track-btn" data-action="toggle-track" title="Track stock" aria-label="Track stock">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+        </button>
         <div class="risk-badge tpl-risk-badge">
           <span class="risk-pill tabular-num tpl-risk-text">Risk --/100</span>
         </div>
@@ -1048,6 +1114,6 @@
     </article>
   </template>
 
-  <script src="/js/dashboard.js?v=3.0"></script>
+  <script src="/js/dashboard.js?v=3.1"></script>
 </body>
 </html>

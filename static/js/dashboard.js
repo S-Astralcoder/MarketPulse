@@ -1,11 +1,12 @@
 /**
- * MarketPulse — Single-Page Sequential Dashboard with Auto-Scroll Navigation
+ * MarketPulse — Single-Page Dashboard with Tracked Stock Telemetry & Alerts
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initRefreshTimer();
   initAutoScrollNavigation();
-  initAlertsJump();
+  initTrackingSystem();
+  initAlertsAction();
   initSearch();
 });
 
@@ -30,8 +31,6 @@ function initRefreshTimer() {
 
 /**
  * 2. Auto-Scroll Navigation Sidebar
- * Clicking any category button smoothly scrolls the single-page viewport to that section.
- * An IntersectionObserver continuously tracks which section is in view and updates the active state.
  */
 function initAutoScrollNavigation() {
   const navBtns = document.querySelectorAll('#categoryNavList .nav-item-btn');
@@ -78,22 +77,116 @@ function initAutoScrollNavigation() {
 }
 
 /**
- * 3. Alerts Jump Action
- * Clicking "Alerts" smoothly scrolls directly to the Risky Stocks section.
+ * 3. Tracking & Bookmarking System
+ * Alert button strictly accounts for TRACKED stock cards only.
  */
-function initAlertsJump() {
-  const alertsToggle = document.getElementById('alertsToggle');
-  const riskySection = document.getElementById('risky-stocks');
+const trackedTickers = new Set();
 
-  if (!alertsToggle || !riskySection) return;
+function updateTrackedTelemetry() {
+  const sidebarCountEl = document.getElementById('sidebarBookmarkedCount');
+  const badgeCountEl = document.getElementById('bookmarkedCountBadge');
+  const alertCountEl = document.getElementById('alertCount');
+  const bookmarkedGrid = document.getElementById('bookmarkedCardsGrid');
+  const bookmarkedEmpty = document.getElementById('bookmarkedEmptyState');
 
-  alertsToggle.addEventListener('click', () => {
-    riskySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const count = trackedTickers.size;
+  if (sidebarCountEl) sidebarCountEl.textContent = count;
+  if (badgeCountEl) badgeCountEl.textContent = `${count} stocks`;
+
+  // Calculate alerts strictly from tracked stocks
+  let trackedRiskyCount = 0;
+  trackedTickers.forEach((ticker) => {
+    const origCard = document.querySelector(`.category-section:not(#bookmarked) .stock-card[data-ticker="${ticker}"]`);
+    const risk = parseInt(origCard?.getAttribute('data-risk') || '0', 10);
+    if (risk >= 60) {
+      trackedRiskyCount++;
+    }
+  });
+
+  if (alertCountEl) {
+    alertCountEl.textContent = trackedRiskyCount;
+  }
+
+  // Populate bookmarked section
+  if (bookmarkedGrid && bookmarkedEmpty) {
+    if (count === 0) {
+      bookmarkedEmpty.style.display = 'block';
+      bookmarkedGrid.style.display = 'none';
+      bookmarkedGrid.innerHTML = '';
+    } else {
+      bookmarkedEmpty.style.display = 'none';
+      bookmarkedGrid.style.display = 'grid';
+      bookmarkedGrid.innerHTML = '';
+
+      trackedTickers.forEach((ticker) => {
+        const origCard = document.querySelector(`.category-section:not(#bookmarked) .stock-card[data-ticker="${ticker}"]`);
+        if (origCard) {
+          const clone = origCard.cloneNode(true);
+          const trackBtn = clone.querySelector('.track-btn');
+          if (trackBtn) {
+            trackBtn.classList.add('active');
+            trackBtn.addEventListener('click', () => {
+              toggleTrack(ticker);
+            });
+          }
+          bookmarkedGrid.appendChild(clone);
+        }
+      });
+    }
+  }
+}
+
+function toggleTrack(ticker) {
+  if (trackedTickers.has(ticker)) {
+    trackedTickers.delete(ticker);
+  } else {
+    trackedTickers.add(ticker);
+  }
+
+  // Sync all track buttons for this ticker across all sections
+  document.querySelectorAll(`.stock-card[data-ticker="${ticker}"] .track-btn`).forEach((btn) => {
+    btn.classList.toggle('active', trackedTickers.has(ticker));
+  });
+
+  updateTrackedTelemetry();
+}
+
+function initTrackingSystem() {
+  document.addEventListener('click', (e) => {
+    const trackBtn = e.target.closest('.track-btn');
+    if (!trackBtn) return;
+
+    const card = trackBtn.closest('.stock-card');
+    const ticker = card?.getAttribute('data-ticker');
+    if (ticker) {
+      toggleTrack(ticker);
+    }
   });
 }
 
 /**
- * 4. Real-time Search Filter Across All Single-Page Sections
+ * 4. Alert Action (Only accounts for tracked/booked cards)
+ */
+function initAlertsAction() {
+  const alertsToggle = document.getElementById('alertsToggle');
+  const bookmarkedSection = document.getElementById('bookmarked');
+  const riskySection = document.getElementById('risky-stocks');
+
+  if (!alertsToggle) return;
+
+  alertsToggle.addEventListener('click', () => {
+    // If user has tracked stocks, scroll to Bookmarked where their alerts reside
+    if (trackedTickers.size > 0 && bookmarkedSection) {
+      bookmarkedSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (riskySection) {
+      // If no tracked stocks yet, scroll to general Risky stocks section
+      riskySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
+/**
+ * 5. Real-time Search Filter Across All Single-Page Sections
  */
 function initSearch() {
   const searchInput = document.getElementById('stockSearchInput');
@@ -135,7 +228,7 @@ function initSearch() {
 }
 
 /**
- * 5. Reusable Template Instantiation
+ * 6. Reusable Template Instantiation Helper
  */
 window.renderStockCardFromTemplate = function (stock) {
   const template = document.getElementById('stock-card-template');

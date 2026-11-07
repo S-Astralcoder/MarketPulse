@@ -25,6 +25,15 @@ class DashboardTestCase(unittest.TestCase):
         response = self.client.get("/js/dashboard.js")
         self.assertEqual(response.status_code, 200)
         self.assertIn("renderStockCardFromTemplate", response.text)
+        self.assertIn("trackedTickers", response.text)
+
+    def test_tracked_alerts_elements(self):
+        response = self.client.get("/dashboard.html")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('id="alertsToggle"', response.text)
+        self.assertIn('id="alertCount"', response.text)
+        self.assertIn('data-action="toggle-track"', response.text)
+        self.assertIn('id="bookmarkedCardsGrid"', response.text)
 
     def test_landing_page_links_to_dashboard(self):
         response = self.client.get("/")
