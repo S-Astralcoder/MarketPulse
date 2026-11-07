@@ -3,6 +3,9 @@ from fastapi import APIRouter
 user_router = APIRouter(prefix="/user", tags=["user"])
 
 
+# TODO: Later Implement user authentication code
+
+
 @user_router.post("/register")
 def register():
     pass
