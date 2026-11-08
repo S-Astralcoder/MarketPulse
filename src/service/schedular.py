@@ -15,7 +15,7 @@ config = get_config_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     schedular.add_job(
-        func=update_market_metrics,
+        update_market_metrics,
         trigger=CronTrigger(
             timezone="Asia/Kolkata",
             second=config.CORN_JOB_SECOND,

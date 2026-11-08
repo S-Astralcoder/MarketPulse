@@ -126,6 +126,12 @@ TOP_INDIAN_STOCKS = [
         "sector": "Consumer Durables",
         "is_active": True,
     },
+    {
+        "symbol": "SMCI",
+        "name": "Super Micro Computer, Inc.",
+        "sector": "Technology",
+        "is_active": True,
+    },
 ]
 
 

@@ -5,6 +5,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import yfinance as yf
+from rich import print
 from sqlalchemy import select
 
 from src.database import AsyncSessionFactory, Stock, StockMetrics
@@ -24,17 +25,42 @@ def compute_market_pulse(df: pd.DataFrame) -> dict[str, Any]:
 
     # Work on a copy to avoid mutating the caller's frame
     data = df.copy()
+
+    # Flatten and normalize MultiIndex columns (e.g., from yfinance)
+    if isinstance(data.columns, pd.MultiIndex):
+        if "Price" in data.columns.names:
+            data.columns = data.columns.get_level_values("Price")
+        else:
+            for level in range(data.columns.nlevels):
+                values = {
+                    str(v).capitalize() for v in data.columns.get_level_values(level)
+                }
+                if {"Close", "High", "Low"}.intersection(values):
+                    data.columns = data.columns.get_level_values(level)
+                    break
+            else:
+                data.columns = data.columns.get_level_values(0)
+
+    data.columns = [str(col).strip().capitalize() for col in data.columns]
+
     close = data["Close"]
     high = data["High"]
     low = data["Low"]
 
+    if isinstance(close, pd.DataFrame):
+        close = close.squeeze()
+    if isinstance(high, pd.DataFrame):
+        high = high.squeeze()
+    if isinstance(low, pd.DataFrame):
+        low = low.squeeze()
+
     # ---------------------------------------------------------
     # 1. Trend: EMA 20 & EMA 50
     # ---------------------------------------------------------
-    ema_20 = close.ewm(span=20, adjust=False).mean()
-    ema_50 = close.ewm(span=50, adjust=False).mean()
+    ema_20 = close.ewm(span=20, adjust=False).mean()  # pyright: ignore[reportAttributeAccessIssue]
+    ema_50 = close.ewm(span=50, adjust=False).mean()  # pyright: ignore[reportAttributeAccessIssue] # pyright: ignore[reportAttributeAccessIssue]
 
-    curr_close = float(close.iloc[-1])
+    curr_close = float(close.iloc[-1])  # pyright: ignore[reportAttributeAccessIssue]
     curr_ema_20 = float(ema_20.iloc[-1])
     curr_ema_50 = float(ema_50.iloc[-1])
 
@@ -50,11 +76,11 @@ def compute_market_pulse(df: pd.DataFrame) -> dict[str, Any]:
     # ---------------------------------------------------------
     # 2. Volatility: True Range, ATR(14), NATR, and ATR Ratio
     # ---------------------------------------------------------
-    prev_close = close.shift(1)
-    tr1 = high - low
-    tr2 = (high - prev_close).abs()
-    tr3 = (low - prev_close).abs()
-    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    prev_close = close.shift(1)  # pyright: ignore[reportAttributeAccessIssue]
+    tr1 = high - low  # pyright: ignore[reportOperatorIssue]
+    tr2 = (high - prev_close).abs()  # pyright: ignore[reportOperatorIssue]
+    tr3 = (low - prev_close).abs()  # pyright: ignore[reportOperatorIssue]
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)  # pyright: ignore[reportArgumentType, reportCallIssue]
 
     # Wilder's smoothing for ATR (alpha = 1/14)
     atr_14 = tr.ewm(alpha=1 / 14, adjust=False).mean()
@@ -78,11 +104,11 @@ def compute_market_pulse(df: pd.DataFrame) -> dict[str, Any]:
     # ---------------------------------------------------------
     # 3. Regime: Wilder's ADX(14)
     # ---------------------------------------------------------
-    up_move = high - high.shift(1)
-    down_move = low.shift(1) - low
+    up_move = high - high.shift(1)  # pyright: ignore[reportAttributeAccessIssue, reportOperatorIssue]
+    down_move = low.shift(1) - low  # pyright: ignore[reportOperatorIssue, reportAttributeAccessIssue]
 
-    plus_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)
-    minus_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)
+    plus_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)  # pyright: ignore[reportOperatorIssue]
+    minus_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)  # pyright: ignore[reportOperatorIssue]
 
     plus_dm_series = pd.Series(plus_dm, index=data.index)
     minus_dm_series = pd.Series(minus_dm, index=data.index)
@@ -98,12 +124,11 @@ def compute_market_pulse(df: pd.DataFrame) -> dict[str, Any]:
     adx_series = dx.ewm(alpha=1 / 14, adjust=False).mean()
 
     curr_adx = float(adx_series.iloc[-1])
-    is_sideways = np.isnan(curr_adx) or curr_adx < 20.0
 
     # ---------------------------------------------------------
     # 4. Momentum: Wilder's RSI(14)
     # ---------------------------------------------------------
-    delta = close.diff()
+    delta = close.diff()  # pyright: ignore[reportAttributeAccessIssue]
     gain = delta.where(delta > 0, 0.0)
     loss = (-delta).where(delta < 0, 0.0)
 
@@ -123,30 +148,44 @@ def compute_market_pulse(df: pd.DataFrame) -> dict[str, Any]:
         movement_status = RsiMovementStatus.BALANCED
 
     # ---------------------------------------------------------
-    # 5. Composite Risk Scoring (Scale: 0 to 100)
+    # 5. Composite Risk Scoring (Component-Decoupled Model)
     # ---------------------------------------------------------
-    risk_score = 0
+    # 5.1 Trend Risk (0-100 pts, 40% weight)
+    pct_below_50 = max(0.0, ((curr_ema_50 - curr_close) / curr_ema_50) * 100.0)
+    p_dist_score = min(50.0, (pct_below_50 / 5.0) * 50.0)
 
-    # Regime / Chop penalty
-    if is_sideways:
-        risk_score += 30
+    spread_deficit = max(0.0, -ema_spread_pct)
+    spread_score = min(30.0, (spread_deficit / 3.0) * 30.0)
 
-    # Trend conflict penalty
-    if curr_close < curr_ema_50:
-        risk_score += 25
-    if curr_ema_20 < curr_ema_50:
-        risk_score += 15
+    pct_below_20 = max(0.0, ((curr_ema_20 - curr_close) / curr_ema_20) * 100.0)
+    short_term_score = min(20.0, (pct_below_20 / 3.0) * 20.0)
 
-    # Volatility shock penalty
-    if atr_ratio > 1.3:
-        risk_score += 20
+    trend_risk = min(100.0, p_dist_score + spread_score + short_term_score)
 
-    # Momentum extension penalty
-    if curr_rsi > 75.0 or curr_rsi < 25.0:
-        risk_score += 10
+    # 5.2 Volatility Risk (0-100 pts, 35% weight)
+    atr_ratio_score = min(70.0, max(0.0, (atr_ratio - 0.9) / 1.1) * 70.0)
+    rsi_dev = abs(curr_rsi - 50.0)
+    rsi_score = min(30.0, max(0.0, (rsi_dev - 20.0) / 15.0) * 30.0)
+    volatility_risk = min(100.0, atr_ratio_score + rsi_score)
 
-    # Clamp risk score to [0, 100]
-    risk_score = min(100, max(0, risk_score))
+    # 5.3 Regime / Chop Risk (0-100 pts, 25% weight)
+    adx_val = 0.0 if np.isnan(curr_adx) else curr_adx
+    adx_chop_score = min(70.0, max(0.0, (28.0 - adx_val) / 16.0) * 70.0)
+
+    raw_plus_di = float(plus_di.iloc[-1])
+    raw_minus_di = float(minus_di.iloc[-1])
+    curr_plus_di = 0.0 if np.isnan(raw_plus_di) else raw_plus_di
+    curr_minus_di = 0.0 if np.isnan(raw_minus_di) else raw_minus_di
+
+    di_diff = abs(curr_plus_di - curr_minus_di)
+    di_sum = curr_plus_di + curr_minus_di
+    di_conflict = 1.0 - (di_diff / max(di_sum, 1e-6))
+    conflict_score = min(30.0, max(0.0, di_conflict * 30.0))
+    regime_risk = min(100.0, adx_chop_score + conflict_score)
+
+    # Weighted composite score clamped to [0, 100]
+    composite_risk = (0.40 * trend_risk) + (0.35 * volatility_risk) + (0.25 * regime_risk)
+    risk_score = round(min(100.0, max(0.0, composite_risk)))
 
     if risk_score <= 34:
         risk_level = RiskLevel.LOW
@@ -156,7 +195,7 @@ def compute_market_pulse(df: pd.DataFrame) -> dict[str, Any]:
         risk_level = RiskLevel.HIGH_RISK
 
     return {
-        "price_change": round(curr_close - float(close.iloc[-2]), 2),
+        "price_change": round(curr_close - float(close.iloc[-2]), 2),  # pyright: ignore[reportAttributeAccessIssue]
         "close_price": round(curr_close, 2),
         "risk_score": risk_score,
         "risk_level": risk_level,
@@ -175,21 +214,28 @@ def compute_market_pulse(df: pd.DataFrame) -> dict[str, Any]:
 
 async def fetch_and_calculate_market_metrics_and_update():
     async with AsyncSessionFactory() as session:
-        stock_symbols = await session.scalars(
-            select(Stock.symbol).where(Stock.is_active == True)
-        )
+        stocks = await session.scalars(select(Stock).where(Stock.is_active == True))
         end_date = datetime.datetime.now()  # noqa: DTZ005
         start_date = end_date - datetime.timedelta(days=20)
 
-        for stock_symbol in stock_symbols.all():
+        for stock in stocks.all():
+            print(f"Fetching data from {stock.symbol}")
             stock_market_candles = yf.download(
-                tickers=stock_symbols, start=start_date, end=end_date, interval="1h"
+                tickers=stock.symbol,
+                start=start_date,
+                end=end_date,
+                interval="1h",
+                multi_level_index=False,
             )
-            if stock_market_candles is None:
+            if stock_market_candles is None or stock_market_candles.empty:
                 continue
             stock_metrics = await asyncio.to_thread(
                 compute_market_pulse, stock_market_candles
             )
-            stock_metrics_row = StockMetrics(*stock_metrics)
+            stock_metrics_row = StockMetrics(
+                symbol=stock.symbol, name=stock.name, **stock_metrics
+            )
+            print("Computed results")
+            print(stock_metrics_row)
             session.add(stock_metrics_row)
         await session.commit()
