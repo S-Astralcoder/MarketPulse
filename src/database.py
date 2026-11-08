@@ -1,6 +1,5 @@
 from collections.abc import AsyncGenerator
 from datetime import datetime
-from enum import Enum
 from uuid import UUID, uuid4
 
 from pydantic import EmailStr
