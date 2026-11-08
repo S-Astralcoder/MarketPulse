@@ -7,7 +7,7 @@ import pandas as pd
 import yfinance as yf
 from sqlalchemy import select
 
-from src.database import AsyncSessionFactory, Stock
+from src.database import AsyncSessionFactory, Stock, StockMetrics
 from src.model import RiskLevel, RsiMovementStatus, Trend, VolitilityStatus
 
 
@@ -173,7 +173,7 @@ def compute_market_pulse(df: pd.DataFrame) -> dict[str, Any]:
     }
 
 
-async def fetch_and_calculate_market_metrics():
+async def fetch_and_calculate_market_metrics_and_update():
     async with AsyncSessionFactory() as session:
         stock_symbols = await session.scalars(
             select(Stock.symbol).where(Stock.is_active == True)
@@ -190,3 +190,6 @@ async def fetch_and_calculate_market_metrics():
             stock_metrics = await asyncio.to_thread(
                 compute_market_pulse, stock_market_candles
             )
+            stock_metrics_row = StockMetrics(*stock_metrics)
+            session.add(stock_metrics_row)
+        await session.commit()

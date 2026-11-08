@@ -2,7 +2,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from src.config import get_config_settings
-from src.service.calculate_metrics import fetch_and_calculate_market_metrics
+from src.service.calculate_metrics import fetch_and_calculate_market_metrics_and_update
 
 
 async def update_market_metrics():
@@ -16,6 +16,6 @@ async def update_market_metrics():
 
     if market_open_time <= current_time <= market_close_time:
         print("Triggered")
-        await fetch_and_calculate_market_metrics()
+        await fetch_and_calculate_market_metrics_and_update()
     else:
         print("Not Triggered")
