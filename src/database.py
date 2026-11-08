@@ -9,6 +9,7 @@ from sqlalchemy import (
     DateTime,
     Float,
     Integer,
+    MetaData,
     String,
     UniqueConstraint,
     Uuid,
@@ -43,8 +44,17 @@ async def get_db() -> AsyncGenerator[AsyncSession]:
             await session.close()
 
 
+convention = {
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+}
+
+
 class Base(DeclarativeBase):
-    pass
+    metadata = MetaData(naming_convention=convention)
 
 
 class User(Base):
@@ -74,7 +84,7 @@ class Stock(Base):
     )
     symbol: Mapped[String] = mapped_column(String, nullable=False, unique=True)
     name: Mapped[String] = mapped_column(String, nullable=False, unique=True)
-    sector: Mapped[String] = mapped_column(String, nullable=False, unique=True)
+    sector: Mapped[String] = mapped_column(String, nullable=False)
     is_active: Mapped[Boolean] = mapped_column(Boolean, default=True, nullable=False)
 
 
