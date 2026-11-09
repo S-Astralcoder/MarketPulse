@@ -347,38 +347,6 @@
         </div>
       </div>
 
-      <!-- Expandable Details Drawer (Revealed on Card Hover) -->
-      <div class="card-expanded-drawer">
-        <div class="expanded-divider"></div>
-        <div class="expanded-header-row">
-          <div class="expanded-name-block">
-            <span class="expanded-full-name tpl-expanded-name">Company Full Name</span>
-            <span class="expanded-category-badge tpl-expanded-category">Category</span>
-          </div>
-          <div class="expanded-price-block">
-            <span class="expanded-price tabular-num tpl-price">₹0.00</span>
-            <span class="expanded-price-change tabular-num tpl-price-change">+0.00</span>
-          </div>
-        </div>
-        <div class="expanded-analytics-grid">
-          <div class="analytics-item">
-            <span class="analytics-label">Fast / Slow EMA</span>
-            <span class="analytics-val tabular-num tpl-ema-spread">0 / 0</span>
-          </div>
-          <div class="analytics-item">
-            <span class="analytics-label">NATR / Ratio</span>
-            <span class="analytics-val tabular-num tpl-natr-val">0.0% (0.0x)</span>
-          </div>
-          <div class="analytics-item">
-            <span class="analytics-label">RSI Status</span>
-            <span class="analytics-val tpl-rsi-status">Balanced</span>
-          </div>
-          <div class="analytics-item">
-            <span class="analytics-label">Volatility Status</span>
-            <span class="analytics-val tpl-volatility-status">Normal</span>
-          </div>
-        </div>
-      </div>
     </article>
   </template>
 
@@ -390,6 +358,238 @@
       </svg>
       <span id="contextTrackText">Track Stock</span>
     </button>
+  </div>
+
+  <!-- Full-Screen Expanded Stock Detail Modal -->
+  <div class="stock-modal-overlay" id="stockDetailModal" role="dialog" aria-modal="true" aria-hidden="true" style="display: none;">
+    <div class="stock-modal-backdrop" id="modalBackdrop"></div>
+    <div class="stock-modal-shell">
+      
+      <!-- Close Button -->
+      <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close details" title="Close (Esc)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- Modal Content: Two-Column Split -->
+      <div class="stock-modal-body">
+        
+        <!-- ==============================================
+             LEFT COLUMN: Visual & Executive Overview
+             ============================================== -->
+        <div class="modal-visual-column">
+          
+          <div class="modal-company-header">
+            <div class="modal-logo" id="modalLogo">--</div>
+            <div class="modal-meta-box">
+              <div class="modal-badges-row">
+                <span class="modal-ticker" id="modalTicker">TICKER</span>
+                <span class="modal-sector-badge" id="modalSector">Sector</span>
+              </div>
+              <h2 class="modal-company-name" id="modalName">Company Name</h2>
+            </div>
+          </div>
+
+          <!-- Price & Daily Delta Banner -->
+          <div class="modal-price-card">
+            <div class="modal-price-top">
+              <span class="modal-price-label">Current Market Price</span>
+              <span class="modal-status-pill" id="modalMarketStatusPill">
+                <span class="status-dot-pulse" id="modalStatusDot"></span>
+                <span id="modalStatusPillText">Steady</span>
+              </span>
+            </div>
+            <div class="modal-price-row">
+              <span class="modal-price-val tabular-num" id="modalPrice">₹0.00</span>
+              <span class="modal-delta-badge tabular-num" id="modalDelta">+0.00</span>
+            </div>
+          </div>
+
+          <!-- Primary Risk Gauge Visual -->
+          <div class="modal-gauge-card">
+            <div class="gauge-card-header">
+              <span class="gauge-title">Composite Risk Score</span>
+              <span class="gauge-badge" id="modalRiskBadge">Low Risk</span>
+            </div>
+            
+            <div class="gauge-visual-container">
+              <svg class="risk-gauge-svg" viewBox="0 0 200 120" width="100%" height="130">
+                <path class="gauge-track" d="M 20 105 A 80 80 0 0 1 180 105" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="16" stroke-linecap="round" />
+                <path class="gauge-fill" id="modalGaugeFill" d="M 20 105 A 80 80 0 0 1 180 105" fill="none" stroke="var(--signal-steady)" stroke-width="16" stroke-linecap="round" stroke-dasharray="251.32" stroke-dashoffset="180" />
+              </svg>
+              <div class="gauge-center-text">
+                <span class="gauge-score tabular-num" id="modalGaugeScore">--</span>
+                <span class="gauge-scale">/ 100</span>
+              </div>
+            </div>
+
+            <!-- Risk Weight Components -->
+            <div class="risk-weights-box">
+              <div class="weight-row">
+                <div class="weight-info">
+                  <span class="weight-name">Trend Risk (40%)</span>
+                  <span class="weight-val tabular-num" id="modalTrendRiskVal">--</span>
+                </div>
+                <div class="weight-bar-bg"><div class="weight-bar-fill" id="modalTrendRiskBar" style="width: 0%;"></div></div>
+              </div>
+              <div class="weight-row">
+                <div class="weight-info">
+                  <span class="weight-name">Volatility Risk (35%)</span>
+                  <span class="weight-val tabular-num" id="modalVolRiskVal">--</span>
+                </div>
+                <div class="weight-bar-bg"><div class="weight-bar-fill" id="modalVolRiskBar" style="width: 0%;"></div></div>
+              </div>
+              <div class="weight-row">
+                <div class="weight-info">
+                  <span class="weight-name">Regime / Chop (25%)</span>
+                  <span class="weight-val tabular-num" id="modalRegimeRiskVal">--</span>
+                </div>
+                <div class="weight-bar-bg"><div class="weight-bar-fill" id="modalRegimeRiskBar" style="width: 0%;"></div></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Modal Action Button -->
+          <button class="modal-track-btn" id="modalTrackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span id="modalTrackBtnText">Track This Stock</span>
+          </button>
+
+        </div>
+
+        <!-- ==============================================
+             RIGHT COLUMN: Hierarchical Analytics Grid
+             ============================================== -->
+        <div class="modal-data-column">
+          <div class="modal-data-header">
+            <span class="data-header-title">Quantitative Analytics & Regime Telemetry</span>
+            <span class="data-header-tag" id="modalUpdatedTime">Snapshot: --</span>
+          </div>
+
+          <div class="hierarchical-grid">
+            
+            <!-- 1. Trend & Moving Averages -->
+            <div class="hierarchy-card">
+              <div class="hierarchy-card-head">
+                <div class="head-num">01</div>
+                <div class="head-title-wrap">
+                  <span class="head-title">Trend Architecture</span>
+                  <span class="head-subtitle">40% Composite Weight</span>
+                </div>
+                <span class="hierarchy-badge" id="modalTrendDirectionBadge">BULLISH</span>
+              </div>
+              <div class="hierarchy-fields-grid">
+                <div class="field-item">
+                  <span class="field-label">Fast EMA (20)</span>
+                  <span class="field-value tabular-num" id="modalEmaFast">--</span>
+                </div>
+                <div class="field-item">
+                  <span class="field-label">Slow EMA (50)</span>
+                  <span class="field-value tabular-num" id="modalEmaSlow">--</span>
+                </div>
+                <div class="field-item field-full">
+                  <span class="field-label">EMA Spread Dynamics</span>
+                  <span class="field-value" id="modalEmaSpreadDesc">--</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Volatility Analysis -->
+            <div class="hierarchy-card">
+              <div class="hierarchy-card-head">
+                <div class="head-num">02</div>
+                <div class="head-title-wrap">
+                  <span class="head-title">Volatility & Dispersion</span>
+                  <span class="head-subtitle">35% Composite Weight</span>
+                </div>
+                <span class="hierarchy-badge" id="modalVolStatusBadge">NORMAL</span>
+              </div>
+              <div class="hierarchy-fields-grid">
+                <div class="field-item">
+                  <span class="field-label">Average True Range (ATR 14)</span>
+                  <span class="field-value tabular-num" id="modalAtr">--</span>
+                </div>
+                <div class="field-item">
+                  <span class="field-label">Normalized ATR (NATR)</span>
+                  <span class="field-value tabular-num" id="modalNatr">--%</span>
+                </div>
+                <div class="field-item field-full">
+                  <span class="field-label">ATR Ratio vs 50-SMA Baseline</span>
+                  <span class="field-value" id="modalAtrRatioDesc">--</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Momentum & Oscillator -->
+            <div class="hierarchy-card">
+              <div class="hierarchy-card-head">
+                <div class="head-num">03</div>
+                <div class="head-title-wrap">
+                  <span class="head-title">Momentum Oscillator</span>
+                  <span class="head-subtitle">Wilder's RSI (14)</span>
+                </div>
+                <span class="hierarchy-badge" id="modalRsiMovementBadge">BALANCED</span>
+              </div>
+              <div class="hierarchy-fields-grid">
+                <div class="field-item">
+                  <span class="field-label">RSI Index (0-100)</span>
+                  <span class="field-value tabular-num" id="modalRsiVal">--</span>
+                </div>
+                <div class="field-item">
+                  <span class="field-label">Regime Band</span>
+                  <span class="field-value" id="modalRsiBand">30 - 70 Balanced Zone</span>
+                </div>
+                <div class="field-item field-full">
+                  <div class="rsi-meter-track">
+                    <div class="rsi-oversold-zone" title="Oversold (<=30)"></div>
+                    <div class="rsi-balanced-zone" title="Balanced (30-70)"></div>
+                    <div class="rsi-overbought-zone" title="Overbought (>=70)"></div>
+                    <div class="rsi-pointer" id="modalRsiPointer" style="left: 50%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Regime Strength (ADX) -->
+            <div class="hierarchy-card">
+              <div class="hierarchy-card-head">
+                <div class="head-num">04</div>
+                <div class="head-title-wrap">
+                  <span class="head-title">Regime & Directional Strength</span>
+                  <span class="head-subtitle">25% Composite Weight</span>
+                </div>
+                <span class="hierarchy-badge" id="modalAdxStrengthBadge">STRONG</span>
+              </div>
+              <div class="hierarchy-fields-grid">
+                <div class="field-item">
+                  <span class="field-label">ADX Index (14)</span>
+                  <span class="field-value tabular-num" id="modalAdx">--</span>
+                </div>
+                <div class="field-item">
+                  <span class="field-label">Trend Character</span>
+                  <span class="field-value" id="modalAdxDesc">Trending Market</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Metadata Footer -->
+          <div class="modal-footer-row">
+            <span class="footer-meta-item">Record ID: <code id="modalUuid">--</code></span>
+            <span class="footer-meta-item">Source: MarketPulse Telemetry Engine</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
   </div>
 
   <script src="/js/dashboard.js?v=4.0"></script>

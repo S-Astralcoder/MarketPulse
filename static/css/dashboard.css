@@ -500,26 +500,29 @@ html, body {
 
 .stock-card {
   width: 332px;
-  min-height: 271px;
-  height: auto;
+  height: 271px;
   background-color: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: 19px;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   position: relative;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
   user-select: none;
+  cursor: pointer;
 }
 
-.stock-card:hover,
-.stock-card:focus-within {
-  transform: translateY(-4px);
+.stock-card:hover {
+  transform: translateY(-3px);
   border-color: rgba(139, 92, 246, 0.45);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
-  z-index: 20;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+}
+
+.stock-card:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
 }
 
 /* Card Header */
@@ -578,119 +581,508 @@ html, body {
   max-width: 140px;
 }
 
-/* Full-name Reveal Popover Deprecated - Replaced by Expandable Card Drawer */
+/* Full-name Reveal Popover Deprecated */
 .stock-name-popover {
   display: none !important;
 }
 
-.stock-name-box:hover .stock-name-popover {
-  display: none !important;
-}
-
-/* Card Expandable Details Drawer */
-.card-expanded-drawer {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  pointer-events: none;
-  transform: translateY(-4px);
-  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, transform 0.25s ease, margin-top 0.25s ease;
-  margin-top: 0;
-}
-
-.stock-card:hover .card-expanded-drawer,
-.stock-card:focus-within .card-expanded-drawer {
-  max-height: 280px;
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-  margin-top: 14px;
-}
-
-.expanded-divider {
-  height: 1px;
-  background-color: var(--border-subtle);
-  margin-bottom: 12px;
-}
-
-.expanded-header-row {
+/* =========================================================================
+   Full-Screen Expanded Stock Detail Modal
+   ========================================================================= */
+.stock-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 10px;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
 }
 
-.expanded-name-block {
+.stock-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(9, 6, 17, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.stock-modal-shell {
+  position: relative;
+  z-index: 2001;
+  width: min(1140px, 96vw);
+  max-height: min(820px, 92vh);
+  background-color: var(--bg-card);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  animation: modalScaleIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2010;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  background-color: var(--accent-purple-subtle);
+  color: #ffffff;
+  border-color: var(--accent-purple);
+}
+
+.stock-modal-body {
+  display: grid;
+  grid-template-columns: 370px 1fr;
+  gap: 28px;
+  padding: 30px;
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+/* Modal Left Column: Visual & Executive Overview */
+.modal-visual-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-right: 1px solid var(--border-subtle);
+  padding-right: 26px;
+}
+
+.modal-company-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.modal-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background-color: var(--accent-purple);
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
+}
+
+.modal-meta-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   min-width: 0;
 }
 
-.expanded-full-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.3;
+.modal-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.expanded-category-badge {
-  display: inline-block;
-  font-size: 10.5px;
+.modal-ticker {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.modal-sector-badge {
+  font-size: 11px;
   font-weight: 600;
-  color: var(--accent-purple-hover);
+  padding: 2px 8px;
+  border-radius: 6px;
   background-color: var(--accent-purple-subtle);
-  padding: 2px 7px;
-  border-radius: 4px;
-  width: fit-content;
+  color: var(--accent-purple-hover);
   border: 1px solid rgba(139, 92, 246, 0.25);
 }
 
-.expanded-price-block {
+.modal-company-name {
+  font-size: 17.5px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* Modal Price Card */
+.modal-price-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-  flex-shrink: 0;
+  gap: 8px;
 }
 
-.expanded-price {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--text-primary);
+.modal-price-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.expanded-price-change {
+.modal-price-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+}
+
+.modal-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 11px;
   font-weight: 600;
+  color: var(--text-secondary);
 }
 
-.expanded-price-change.positive {
+.modal-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.modal-price-val {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.modal-delta-badge {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.modal-delta-badge.positive {
+  background-color: rgba(16, 185, 129, 0.2);
   color: var(--signal-steady);
+  border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
-.expanded-price-change.negative {
-  color: var(--signal-high);
+.modal-delta-badge.negative {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
-.expanded-analytics-grid {
+/* Modal Risk Gauge Card */
+.modal-gauge-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gauge-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gauge-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+}
+
+.gauge-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.gauge-badge.low {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #a7f3d0;
+  border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.gauge-badge.moderate {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+}
+
+.gauge-badge.high {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.gauge-visual-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100px;
+}
+
+.risk-gauge-svg {
+  overflow: visible;
+}
+
+.gauge-fill {
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s ease;
+}
+
+.gauge-center-text {
+  position: absolute;
+  bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gauge-score {
+  font-size: 32px;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.gauge-scale {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+/* Risk Factor Weights */
+.risk-weights-box {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.weight-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.weight-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.weight-bar-bg {
+  height: 5px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.weight-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background-color: var(--accent-purple);
+  transition: width 0.4s ease;
+}
+
+/* Modal Track Button */
+.modal-track-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background-color: var(--accent-purple-subtle);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.modal-track-btn:hover {
+  background-color: rgba(139, 92, 246, 0.25);
+  border-color: var(--accent-purple);
+}
+
+.modal-track-btn.untrack {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.modal-track-btn.untrack:hover {
+  background-color: rgba(239, 68, 68, 0.25);
+  border-color: var(--signal-high);
+}
+
+/* Modal Right Column: Hierarchical Analytics Grid */
+.modal-data-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.modal-data-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.data-header-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.data-header-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.hierarchical-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  background-color: var(--bg-surface);
-  border-radius: 10px;
-  padding: 10px;
-  border: 1px solid var(--border-subtle);
+  gap: 14px;
 }
 
-.analytics-item {
+.hierarchy-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hierarchy-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.head-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-purple);
+  background: var(--accent-purple-subtle);
+  padding: 3px 6px;
+  border-radius: 5px;
+}
+
+.head-title-wrap {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.head-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.head-subtitle {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.hierarchy-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+
+.hierarchy-badge.bullish,
+.hierarchy-badge.strong,
+.hierarchy-badge.normal {
+  background-color: rgba(16, 185, 129, 0.18);
+  color: var(--signal-steady);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.hierarchy-badge.bearish,
+.hierarchy-badge.elevated {
+  background-color: rgba(239, 68, 68, 0.18);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.hierarchy-badge.neutral,
+.hierarchy-badge.moderate,
+.hierarchy-badge.balanced,
+.hierarchy-badge.low {
+  background-color: rgba(245, 158, 11, 0.18);
+  color: #fde68a;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.hierarchy-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+}
+
+.field-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.analytics-label {
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.field-label {
   font-size: 10px;
   color: var(--text-tertiary);
   font-weight: 500;
@@ -698,12 +1090,84 @@ html, body {
   letter-spacing: 0.03em;
 }
 
-.analytics-val {
-  font-size: 11.5px;
-  font-weight: 600;
+.field-value {
+  font-size: 12.5px;
+  font-weight: 700;
   color: var(--text-secondary);
 }
 
+/* RSI Slider Meter */
+.rsi-meter-track {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  display: flex;
+  overflow: hidden;
+  background-color: var(--bg-metric);
+  margin-top: 4px;
+}
+
+.rsi-oversold-zone {
+  width: 30%;
+  background-color: rgba(16, 185, 129, 0.35);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.rsi-balanced-zone {
+  width: 40%;
+  background-color: rgba(139, 92, 246, 0.25);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.rsi-overbought-zone {
+  width: 30%;
+  background-color: rgba(239, 68, 68, 0.35);
+}
+
+.rsi-pointer {
+  position: absolute;
+  top: -2px;
+  width: 4px;
+  height: 12px;
+  border-radius: 2px;
+  background-color: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+  transform: translateX(-50%);
+  transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Modal Footer */
+.modal-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.modal-footer-row code {
+  font-family: monospace;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+@media (max-width: 960px) {
+  .stock-modal-body {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .modal-visual-column {
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-right: 0;
+    padding-bottom: 20px;
+  }
+}
 .stock-ticker {
   font-size: 12px;
   font-weight: 600;
