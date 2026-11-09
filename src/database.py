@@ -1,6 +1,7 @@
 from collections.abc import AsyncGenerator
 from datetime import datetime
 from uuid import UUID, uuid4
+from zoneinfo import ZoneInfo
 
 from pydantic import EmailStr
 from sqlalchemy import (
@@ -40,6 +41,7 @@ async def get_db() -> AsyncGenerator[AsyncSession]:
             await session.commit()
         except Exception:  # noqa: BLE001
             await session.rollback()
+            raise
         else:
             await session.close()
 
@@ -88,13 +90,17 @@ class Stock(Base):
     is_active: Mapped[Boolean] = mapped_column(Boolean, default=True, nullable=False)
 
 
+def get_ist_time():
+    return datetime.now(ZoneInfo("Asia/Kolkata"))
+
+
 class StockMetrics(Base):
     __tablename__ = "metrics"
     uuid: Mapped[UUID] = mapped_column(
         Uuid, default=uuid4, primary_key=True, nullable=False
     )
-    symbol: Mapped[String] = mapped_column(String, nullable=False, unique=True)
-    name: Mapped[String] = mapped_column(String, nullable=False, unique=True)
+    symbol: Mapped[String] = mapped_column(String, nullable=False)
+    name: Mapped[String] = mapped_column(String, nullable=False)
     price_change: Mapped[float] = mapped_column(
         Float, nullable=False
     )  # price difference compared to last price check
@@ -122,5 +128,5 @@ class StockMetrics(Base):
     adx: Mapped[int] = mapped_column(Integer, nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
+        DateTime(timezone=True), default=get_ist_time
     )

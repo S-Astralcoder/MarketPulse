@@ -1,20 +1,21 @@
-"""Initailization of database
+"""Inilization of database
 
-Revision ID: 0d3fba9847f3
+Revision ID: 256191ac8870
 Revises: 
-Create Date: 2026-11-08 14:16:53.752507
+Create Date: 2026-11-09 12:21:24.723499
 
 """
-from collections.abc import Sequence
+from typing import Sequence, Union
 
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision: str = '0d3fba9847f3'
-down_revision: str | Sequence[str] | None = None
-branch_labels: str | Sequence[str] | None = None
-depends_on: str | Sequence[str] | None = None
+revision: str = '256191ac8870'
+down_revision: Union[str, Sequence[str], None] = None
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
@@ -39,9 +40,7 @@ def upgrade() -> None:
     sa.Column('trend_direction', sa.Enum('BULLISH', 'NEUTRAL', 'BEARISH', name='trend'), nullable=False),
     sa.Column('adx', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
-    sa.PrimaryKeyConstraint('uuid', name=op.f('pk_metrics')),
-    sa.UniqueConstraint('name', name=op.f('uq_metrics_name')),
-    sa.UniqueConstraint('symbol', name=op.f('uq_metrics_symbol'))
+    sa.PrimaryKeyConstraint('uuid', name=op.f('pk_metrics'))
     )
     op.create_table('stock',
     sa.Column('uuid', sa.Uuid(), nullable=False),
