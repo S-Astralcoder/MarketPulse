@@ -1,0 +1,30 @@
+[project]
+name = "marketpulse"
+version = "0.1.0"
+description = "A Fullstack application build to provide organized market status to make better decisions when investing or trading."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "alembic>=1.20.1",
+    "apscheduler>=3.11.3",
+    "bcrypt>=5.0.0",
+    "fastapi[standard]>=0.143.0",
+    "pydantic>=2.13.5",
+    "pyjwt[crypto]>=2.15.1",
+    "sqlalchemy[asyncio]>=2.1.4",
+    "uvicorn>=0.54.0",
+    "yfinance>=1.8.0",
+]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.414",
+    "rich>=15.0.0",
+    "ruff>=0.16.10",
+]
+
+[tool.fastapi]
+entrypoint="src.app:app"
+
+

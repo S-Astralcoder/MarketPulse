@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketPulse — Dashboard</title>
+  <meta name="description" content="MarketPulse real-time objective risk telemetry. 4-factor regime detection via EMA, ATR, ADX (Regime), and RSI without predictive bias.">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/css/dashboard.css?v=5.1">
+</head>
+<body data-node-id="40:2" data-name="Dashboard">
+
+  <div class="dashboard-shell">
+
+    <!-- =========================================================================
+         1. Category Navigation Sidebar (Auto-scroll triggers)
+         ========================================================================= -->
+    <aside class="nav-panel" data-node-id="42:31" data-name="Navigation Panel">
+      
+      <div class="panel-top">
+        <!-- Brand / Header Slot (Figma 40:9) -->
+        <a href="/" class="panel-brand" data-node-id="40:9" title="Return to Landing Page">
+          <img src="/assets/favicon.svg" alt="MarketPulse" width="32" height="32" class="brand-icon-img">
+          <span class="brand-title">MarketPulse</span>
+        </a>
+
+        <!-- Category Auto-Scroll Navigation -->
+        <nav>
+          <ul class="category-nav-list" id="categoryNavList">
+            <li>
+              <button class="nav-item-btn" data-target="bookmarked">
+                <span class="nav-label-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                  <span>Bookmarked</span>
+                </span>
+                <span class="nav-count tabular-num" id="sidebarBookmarkedCount">0</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn active" data-target="trending">
+                <span class="nav-label-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                    <polyline points="17 6 23 6 23 12"/>
+                  </svg>
+                  <span>Trending</span>
+                </span>
+                <span class="nav-count tabular-num">3</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-target="top-stocks">
+                <span class="nav-label-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                  <span>Top Stocks</span>
+                </span>
+                <span class="nav-count tabular-num">3</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-target="risky-stocks">
+                <span class="nav-label-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                  <span>Risky Stocks</span>
+                </span>
+                <span class="nav-count tabular-num">3</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-target="safe-stocks">
+                <span class="nav-label-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  <span>Safe Stocks</span>
+                </span>
+                <span class="nav-count tabular-num">2</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-target="average-stocks">
+                <span class="nav-label-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  <span>Average Stocks</span>
+                </span>
+                <span class="nav-count tabular-num">1</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Bottom User Panel -->
+      <div class="user-panel" data-node-id="45:106">
+        
+        <!-- Refresh Countdown -->
+        <div class="refresh-box">
+          <span class="refresh-label">Next refresh</span>
+          <span class="timer-digits tabular-num" id="refreshTimer">00:42</span>
+        </div>
+
+        <!-- Alerts Action Pill (Only accounts for tracked/booked cards) -->
+        <div class="alert-pill" id="alertsToggle" title="Alerts for tracked stocks">
+          <div class="alert-pill-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="alert-pill-title">Alerts</span>
+          </div>
+          <span class="badge-count tabular-num" id="alertCount">0</span>
+        </div>
+
+        <!-- User Profile -->
+        <div class="user-profile-row" data-node-id="45:125">
+          <div class="user-avatar" data-node-id="45:126">
+            <span data-node-id="45:127">AL</span>
+          </div>
+          <div class="user-info" data-node-id="45:128">
+            <span class="user-name" data-node-id="45:129">Alex Lane</span>
+            <span class="user-role" data-node-id="45:130">Analyst</span>
+          </div>
+        </div>
+
+      </div>
+
+    </aside>
+
+    <!-- =========================================================================
+         2. Main Application Body
+         ========================================================================= -->
+    <main class="main-wrapper">
+
+      <!-- Top Header Controls (Figma 46:106) -->
+      <header class="dashboard-header" data-node-id="46:106" data-name="header controls">
+        
+        <!-- Search Input -->
+        <div class="search-container" data-node-id="46:107" data-name="search bar">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input 
+            type="text" 
+            id="stockSearchInput" 
+            class="search-input-box" 
+            placeholder="Search tickers or company names..." 
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
+
+        <!-- Utility Button Cluster -->
+        <div class="utility-cluster" data-node-id="46:109" data-name="utility cluster">
+          <button class="btn-icon" title="Notifications" aria-label="Notifications">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </button>
+          <button class="btn-icon" title="Settings" aria-label="Settings">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+          <button class="btn-icon active" title="Grid View" aria-label="View Mode">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </button>
+        </div>
+
+      </header>
+
+      <!-- Scrollable Viewport with Sequential Category Sections -->
+      <div class="dashboard-viewport" id="dashboardViewport">
+        
+        <!-- ===================================================================
+             1. Bookmarked Section (Populated dynamically on track)
+             =================================================================== -->
+        <section class="category-section" id="bookmarked">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Bookmarked</h2>
+              <span class="section-badge" id="bookmarkedCountBadge">0 stocks</span>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <div class="empty-state visible" id="bookmarkedEmptyState">
+            No cards marked yet. Click the bookmark icon on any card to track it.
+          </div>
+          <div class="cards-grid" id="bookmarkedCardsGrid" style="display: none;"></div>
+        </section>
+
+        <!-- ===================================================================
+             2. Trending Section
+             =================================================================== -->
+        <section class="category-section" id="trending">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Trending</h2>
+              <span class="section-badge">0 stocks</span>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <div class="empty-state" style="display: none;">No stocks currently matching trending criteria.</div>
+          <div class="cards-grid"></div>
+        </section>
+
+        <!-- ===================================================================
+             3. Top Stocks Section
+             =================================================================== -->
+        <section class="category-section" id="top-stocks">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Top Stocks</h2>
+              <span class="section-badge">0 stocks</span>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <div class="empty-state" style="display: none;">No top stocks available.</div>
+          <div class="cards-grid"></div>
+        </section>
+
+        <!-- ===================================================================
+             4. Risky Stocks Section
+             =================================================================== -->
+        <section class="category-section" id="risky-stocks">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Risky Stocks</h2>
+              <span class="section-badge">0 stocks</span>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <div class="empty-state" style="display: none;">No high-risk stocks detected.</div>
+          <div class="cards-grid"></div>
+        </section>
+
+        <!-- ===================================================================
+             5. Safe Stocks Section
+             =================================================================== -->
+        <section class="category-section" id="safe-stocks">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Safe Stocks</h2>
+              <span class="section-badge">0 stocks</span>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <div class="empty-state" style="display: none;">No safe stocks available.</div>
+          <div class="cards-grid"></div>
+        </section>
+
+        <!-- ===================================================================
+             6. Average Stocks Section
+             =================================================================== -->
+        <section class="category-section" id="average-stocks">
+          <div class="section-title-line">
+            <div class="section-title-box">
+              <h2 class="section-heading">Average Stocks</h2>
+              <span class="section-badge">0 stocks</span>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <div class="empty-state" style="display: none;">No average stocks available.</div>
+          <div class="cards-grid"></div>
+        </section>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Reusable Stock Card Template -->
+  <template id="stock-card-template">
+    <article class="stock-card" data-name="Stock Card" tabindex="0">
+      <div class="card-header">
+        <div class="ticker-logo">
+          <span class="tpl-logo">--</span>
+        </div>
+        <div class="stock-meta">
+          <div class="stock-name-box">
+            <span class="stock-name tpl-name">Company Name</span>
+          </div>
+          <span class="stock-ticker tpl-ticker">TICKER</span>
+        </div>
+        <div class="risk-badge tpl-risk-badge">
+          <span class="risk-pill tabular-num tpl-risk-text">Risk --/100</span>
+        </div>
+      </div>
+
+      <div class="market-status-row">
+        <span class="status-dot-pulse tpl-status-dot"></span>
+        <span class="status-text tpl-status-text">Market status description</span>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metrics-row">
+          <div class="metric-block">
+            <span class="metric-label">RSI (14)</span>
+            <div class="metric-data-row">
+              <span class="metric-value tabular-num tpl-rsi-val">00.0</span>
+              <span class="metric-delta tabular-num tpl-rsi-delta">+0.0</span>
+            </div>
+          </div>
+          <div class="metric-block">
+            <span class="metric-label">ATR</span>
+            <div class="metric-data-row">
+              <span class="metric-value tabular-num tpl-atr-val">00.00</span>
+              <span class="metric-delta tabular-num tpl-atr-delta">+0.0</span>
+            </div>
+          </div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-block">
+            <span class="metric-label">EMA (50)</span>
+            <div class="metric-data-row">
+              <span class="metric-value tabular-num tpl-ema-val">000.0</span>
+              <span class="metric-delta tpl-ema-delta">Regime</span>
+            </div>
+          </div>
+          <div class="metric-block">
+            <span class="metric-label">Strength</span>
+            <div class="metric-data-row">
+              <span class="metric-value tabular-num tpl-adx-val">00%</span>
+              <span class="metric-delta tpl-adx-delta">State</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </article>
+  </template>
+
+  <!-- Custom Context Menu for Right-Click Track / Untrack -->
+  <div class="custom-context-menu" id="cardContextMenu" role="menu" aria-hidden="true">
+    <button class="context-menu-item" id="contextTrackBtn" role="menuitem">
+      <svg class="context-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span id="contextTrackText">Track Stock</span>
+    </button>
+  </div>
+
+  <!-- Full-Screen Expanded Stock Detail Modal -->
+  <div class="stock-modal-overlay" id="stockDetailModal" role="dialog" aria-modal="true" aria-hidden="true" style="display: none;">
+    <div class="stock-modal-backdrop" id="modalBackdrop"></div>
+    <div class="stock-modal-shell">
+      
+      <!-- Modal Top Navigation Header Bar -->
+      <header class="modal-top-bar">
+        <div class="modal-top-bar-left">
+          <span class="modal-top-bar-brand">MarketPulse</span>
+          <span class="modal-top-bar-separator">/</span>
+          <span class="modal-top-bar-title">Real-Time Risk & Regime Analytics</span>
+        </div>
+        
+        <div class="modal-top-bar-right">
+          <div class="modal-snapshot-tag" id="modalUpdatedTime">
+            <span class="status-dot-pulse"></span>
+            <span class="modal-snapshot-text">Snapshot: --</span>
+          </div>
+          <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close details" title="Close (Esc)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Modal Content: Two-Column Split -->
+      <div class="stock-modal-body">
+        
+        <!-- ==============================================
+             LEFT COLUMN: Visual & Executive Overview
+             ============================================== -->
+        <div class="modal-visual-column">
+          
+          <div class="modal-company-header">
+            <div class="modal-logo" id="modalLogo">--</div>
+            <div class="modal-meta-box">
+              <div class="modal-badges-row">
+                <span class="modal-ticker" id="modalTicker">TICKER</span>
+                <span class="modal-sector-badge" id="modalSector">Sector</span>
+              </div>
+              <h2 class="modal-company-name" id="modalName">Company Name</h2>
+            </div>
+          </div>
+
+          <!-- Price & Daily Delta Banner -->
+          <div class="modal-price-card">
+            <div class="modal-price-top">
+              <span class="modal-price-label">Current Market Price</span>
+              <span class="modal-status-pill" id="modalMarketStatusPill">
+                <span class="status-dot-pulse" id="modalStatusDot"></span>
+                <span id="modalStatusPillText">Steady</span>
+              </span>
+            </div>
+            <div class="modal-price-row">
+              <span class="modal-price-val tabular-num" id="modalPrice">₹0.00</span>
+              <span class="modal-delta-badge tabular-num" id="modalDelta">+0.00</span>
+            </div>
+          </div>
+
+          <!-- Primary Risk Gauge Visual -->
+          <div class="modal-gauge-card">
+            <div class="gauge-card-header">
+              <span class="gauge-title">Composite Risk Score</span>
+              <span class="gauge-badge" id="modalRiskBadge">Low Risk</span>
+            </div>
+            
+            <div class="gauge-visual-container">
+              <svg class="risk-gauge-svg" viewBox="0 0 200 120" width="100%" height="130">
+                <path class="gauge-track" d="M 20 105 A 80 80 0 0 1 180 105" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="16" stroke-linecap="round" />
+                <path class="gauge-fill" id="modalGaugeFill" d="M 20 105 A 80 80 0 0 1 180 105" fill="none" stroke="var(--signal-steady)" stroke-width="16" stroke-linecap="round" stroke-dasharray="251.32" stroke-dashoffset="180" />
+              </svg>
+              <div class="gauge-center-text">
+                <span class="gauge-score tabular-num" id="modalGaugeScore">--</span>
+                <span class="gauge-scale">/ 100</span>
+              </div>
+            </div>
+
+            <!-- Risk Weight Components -->
+            <div class="risk-weights-box">
+              <div class="weight-row">
+                <div class="weight-info">
+                  <span class="weight-name">Trend Risk (40%)</span>
+                  <span class="weight-val tabular-num" id="modalTrendRiskVal">--</span>
+                </div>
+                <div class="weight-bar-bg"><div class="weight-bar-fill" id="modalTrendRiskBar" style="width: 0%;"></div></div>
+              </div>
+              <div class="weight-row">
+                <div class="weight-info">
+                  <span class="weight-name">Volatility Risk (35%)</span>
+                  <span class="weight-val tabular-num" id="modalVolRiskVal">--</span>
+                </div>
+                <div class="weight-bar-bg"><div class="weight-bar-fill" id="modalVolRiskBar" style="width: 0%;"></div></div>
+              </div>
+              <div class="weight-row">
+                <div class="weight-info">
+                  <span class="weight-name">Regime / Chop (25%)</span>
+                  <span class="weight-val tabular-num" id="modalRegimeRiskVal">--</span>
+                </div>
+                <div class="weight-bar-bg"><div class="weight-bar-fill" id="modalRegimeRiskBar" style="width: 0%;"></div></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Modal Action Button -->
+          <button class="modal-track-btn" id="modalTrackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span id="modalTrackBtnText">Track This Stock</span>
+          </button>
+
+        </div>
+
+        <!-- ==============================================
+             RIGHT COLUMN: Hierarchical Analytics Grid
+             ============================================== -->
+        <div class="modal-data-column">
+          <div class="modal-data-header">
+            <span class="data-header-title">Quantitative Analytics & Factor Breakdown</span>
+            <span class="data-header-subtitle">4-Factor Quant Architecture</span>
+          </div>
+
+          <div class="hierarchical-grid">
+            
+            <!-- 1. Trend Architecture -->
+            <div class="hierarchy-card">
+              <div class="hierarchy-card-head">
+                <div class="head-left-wrap">
+                  <span class="head-num">01</span>
+                  <span class="head-title">Trend Architecture</span>
+                  <span class="head-subtitle">40% Composite Weight</span>
+                </div>
+                <span class="hierarchy-badge" id="modalTrendDirectionBadge">BULLISH</span>
+              </div>
+              <div class="hierarchy-fields-row">
+                <div class="field-item">
+                  <span class="field-label">Fast EMA (20)</span>
+                  <span class="field-value tabular-num" id="modalEmaFast">--</span>
+                </div>
+                <div class="field-item">
+                  <span class="field-label">Slow EMA (50)</span>
+                  <span class="field-value tabular-num" id="modalEmaSlow">--</span>
+                </div>
+                <div class="field-item field-flex">
+                  <span class="field-label">EMA Dynamics & Spread</span>
+                  <span class="field-value" id="modalEmaSpreadDesc">--</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Volatility Analysis -->
+            <div class="hierarchy-card">
+              <div class="hierarchy-card-head">
+                <div class="head-left-wrap">
+                  <span class="head-num">02</span>
+                  <span class="head-title">Volatility & Dispersion</span>
+                  <span class="head-subtitle">35% Composite Weight</span>
+                </div>
+                <span class="hierarchy-badge" id="modalVolStatusBadge">NORMAL</span>
+              </div>
+              <div class="hierarchy-fields-row">
+                <div class="field-item">
+                  <span class="field-label">Average True Range (ATR 14)</span>
+                  <span class="field-value tabular-num" id="modalAtr">--</span>
+                </div>
+                <div class="field-item">
+                  <span class="field-label">Normalized ATR (NATR)</span>
+                  <span class="field-value tabular-num" id="modalNatr">--%</span>
+                </div>
+                <div class="field-item field-flex">
+                  <span class="field-label">ATR Ratio vs 50-SMA Baseline</span>
+                  <span class="field-value" id="modalAtrRatioDesc">--</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Momentum & Oscillator -->
+            <div class="hierarchy-card">
+              <div class="hierarchy-card-head">
+                <div class="head-left-wrap">
+                  <span class="head-num">03</span>
+                  <span class="head-title">Momentum Oscillator</span>
+                  <span class="head-subtitle">Wilder's RSI (14)</span>
+                </div>
+                <span class="hierarchy-badge" id="modalRsiMovementBadge">BALANCED</span>
+              </div>
+              <div class="hierarchy-fields-row">
+                <div class="field-item">
+                  <span class="field-label">RSI Index (0-100)</span>
+                  <span class="field-value tabular-num" id="modalRsiVal">--</span>
+                </div>
+                <div class="field-item">
+                  <span class="field-label">Regime Band</span>
+                  <span class="field-value" id="modalRsiBand">30 - 70 Balanced Zone</span>
+                </div>
+                <div class="field-item field-flex">
+                  <span class="field-label">RSI Oscillator Spectrum</span>
+                  <div class="rsi-meter-track">
+                    <div class="rsi-oversold-zone" title="Oversold (<=30)"></div>
+                    <div class="rsi-balanced-zone" title="Balanced (30-70)"></div>
+                    <div class="rsi-overbought-zone" title="Overbought (>=70)"></div>
+                    <div class="rsi-pointer" id="modalRsiPointer" style="left: 50%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Regime Strength (ADX) -->
+            <div class="hierarchy-card">
+              <div class="hierarchy-card-head">
+                <div class="head-left-wrap">
+                  <span class="head-num">04</span>
+                  <span class="head-title">Regime & Directional Strength</span>
+                  <span class="head-subtitle">25% Composite Weight</span>
+                </div>
+                <span class="hierarchy-badge" id="modalAdxStrengthBadge">STRONG&nbsp;TREND</span>
+              </div>
+              <div class="hierarchy-fields-row">
+                <div class="field-item">
+                  <span class="field-label">ADX Index (14)</span>
+                  <span class="field-value tabular-num" id="modalAdx">--</span>
+                </div>
+                <div class="field-item">
+                  <span class="field-label">Trend Character</span>
+                  <span class="field-value" id="modalAdxChar">Trending Market</span>
+                </div>
+                <div class="field-item field-flex">
+                  <span class="field-label">Regime Telemetry</span>
+                  <span class="field-value" id="modalAdxDesc">Wilder's ADX indicates persistent directional trend velocity.</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Metadata Footer -->
+          <div class="modal-footer-row">
+            <span class="footer-meta-item">Record ID: <code id="modalUuid">--</code></span>
+            <span class="footer-meta-item">Source: MarketPulse Telemetry Engine</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/dashboard.js?v=5.1"></script>
+</body>
+</html>

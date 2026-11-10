@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketPulse</title>
+  <meta name="description" content="MarketPulse delivers objective market signals, volatility tracking, and risk warnings. No price predictions. No trade calls. We show the data, you make the decisions.">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/css/style.css?v=2.6">
+</head>
+<body data-node-id="15:9" data-name="index.html">
+
+  <!-- =========================================================================
+       1. Header (Figma 15:10)
+       ========================================================================= -->
+  <header class="site-header" data-node-id="15:10" data-name="Header">
+    <div class="container header-inner">
+      <div class="brand" data-node-id="15:11" data-name="Rectangle 1">
+        <a href="#hero" class="brand-logo">
+          <img src="/assets/favicon.svg" alt="MarketPulse" width="32" height="32" class="brand-icon-img">
+          <span>MarketPulse</span>
+        </a>
+      </div>
+
+      <nav class="header-nav" data-node-id="15:12" data-name="Rectangle 2">
+        <ul class="nav-links">
+          <li><a href="#why-you-need-it" class="nav-link">Why MarketPulse</a></li>
+          <li><a href="#ui-display" class="nav-link">Platform</a></li>
+          <li><a href="#mission" class="nav-link">Mission</a></li>
+          <li><a href="#pricing" class="nav-link">Pricing</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="#signin" class="action-signin" id="openSignInBtn" onclick="event.preventDefault(); window.openAuthModal && window.openAuthModal('signin');">Sign In</a>
+        <a href="#dashboard" class="btn btn-primary" id="openSignUpBtn" onclick="event.preventDefault(); window.openAuthModal && window.openAuthModal('signup');">Launch App</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- =========================================================================
+         2. Hero Section (Figma 15:14)
+         ========================================================================= -->
+    <section class="hero-section snap-section is-active" id="hero" data-node-id="15:14" data-name="Hero Section">
+      <div class="container" data-node-id="15:15" data-name="Rectangle 3">
+        <h1 class="hero-headline" data-node-id="15:16" data-name="Rectangle 4">
+          Clear Market Signals.<br>Zero Price Predictions.
+        </h1>
+
+        <p class="hero-subheadline">
+          <span data-node-id="15:17" data-name="Rectangle 5">
+            Understand volatility expansion, liquidity shifts, and structural warnings across the market. We provide the telemetry so you can make your own decisions. We never tell you what to trade.
+          </span>
+        </p>
+
+        <div class="hero-actions">
+          <a href="#why-you-need-it" class="btn btn-primary btn-lg" data-node-id="15:19" data-name="Rectangle 7">
+            Explore Market Telemetry
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="#mission" class="btn btn-secondary btn-lg" data-node-id="15:20" data-name="Rectangle 8">
+            How We Assess Risk
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         3. "Why you need it?" Section (Figma 15:21)
+         ========================================================================= -->
+    <section class="why-section snap-section" id="why-you-need-it" data-node-id="15:21" data-name="Why you need it?">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" data-node-id="15:23" data-name="Rectangle 10">
+            Built to Show What's Actually Happening
+          </h2>
+          <p class="section-subtitle">
+            Most retail traders lose money reacting to social media sentiment and fake certainty. MarketPulse replaces noise with disciplined market physics.
+          </p>
+        </div>
+
+        <div class="why-grid">
+          <!-- Left Column: Compact 8 Telemetry Signal Rows (Figma 15:24 to 15:31) -->
+          <div class="telemetry-stack">
+            <!-- 1 -->
+            <div class="telemetry-item" data-node-id="15:24" data-name="Rectangle 11">
+              <div class="telemetry-icon-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <div class="telemetry-content">
+                <span class="telemetry-label">Volatility Regimes:</span>
+                <span class="telemetry-desc">Flags abnormal ATR spikes, liquidity air pockets, and squeeze setups.</span>
+              </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="telemetry-item" data-node-id="15:25" data-name="Rectangle 12">
+              <div class="telemetry-icon-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 20V10M12 20V4M6 20v-6"/>
+                </svg>
+              </div>
+              <div class="telemetry-content">
+                <span class="telemetry-label">Structural Warnings:</span>
+                <span class="telemetry-desc">Surfaces multi-horizon momentum divergence across higher timeframes.</span>
+              </div>
+            </div>
+
+            <!-- 3 -->
+            <div class="telemetry-item" data-node-id="15:26" data-name="Rectangle 13">
+              <div class="telemetry-icon-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 14.14 14.14"/>
+                </svg>
+              </div>
+              <div class="telemetry-content">
+                <span class="telemetry-label">Zero Advisory Interference:</span>
+                <span class="telemetry-desc">Strictly no buy/sell calls, no price targets, and no cheerleading.</span>
+              </div>
+            </div>
+
+            <!-- 4 -->
+            <div class="telemetry-item" data-node-id="15:27" data-name="Rectangle 14">
+              <div class="telemetry-icon-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/>
+                </svg>
+              </div>
+              <div class="telemetry-content">
+                <span class="telemetry-label">Categorized Market States:</span>
+                <span class="telemetry-desc">Immediate classification into Stable, Transitioning, or High Turbulence.</span>
+              </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="telemetry-item" data-node-id="15:28" data-name="Rectangle 15">
+              <div class="telemetry-icon-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                </svg>
+              </div>
+              <div class="telemetry-content">
+                <span class="telemetry-label">Regulatory & Filing Radar:</span>
+                <span class="telemetry-desc">Ingests institutional disclosures and SEC 8-K/10-Q filings in real time.</span>
+              </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="telemetry-item" data-node-id="15:29" data-name="Rectangle 16">
+              <div class="telemetry-icon-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </div>
+              <div class="telemetry-content">
+                <span class="telemetry-label">Contextual Inspector:</span>
+                <span class="telemetry-desc">Inspect the underlying math and data points behind every indicator.</span>
+              </div>
+            </div>
+
+            <!-- 7 -->
+            <div class="telemetry-item" data-node-id="15:30" data-name="Rectangle 17">
+              <div class="telemetry-icon-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/>
+                </svg>
+              </div>
+              <div class="telemetry-content">
+                <span class="telemetry-label">Primary Context:</span>
+                <span class="telemetry-desc">Grounded in verified filings and disclosures, ignoring social chatter.</span>
+              </div>
+            </div>
+
+            <!-- 8 -->
+            <div class="telemetry-item" data-node-id="15:31" data-name="Rectangle 18">
+              <div class="telemetry-icon-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <div class="telemetry-content">
+                <span class="telemetry-label">Uncluttered Delivery:</span>
+                <span class="telemetry-desc">Lean frontend built for fast execution and analytical clarity.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Visual Telemetry Card (Figma 15:22) -->
+          <div class="comparison-card" data-node-id="15:22" data-name="Rectangle 9">
+            <div class="comparison-header">
+              <div class="comparison-title">Live Telemetry Snapshot</div>
+              <div class="comparison-badge">SAMPLE TELEMETRY</div>
+            </div>
+
+            <div class="comparison-body">
+              <!-- Asset 1: Elevated Volatility -->
+              <div class="asset-block state-warning">
+                <div class="asset-top">
+                  <div class="asset-identity">
+                    <span class="asset-ticker">TSLA</span>
+                    <span class="asset-name">Tesla Inc.</span>
+                  </div>
+                  <span class="asset-pill pill-warning">ELEVATED VOLATILITY</span>
+                </div>
+                <div class="asset-metrics">
+                  <div class="metric-item">
+                    <span class="metric-name">ATR Multiple</span>
+                    <span class="metric-val">2.8x (Spike)</span>
+                  </div>
+                  <div class="metric-item">
+                    <span class="metric-name">RSI Divergence</span>
+                    <span class="metric-val">Bearish Div</span>
+                  </div>
+                  <div class="metric-item">
+                    <span class="metric-name">Filings Radar</span>
+                    <span class="metric-val">8-K Active</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Asset 2: Stable Regime -->
+              <div class="asset-block state-steady">
+                <div class="asset-top">
+                  <div class="asset-identity">
+                    <span class="asset-ticker">MSFT</span>
+                    <span class="asset-name">Microsoft Corp.</span>
+                  </div>
+                  <span class="asset-pill pill-steady">STABLE REGIME</span>
+                </div>
+                <div class="asset-metrics">
+                  <div class="metric-item">
+                    <span class="metric-name">ATR Multiple</span>
+                    <span class="metric-val">0.9x (Normal)</span>
+                  </div>
+                  <div class="metric-item">
+                    <span class="metric-name">Trend Alignment</span>
+                    <span class="metric-val">Above 50/200</span>
+                  </div>
+                  <div class="metric-item">
+                    <span class="metric-name">Filings Radar</span>
+                    <span class="metric-val">Clear</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         4. "UI display" Showcase (Figma 15:42) — Reserved Space
+         ========================================================================= -->
+    <section class="ui-display-section snap-section" id="ui-display" data-node-id="15:42" data-name="UI display">
+      <div class="container" data-node-id="15:43" data-name="Rectangle 27">
+        <div class="ui-placeholder-container">
+          <h3 class="placeholder-title">Platform Dashboard</h3>
+          <p class="placeholder-desc">
+            4-Factor risk telemetry dashboard: market regimes, asset telemetry, and trend strength.
+          </p>
+          <div style="margin-top: 18px;">
+            <a href="/dashboard.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+              Open Live Dashboard
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         5. "Mission Page" Manifesto (Figma 15:32)
+         ========================================================================= -->
+    <section class="mission-section snap-section" id="mission" data-node-id="15:32" data-name="Mission Page">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" data-node-id="15:33" data-name="Rectangle 20">
+            Our Stance on the Market
+          </h2>
+        </div>
+
+        <div class="mission-card" data-node-id="15:34" data-name="Rectangle 21">
+          <div class="mission-quote-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v6c0 7 1 8 3 8zM17 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 7 1 8 3 8z"/>
+            </svg>
+          </div>
+
+          <p class="mission-text-lead">
+            Most trading tools try to sell certainty in an inherently uncertain environment. They promise magical price targets, predictive algorithms, and effortless gains.
+          </p>
+          <p class="mission-text-body">
+            We believe that is fundamentally misleading. Markets cannot be predicted, but risks can be quantified. MarketPulse was built on a different principle: to provide structural transparency—volatility conditions, momentum divergence, and verifiable market states—so you possess the situational awareness to act with discipline.
+          </p>
+
+          <div class="mission-pillars">
+            <div class="pillar-item">
+              <div class="pillar-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Objective Telemetry
+              </div>
+              <div class="pillar-desc">All signals derived from transparent statistical formulas. No black-box voodoo.</div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+                </svg>
+                Independent Action
+              </div>
+              <div class="pillar-desc">We inform your judgment without imposing prescriptive buy or sell instructions.</div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                Noise Suppression
+              </div>
+              <div class="pillar-desc">Filtered from social media hype cycles, meme momentum, and promotional campaigns.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         6. "Pricing" Section (Figma 15:35) — Mock Cards
+         ========================================================================= -->
+    <section class="pricing-section snap-section" id="pricing" data-node-id="15:35" data-name="Pricing">
+      <div class="container" data-node-id="15:36" data-name="Rectangle 28">
+        <div class="section-header">
+          <h2 class="section-title" data-node-id="15:37" data-name="Rectangle 22">
+            Plans & Access
+          </h2>
+          <p class="section-subtitle">
+            Transparent access designed for individual and institutional market participants.
+          </p>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Mock Card 1 (Figma 15:38) -->
+          <div class="pricing-card" data-node-id="15:38" data-name="Rectangle 23">
+            <h3 class="pricing-plan-name">Observer</h3>
+            <p class="pricing-plan-desc">For passive market participants monitoring broad safety states.</p>
+            <div class="pricing-price-wrap">
+              <span class="pricing-amount">Free</span>
+              <span class="pricing-period">forever</span>
+            </div>
+            <ul class="pricing-features">
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>End-of-day market regime updates</span>
+              </li>
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Top 10 index volatility scores</span>
+              </li>
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Standard watchlist (5 symbols)</span>
+              </li>
+            </ul>
+            <button class="btn btn-secondary" disabled>Current Baseline</button>
+          </div>
+
+          <!-- Mock Card 2 (Figma 15:39 - Featured) -->
+          <div class="pricing-card featured" data-node-id="15:39" data-name="Rectangle 24">
+            <span class="featured-badge">Standard</span>
+            <h3 class="pricing-plan-name">Active Trader</h3>
+            <p class="pricing-plan-desc">Full real-time signal diagnostics and risk zone sorting.</p>
+            <div class="pricing-price-wrap">
+              <span class="pricing-amount">$29</span>
+              <span class="pricing-period">/ month (Planned)</span>
+            </div>
+            <ul class="pricing-features">
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Real-time volatility & divergence alerts</span>
+              </li>
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Full inspection drawer with SEC radar</span>
+              </li>
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Unlimited symbol watchlists</span>
+              </li>
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Custom threshold triggers</span>
+              </li>
+            </ul>
+            <button class="btn btn-primary" disabled>Coming Soon</button>
+          </div>
+
+          <!-- Mock Card 3 (Figma 15:40) -->
+          <div class="pricing-card" data-node-id="15:40" data-name="Rectangle 25">
+            <h3 class="pricing-plan-name">Institutional</h3>
+            <p class="pricing-plan-desc">Direct programmatic access to the risk evaluation engine.</p>
+            <div class="pricing-price-wrap">
+              <span class="pricing-amount">Custom</span>
+              <span class="pricing-period">/ annual</span>
+            </div>
+            <ul class="pricing-features">
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>High-throughput REST & WebSocket feed</span>
+              </li>
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Custom model weighting & API keys</span>
+              </li>
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Dedicated SLA & enterprise support</span>
+              </li>
+            </ul>
+            <button class="btn btn-secondary" disabled>Inquire</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         7. "End" / Disclaimer & Footer (Figma 15:44)
+         ========================================================================= -->
+    <section class="end-section" id="end" data-node-id="15:44" data-name="End">
+      <div class="container">
+        <!-- Regulatory Risk Disclaimer (Figma 15:45) -->
+        <div class="disclaimer-card" data-node-id="15:45" data-name="disclamer">
+          <div class="disclaimer-header">
+            <span class="disclaimer-badge">Regulatory Notice</span>
+            <span class="disclaimer-title">Financial & Risk Disclaimer</span>
+          </div>
+          <p class="disclaimer-text">
+            MarketPulse is a financial data and risk-profiling information tool. MarketPulse is not a registered investment advisor, broker-dealer, or financial planner, and does not provide personalized investment advice or trade recommendations. All metrics, regimes, and signals are mathematical computations derived from public market feeds and regulatory disclosures, intended solely for educational and informational purposes. Trading securities, equities, and derivatives involves significant financial risk of loss and is not suitable for all investors. Never trade with capital you cannot afford to lose.
+          </p>
+        </div>
+
+        <!-- Site Footer (Figma 15:46) -->
+        <footer class="site-footer" data-node-id="15:46" data-name="footer">
+          <div>
+            &copy; 2026 MarketPulse. Engineered for disciplined analysis.
+          </div>
+          <ul class="footer-links">
+            <li><a href="#privacy" class="footer-link">Privacy Policy</a></li>
+            <li><a href="#terms" class="footer-link">Terms of Service</a></li>
+            <li><a href="#disclosures" class="footer-link">Disclosures</a></li>
+            <li><a href="#status" class="footer-link">System Status</a></li>
+          </ul>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================================
+       8. Authentication Modal Popup (Figma 29:12)
+       ========================================================================= -->
+  <div class="auth-modal-overlay" id="authModal" aria-hidden="true" role="dialog" aria-modal="true" data-node-id="29:12" data-name="sign in/out popup" onclick="if(event.target === this) window.closeAuthModal && window.closeAuthModal();">
+    <div class="auth-modal" data-node-id="29:20" data-name="Frame 1">
+      <button class="auth-modal-close" id="closeAuthModalBtn" aria-label="Close authentication dialog" onclick="window.closeAuthModal && window.closeAuthModal();">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="auth-modal-split">
+        <!-- Left Side: Form Container -->
+        <div class="auth-modal-form-col">
+          <!-- Segmented Tab Header Bar (Figma 30:33 Rectangle 35) -->
+          <div class="auth-tabs" data-node-id="30:33" data-name="Rectangle 35" role="tablist">
+            <button type="button" class="auth-tab is-active" id="tabSignIn" role="tab" aria-selected="true" data-tab="signin" onclick="window.switchAuthTab && window.switchAuthTab('signin');">Sign In</button>
+            <button type="button" class="auth-tab" id="tabSignUp" role="tab" aria-selected="false" data-tab="signup" onclick="window.switchAuthTab && window.switchAuthTab('signup');">Create Account</button>
+          </div>
+
+          <!-- Sign In Form -->
+          <form class="auth-form is-active" id="formSignIn" autocomplete="on">
+            <div class="auth-form-header">
+              <h2 class="auth-form-title">Terminal Access</h2>
+              <p class="auth-form-desc">Authenticate to access live market regime signals and telemetry feeds.</p>
+            </div>
+
+            <!-- Google Sign-In Placeholder -->
+            <button type="button" class="btn btn-social-google btn-block" id="googleSignInBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            <div class="auth-divider">
+              <span>or sign in with email</span>
+            </div>
+
+            <div class="form-group">
+              <label for="signinEmail" class="form-label">Email Address</label>
+              <div class="form-input-wrap">
+                <input type="email" id="signinEmail" name="email" class="form-input" placeholder="trader@domain.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="form-label-row">
+                <label for="signinPassword" class="form-label">Password</label>
+                <a href="#forgot-password" class="form-inline-link">Forgot password?</a>
+              </div>
+              <div class="form-input-wrap">
+                <input type="password" id="signinPassword" name="password" class="form-input" placeholder="••••••••••••" required autocomplete="current-password">
+              </div>
+            </div>
+
+            <div class="form-meta-row">
+              <label class="form-checkbox-label">
+                <input type="checkbox" id="signinRemember" name="remember" class="form-checkbox">
+                <span>Keep session active</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block auth-submit-btn">
+              <span>Access Terminal</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+
+            <div class="auth-switch-prompt">
+              <span>Need access?</span>
+              <button type="button" class="auth-switch-btn" id="switchToSignUp" onclick="window.switchAuthTab && window.switchAuthTab('signup');">Register for account</button>
+            </div>
+          </form>
+
+          <!-- Create Account Form -->
+          <form class="auth-form" id="formSignUp" autocomplete="on">
+            <div class="auth-form-header">
+              <h2 class="auth-form-title">Create Account</h2>
+              <p class="auth-form-desc">Initialize your credentials for live market regime signals and telemetry feeds.</p>
+            </div>
+
+            <!-- Google Sign-Up Placeholder -->
+            <button type="button" class="btn btn-social-google btn-block" id="googleSignUpBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"/>
+              </svg>
+              <span>Sign up with Google</span>
+            </button>
+
+            <div class="auth-divider">
+              <span>or register with email</span>
+            </div>
+
+            <div class="form-group">
+              <label for="signupEmail" class="form-label">Email Address</label>
+              <div class="form-input-wrap">
+                <input type="email" id="signupEmail" name="email" class="form-input" placeholder="trader@domain.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupPassword" class="form-label">Password</label>
+              <div class="form-input-wrap">
+                <input type="password" id="signupPassword" name="password" class="form-input" placeholder="Minimum 8 characters" required autocomplete="new-password">
+              </div>
+            </div>
+
+            <div class="form-meta-row">
+              <label class="form-checkbox-label">
+                <input type="checkbox" id="signupDisclaimer" name="disclaimer_ack" class="form-checkbox" required>
+                <span>I understand MarketPulse provides telemetry data, not investment advice.</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block auth-submit-btn">
+              <span>Initialize Account</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+
+            <div class="auth-switch-prompt">
+              <span>Already registered?</span>
+              <button type="button" class="auth-switch-btn" id="switchToSignIn" onclick="window.switchAuthTab && window.switchAuthTab('signin');">Sign in to existing account</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Center Divider (Figma 29:19 Line 2) -->
+        <div class="auth-modal-divider" data-node-id="29:19" data-name="Line 2" aria-hidden="true"></div>
+
+        <!-- Right Side: System Telemetry Info Panel -->
+        <div class="auth-modal-info-col">
+          <div class="auth-info-body">
+            <h3 class="auth-info-heading">Disciplined Context.<br>Zero Manufactured Hype.</h3>
+            <p class="auth-info-text">
+              Every metric on MarketPulse is derived directly from empirical volume, price dispersion, and regulatory disclosures.
+            </p>
+
+            <ul class="auth-feature-list">
+              <li class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <strong>Volatility Regime Tracking</strong>
+                  <span>ATR expansion alerts and dynamic volatility envelopes.</span>
+                </div>
+              </li>
+              <li class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <strong>Regulatory Disclosure Radar</strong>
+                  <span>Automated ingestion of institutional 13F and insider filings.</span>
+                </div>
+              </li>
+              <li class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <strong>Strictly Advisory-Free</strong>
+                  <span>Mathematical outputs only. No speculative price targets.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/landing.js?v=2.6"></script>
+</body>
+</html>
