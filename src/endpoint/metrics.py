@@ -16,14 +16,10 @@ metrics = APIRouter(prefix="/metric", tags=["metric"])
 async def get_market_metrics(
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    current_ist = datetime.now(zoneinfo.ZoneInfo("Asia/Kolkata"))
-    current_hour_floor = current_ist.hour
-    today_ist = current_ist.date()
-
+    lastest_date = await db.scalar(
+        select(StockMetrics.created_at).order_by(StockMetrics.created_at.desc())
+    )
     data = await db.scalars(
-        select(StockMetrics).where(
-            func.date(StockMetrics.created_at) == today_ist,
-            func.extract("hour", StockMetrics.created_at) >= current_hour_floor,
-        )
+        select(StockMetrics).where(StockMetrics.created_at >= lastest_date)
     )
     return data.all()
