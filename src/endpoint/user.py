@@ -34,7 +34,7 @@ async def user_info(
     user_dict = user_data.to_dict()
     user_dict.pop("google_id")
     user_dict.pop("hash_password")
-    return user_data
+    return user_dict
 
 
 @user_router.post("/access")
