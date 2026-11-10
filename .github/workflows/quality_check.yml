@@ -20,11 +20,17 @@ jobs:
               with:
                 enable-cache: true
 
+            - name: Set up Python
+              run: uv python install
+
+            - name: Install dependencies
+              run: uv sync --frozen --dev
+
             - name: Ruff Formatter
-              run: uvx ruff format --check src
+              run: uv ruff format --check src
 
             - name: Ruff Linter
-              run: uvx ruff check src
+              run: uv ruff check src
 
     pyright:
         name: Pyright TypeChecker
