@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-from typing import Optional
-
->>>>>>> dfedc1209474304fef47f3661f02b7b6fd975419
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
