@@ -9,6 +9,7 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     Float,
+    ForeignKey,
     Integer,
     MetaData,
     String,
@@ -91,6 +92,19 @@ class Session(Base):
     )
     token: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     expire_date: Mapped[datetime] = mapped_column(nullable=False)
+
+
+class TrackStock(Base):
+    __tablename__ = "track"
+
+    uuid: Mapped[UUID] = mapped_column(
+        Uuid, default=uuid4, primary_key=True, nullable=False
+    )
+
+    user_uuid: Mapped[UUID] = mapped_column(ForeignKey("user.uuid"))
+    stock_symbol: Mapped[String] = mapped_column(String, nullable=False, unique=True)
+
+    __table_args__ = (UniqueConstraint("user_uuid", "stock_symbol"),)
 
 
 class Stock(Base):

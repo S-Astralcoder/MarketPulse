@@ -1,4 +1,4 @@
-from typing import Annotated, Sequence
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
