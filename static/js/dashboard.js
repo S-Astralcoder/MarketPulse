@@ -498,8 +498,8 @@ function openStockDetailModal(stock) {
   // Panel 04: Regime & Directional Strength
   document.getElementById('modalAdx').textContent = stock.adx;
   const adxBadge = document.getElementById('modalAdxStrengthBadge');
-  const isStrongTrend = stock.adx >= 25;
-  adxBadge.textContent = isStrongTrend ? 'STRONG TREND' : 'RANGEBOUND';
+  const isStrongTrend = (stock.adx || 0) >= 25;
+  adxBadge.innerHTML = isStrongTrend ? 'STRONG&nbsp;TREND' : 'RANGEBOUND';
   adxBadge.className = `hierarchy-badge ${isStrongTrend ? 'strong' : 'moderate'}`;
   
   const adxCharEl = document.getElementById('modalAdxChar');
@@ -513,7 +513,7 @@ function openStockDetailModal(stock) {
       : "Wilder's ADX indicates low directional conviction / consolidation.";
 
   // Metadata Footer
-  document.getElementById('modalUpdatedTime').textContent = `Snapshot: ${stock.updatedAt}`;
+  document.getElementById('modalUpdatedTime').innerHTML = `<span class="status-dot-pulse"></span><span>Snapshot: ${stock.updatedAt}</span>`;
   document.getElementById('modalUuid').textContent = stock.uuid;
 
   // Open Modal
