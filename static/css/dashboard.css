@@ -325,6 +325,25 @@ html, body {
   color: var(--text-muted);
 }
 
+.user-logout-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.user-logout-btn:hover {
+  color: var(--signal-high);
+  background: rgba(239, 68, 68, 0.1);
+}
+
 /* --------------------------------------------------------------------------
    Main Content Area
    -------------------------------------------------------------------------- */

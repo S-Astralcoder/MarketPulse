@@ -45,7 +45,93 @@ function formatDelta(delta) {
   return `${prefix}${delta.toFixed(2)}`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+/**
+ * Auth Route Guard: Verify session token with backend /user/access on entry
+ */
+async function enforceAuthRouteGuard() {
+  const auth = window.AuthService;
+  const token = auth ? auth.getStoredToken() : null;
+
+  if (!token) {
+    window.location.replace('/index.html');
+    return false;
+  }
+
+  const isValid = await auth.verifyAccess(token);
+  if (!isValid) {
+    if (auth) auth.clearStoredToken();
+    window.location.replace('/index.html');
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * User Profile & Logout Controller
+ */
+async function initUserProfile() {
+  const auth = window.AuthService;
+  if (!auth) return;
+
+  const user = await auth.getUserInfo();
+  if (user && user.username) {
+    const nameEl = document.getElementById('userName');
+    const roleEl = document.getElementById('userRole');
+    const avatarEl = document.getElementById('userAvatarText');
+
+    if (nameEl) nameEl.textContent = user.username;
+    if (roleEl) roleEl.textContent = user.email || 'Analyst';
+    if (avatarEl) {
+      const parts = user.username.trim().split(/\s+/);
+      const initials = parts.length >= 2
+        ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+        : user.username.slice(0, 2).toUpperCase();
+      avatarEl.textContent = initials;
+    }
+  } else {
+    // Decode local JWT payload if profile endpoint pending
+    const token = auth.getStoredToken();
+    const payload = auth.decodeJwt(token);
+    if (payload && payload.email) {
+      const roleEl = document.getElementById('userRole');
+      if (roleEl) roleEl.textContent = payload.email;
+    }
+  }
+
+  // Wire sign-out button
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      auth.logout();
+    });
+  }
+}
+
+/**
+ * Initial load of user-tracked stocks from GET /metric/tracked
+ */
+async function loadTrackedMetrics() {
+  const auth = window.AuthService;
+  if (!auth) return;
+
+  const trackedList = await auth.getTrackedMetrics();
+  if (Array.isArray(trackedList) && trackedList.length > 0) {
+    trackedList.forEach((item) => {
+      if (item && item.symbol) {
+        trackedTickers.add(item.symbol);
+      }
+    });
+    updateTrackedTelemetry();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // 0. Route protection gate
+  const authenticated = await enforceAuthRouteGuard();
+  if (!authenticated) return;
+
   initRefreshTimer();
   initAutoScrollNavigation();
   initRightClickTracking();
@@ -53,6 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initSearch();
   initStockCardClick();
   initModalEvents();
+  initUserProfile();
+  await loadTrackedMetrics();
   fetchMarketMetrics();
 });
 
@@ -166,6 +254,15 @@ function updateTrackedTelemetry() {
       bookmarkedGrid.innerHTML = '';
 
       trackedTickers.forEach((ticker) => {
+        const cached = window.cachedStocksByTicker ? window.cachedStocksByTicker.get(ticker) : null;
+        if (cached && window.renderStockCardFromTemplate) {
+          const card = window.renderStockCardFromTemplate(cached);
+          if (card) {
+            card.classList.add('is-tracked');
+            bookmarkedGrid.appendChild(card);
+            return;
+          }
+        }
         const origCard = document.querySelector(`.category-section:not(#bookmarked) .stock-card[data-ticker="${ticker}"]`);
         if (origCard) {
           const clone = origCard.cloneNode(true);
@@ -195,13 +292,39 @@ function updateTrackedTelemetry() {
   }
 }
 
-function toggleTrack(ticker) {
-  if (trackedTickers.has(ticker)) {
+async function toggleTrack(ticker) {
+  const auth = window.AuthService;
+  const isCurrentlyTracked = trackedTickers.has(ticker);
+
+  if (isCurrentlyTracked) {
+    // Optimistic local update
     trackedTickers.delete(ticker);
+    updateTrackedTelemetry();
+
+    if (auth) {
+      const res = await auth.untrackStock(ticker);
+      if (!res.success) {
+        console.warn('Backend untrack failed:', res.error);
+        // Rollback state if server rejects
+        trackedTickers.add(ticker);
+        updateTrackedTelemetry();
+      }
+    }
   } else {
+    // Optimistic local update
     trackedTickers.add(ticker);
+    updateTrackedTelemetry();
+
+    if (auth) {
+      const res = await auth.trackStock(ticker);
+      if (!res.success) {
+        console.warn('Backend track failed:', res.error);
+        // Rollback state if server rejects
+        trackedTickers.delete(ticker);
+        updateTrackedTelemetry();
+      }
+    }
   }
-  updateTrackedTelemetry();
 }
 
 function initRightClickTracking() {
@@ -614,7 +737,14 @@ window.renderStockCardFromTemplate = function (stock) {
  */
 async function fetchMarketMetrics() {
   try {
-    const res = await fetch('/metric/');
+    const auth = window.AuthService;
+    const token = auth ? auth.getStoredToken() : null;
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await fetch('/metric/', { headers });
     if (!res.ok) {
       console.warn(`Metrics fetch error: HTTP ${res.status}`);
       return;

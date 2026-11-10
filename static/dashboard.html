@@ -126,13 +126,20 @@
 
         <!-- User Profile -->
         <div class="user-profile-row" data-node-id="45:125">
-          <div class="user-avatar" data-node-id="45:126">
-            <span data-node-id="45:127">AL</span>
+          <div class="user-avatar" id="userAvatar" data-node-id="45:126">
+            <span id="userAvatarText" data-node-id="45:127">AL</span>
           </div>
           <div class="user-info" data-node-id="45:128">
-            <span class="user-name" data-node-id="45:129">Alex Lane</span>
-            <span class="user-role" data-node-id="45:130">Analyst</span>
+            <span class="user-name" id="userName" data-node-id="45:129">Alex Lane</span>
+            <span class="user-role" id="userRole" data-node-id="45:130">Analyst</span>
           </div>
+          <button type="button" class="user-logout-btn" id="logoutBtn" title="Sign Out of Terminal" aria-label="Sign Out">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
         </div>
 
       </div>
@@ -611,6 +618,7 @@
     </div>
   </div>
 
-  <script src="/js/dashboard.js?v=5.1"></script>
+  <script src="/js/auth.js?v=1.0"></script>
+  <script src="/js/dashboard.js?v=5.2"></script>
 </body>
 </html>

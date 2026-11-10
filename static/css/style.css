@@ -1113,6 +1113,24 @@ button {
   margin-bottom: 10px;
 }
 
+.auth-error-banner {
+  display: none;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.auth-error-banner.is-visible {
+  display: block;
+}
+
 .auth-switch-prompt {
   display: flex;
   align-items: center;

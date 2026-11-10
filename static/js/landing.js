@@ -30,6 +30,17 @@
     const tabSignUp = document.getElementById('tabSignUp');
     const formSignIn = document.getElementById('formSignIn');
     const formSignUp = document.getElementById('formSignUp');
+    const signInErr = document.getElementById('signInError');
+    const signUpErr = document.getElementById('signUpError');
+
+    if (signInErr) {
+      signInErr.classList.remove('is-visible');
+      signInErr.textContent = '';
+    }
+    if (signUpErr) {
+      signUpErr.classList.remove('is-visible');
+      signUpErr.textContent = '';
+    }
 
     if (tab === 'signup') {
       if (tabSignUp) {
@@ -60,14 +71,37 @@
     }
   };
 
-  // Immediate global click delegation for any auth trigger
+  // Dedicated Launch Controller with Access Check
+  window.handleLaunchDashboard = async function (e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const auth = window.AuthService;
+    const token = auth ? auth.getStoredToken() : null;
+
+    if (token) {
+      const isValid = await auth.verifyAccess(token);
+      if (isValid) {
+        window.location.href = '/dashboard.html';
+        return;
+      }
+    }
+    // Unauthenticated or invalid token: open sign-in modal
+    window.openAuthModal('signin');
+  };
+
+  // Immediate global click delegation for any auth & launch triggers
   document.addEventListener('click', function (e) {
-    const trigger = e.target.closest('#openSignInBtn, #openSignUpBtn, [data-open-modal], a[href="#signin"], a[href="#signup"]');
-    if (trigger) {
+    const launchTrigger = e.target.closest('#openSignUpBtn, .launch-app-btn, a[href="#dashboard"]');
+    if (launchTrigger) {
       e.preventDefault();
-      const isSignUp = trigger.id === 'openSignUpBtn' ||
-                       trigger.getAttribute('href') === '#signup' ||
-                       trigger.getAttribute('data-open-modal') === 'signup';
+      window.handleLaunchDashboard(e);
+      return;
+    }
+
+    const authTrigger = e.target.closest('#openSignInBtn, [data-open-modal], a[href="#signin"], a[href="#signup"]');
+    if (authTrigger) {
+      e.preventDefault();
+      const isSignUp = authTrigger.getAttribute('href') === '#signup' ||
+                       authTrigger.getAttribute('data-open-modal') === 'signup';
       window.openAuthModal(isSignUp ? 'signup' : 'signin');
     }
   });
@@ -222,6 +256,10 @@
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      const signInErr = document.getElementById('signInError');
+      const signUpErr = document.getElementById('signUpError');
+      if (signInErr) { signInErr.classList.remove('is-visible'); signInErr.textContent = ''; }
+      if (signUpErr) { signUpErr.classList.remove('is-visible'); signUpErr.textContent = ''; }
       switchTab(tab || 'signin');
     }
 
@@ -229,6 +267,10 @@
       modal.classList.remove('is-open');
       modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      const signInErr = document.getElementById('signInError');
+      const signUpErr = document.getElementById('signUpError');
+      if (signInErr) { signInErr.classList.remove('is-visible'); signInErr.textContent = ''; }
+      if (signUpErr) { signUpErr.classList.remove('is-visible'); signUpErr.textContent = ''; }
     }
 
     function switchTab(tab) {
@@ -263,7 +305,7 @@
     if (openSignUpBtn) {
       openSignUpBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        openModal('signup');
+        window.handleLaunchDashboard(e);
       });
     }
 
@@ -299,41 +341,150 @@
       switchToSignIn.addEventListener('click', () => switchTab('signin'));
     }
 
-    // Social login simulation (Google placeholder)
+    // Google Sign-In placeholder note
     const googleSignInBtn = document.getElementById('googleSignInBtn');
     const googleSignUpBtn = document.getElementById('googleSignUpBtn');
-    [googleSignInBtn, googleSignUpBtn].forEach(btn => {
+    [googleSignInBtn, googleSignUpBtn].forEach((btn) => {
       if (!btn) return;
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const originalContent = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = `<span>Connecting to Google OAuth...</span>`;
-        setTimeout(() => {
-          btn.disabled = false;
-          btn.innerHTML = originalContent;
-          window.closeAuthModal();
-        }, 800);
-      });
-    });
-
-    // Gentle submission simulation
-    [formSignIn, formSignUp].forEach(form => {
-      if (!form) return;
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const submitBtn = form.querySelector('.auth-submit-btn');
-        if (submitBtn) {
-          const originalContent = submitBtn.innerHTML;
-          submitBtn.disabled = true;
-          submitBtn.innerHTML = `<span>Connecting to Terminal...</span>`;
-          setTimeout(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalContent;
-            window.closeAuthModal();
-          }, 800);
+        const errBanner = btn.closest('form')?.querySelector('.auth-error-banner');
+        if (errBanner) {
+          errBanner.textContent = 'Google OAuth is currently in development. Please use email credentials.';
+          errBanner.classList.add('is-visible');
         }
       });
     });
+
+    // Wire Sign-In Form (POST /user/signup)
+    if (formSignIn) {
+      formSignIn.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById('signinEmail');
+        const passwordInput = document.getElementById('signinPassword');
+        const errorBanner = document.getElementById('signInError');
+        const submitBtn = formSignIn.querySelector('.auth-submit-btn');
+
+        if (errorBanner) {
+          errorBanner.classList.remove('is-visible');
+          errorBanner.textContent = '';
+        }
+
+        const email = emailInput ? emailInput.value.trim() : '';
+        const password = passwordInput ? passwordInput.value : '';
+
+        if (!email || !password) {
+          if (errorBanner) {
+            errorBanner.textContent = 'Please provide both email and password.';
+            errorBanner.classList.add('is-visible');
+          }
+          return;
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.dataset.originalHtml = submitBtn.innerHTML;
+          submitBtn.innerHTML = '<span>Verifying credentials...</span>';
+        }
+
+        const result = await window.AuthService.signIn(email, password);
+
+        if (result.success) {
+          if (submitBtn) submitBtn.innerHTML = '<span>Authenticated. Loading Terminal...</span>';
+          window.location.href = '/dashboard.html';
+        } else {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = submitBtn.dataset.originalHtml || '<span>Access Terminal</span>';
+          }
+          if (errorBanner) {
+            errorBanner.textContent = result.error || 'Authentication failed. Please check credentials.';
+            errorBanner.classList.add('is-visible');
+          }
+        }
+      });
+    }
+
+    // Wire Registration Form (POST /user/register)
+    if (formSignUp) {
+      formSignUp.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById('signupName');
+        const emailInput = document.getElementById('signupEmail');
+        const passwordInput = document.getElementById('signupPassword');
+        const disclaimerBox = document.getElementById('signupDisclaimer');
+        const errorBanner = document.getElementById('signUpError');
+        const submitBtn = formSignUp.querySelector('.auth-submit-btn');
+
+        if (errorBanner) {
+          errorBanner.classList.remove('is-visible');
+          errorBanner.textContent = '';
+        }
+
+        const name = nameInput ? nameInput.value.trim() : '';
+        const email = emailInput ? emailInput.value.trim() : '';
+        const password = passwordInput ? passwordInput.value : '';
+        const disclaimer = disclaimerBox ? disclaimerBox.checked : false;
+
+        if (!name || name.length < 2) {
+          if (errorBanner) {
+            errorBanner.textContent = 'Name must be at least 2 characters long.';
+            errorBanner.classList.add('is-visible');
+          }
+          if (nameInput) nameInput.focus();
+          return;
+        }
+
+        if (!email) {
+          if (errorBanner) {
+            errorBanner.textContent = 'Please enter a valid email address.';
+            errorBanner.classList.add('is-visible');
+          }
+          if (emailInput) emailInput.focus();
+          return;
+        }
+
+        // Validate backend password pattern: min 8, lower, upper, digit, special char
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{8,50}$/;
+        if (!passwordPattern.test(password)) {
+          if (errorBanner) {
+            errorBanner.textContent = 'Password must be 8-50 characters with at least one uppercase letter, one lowercase letter, one digit, and one special symbol.';
+            errorBanner.classList.add('is-visible');
+          }
+          if (passwordInput) passwordInput.focus();
+          return;
+        }
+
+        if (!disclaimer) {
+          if (errorBanner) {
+            errorBanner.textContent = 'Please acknowledge that MarketPulse provides telemetry data, not investment advice.';
+            errorBanner.classList.add('is-visible');
+          }
+          return;
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.dataset.originalHtml = submitBtn.innerHTML;
+          submitBtn.innerHTML = '<span>Registering account...</span>';
+        }
+
+        const result = await window.AuthService.register(name, email, password);
+
+        if (result.success) {
+          if (submitBtn) submitBtn.innerHTML = '<span>Registration verified. Redirecting...</span>';
+          window.location.href = '/dashboard.html';
+        } else {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = submitBtn.dataset.originalHtml || '<span>Initialize Account</span>';
+          }
+          if (errorBanner) {
+            errorBanner.textContent = result.error || 'Registration failed.';
+            errorBanner.classList.add('is-visible');
+          }
+        }
+      });
+    }
   }
 })();
