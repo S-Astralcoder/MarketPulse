@@ -24,7 +24,7 @@ jobs:
               run: uvx ruff format --check src
 
             - name: Ruff Linter
-              run: uvx ruff check --output-format=github src
+              run: uvx ruff check src
 
     pyright:
         name: Pyright TypeChecker
