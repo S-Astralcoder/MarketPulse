@@ -29,7 +29,7 @@ class VolitilityStatus(Enum):
 
 class SignInPayload(BaseModel):
     model_config = ConfigDict(regex_engine="python-re")
-    name: str = Field(min_length=2)
+    email: EmailStr = Field(min_length=8)
     password: str = Field(
         min_length=8,
         max_length=50,
@@ -38,4 +38,4 @@ class SignInPayload(BaseModel):
 
 
 class RegisterPayload(SignInPayload):
-    email: EmailStr = Field(min_length=8)
+    name: str = Field(min_length=2)

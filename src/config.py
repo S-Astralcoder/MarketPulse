@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,8 +11,12 @@ class ConfigSettings(BaseSettings):
     CORN_JOB_HOUR: int | None = None
     CORN_JOB_DAY: int | None = None
 
+    JWT_SECRET: str = Field(min_length=10)
+    JWT_EXPIRE_DAYS: int = 30
+    JWT_ALGO: str = "HS256"
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 def get_config_settings() -> ConfigSettings:
-    return ConfigSettings()
+    return ConfigSettings()  # pyright: ignore[reportCallIssue]

@@ -83,6 +83,16 @@ class User(Base):
     __table_args__ = (UniqueConstraint("username", "email"),)
 
 
+class Session(Base):
+    __tablename__ = "session"
+
+    uuid: Mapped[UUID] = mapped_column(
+        Uuid, default=uuid4, primary_key=True, nullable=False
+    )
+    token: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    expire_date: Mapped[datetime] = mapped_column(nullable=False)
+
+
 class Stock(Base):
     __tablename__ = "stock"
 
