@@ -1,13 +1,10 @@
-import zoneinfo
-from datetime import datetime
-from typing import Annotated, Literal
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import StockMetrics, get_db
-from src.model import RiskLevel
 
 metrics = APIRouter(prefix="/metric", tags=["metric"])
 
