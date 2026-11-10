@@ -16,6 +16,8 @@ async def get_market_metrics(
     lastest_date = await db.scalar(
         select(StockMetrics.created_at).order_by(StockMetrics.created_at.desc())
     )
+    if lastest_date is None:
+        return
     data = await db.scalars(
         select(StockMetrics).where(StockMetrics.created_at >= lastest_date)
     )
