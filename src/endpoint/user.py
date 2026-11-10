@@ -2,7 +2,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from src.database import AsyncSession, get_db
+from service.user_security import get_signed_in_user
+from src.database import AsyncSession, User, get_db
 from src.model import RegisterPayload, SignInPayload
 from src.service.user_service import register_user, signin_user
 
@@ -23,3 +24,13 @@ async def signup(
 ) -> dict[str, str]:
     token = await signin_user(signin=signin, db=db)
     return {"access_token": token, "token_type": "Bearer"}
+
+
+@user_router.get("/info")
+async def user_info(
+    user_data: Annotated[User, Depends(get_signed_in_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    del user_data.hash_password
+    del user_data.google_id
+    return user_data
