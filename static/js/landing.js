@@ -110,6 +110,7 @@
   function boot() {
     initLandingNavigation();
     initAuthModal();
+    initShowcaseSwiper();
   }
 
   if (document.readyState === 'loading') {
@@ -486,5 +487,143 @@
         }
       });
     }
+  }
+
+  // --- Interactive Terminal Showcase Swiper Controller ---
+  function initShowcaseSwiper() {
+    const track = document.getElementById('showcaseTrack');
+    const viewport = document.getElementById('showcaseViewport');
+    const prevBtn = document.getElementById('showcasePrevBtn');
+    const nextBtn = document.getElementById('showcaseNextBtn');
+    const tabs = Array.from(document.querySelectorAll('.showcase-tab'));
+    const dots = Array.from(document.querySelectorAll('.showcase-dot'));
+
+    if (!track || !viewport) return;
+
+    let currentIndex = 0;
+    const totalSlides = 4;
+    let autoplayTimer = null;
+
+    function goToSlide(index) {
+      if (index < 0) index = totalSlides - 1;
+      if (index >= totalSlides) index = 0;
+
+      currentIndex = index;
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+      tabs.forEach((tab, i) => {
+        tab.classList.toggle('active', i === currentIndex);
+      });
+
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        goToSlide(currentIndex - 1);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        goToSlide(currentIndex + 1);
+      });
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const slideIdx = parseInt(tab.getAttribute('data-slide') || '0', 10);
+        goToSlide(slideIdx);
+      });
+    });
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const slideIdx = parseInt(dot.getAttribute('data-slide') || '0', 10);
+        goToSlide(slideIdx);
+      });
+    });
+
+    // Touch Swipe Gesture Support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    viewport.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      pauseAutoplay();
+    }, { passive: true });
+
+    viewport.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+      resumeAutoplay();
+    }, { passive: true });
+
+    function handleGesture() {
+      const deltaX = touchStartX - touchEndX;
+      if (Math.abs(deltaX) > 40) {
+        if (deltaX > 0) {
+          goToSlide(currentIndex + 1);
+        } else {
+          goToSlide(currentIndex - 1);
+        }
+      }
+    }
+
+    // Mouse Drag Gesture Support
+    let isMouseDown = false;
+    let mouseStartX = 0;
+
+    viewport.addEventListener('mousedown', (e) => {
+      isMouseDown = true;
+      mouseStartX = e.clientX;
+      pauseAutoplay();
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (!isMouseDown) return;
+      isMouseDown = false;
+      const mouseDeltaX = mouseStartX - e.clientX;
+      if (Math.abs(mouseDeltaX) > 45) {
+        if (mouseDeltaX > 0) {
+          goToSlide(currentIndex + 1);
+        } else {
+          goToSlide(currentIndex - 1);
+        }
+      }
+      resumeAutoplay();
+    });
+
+    // Subtle Autoplay (cycles every 6.5s, pauses on hover)
+    function startAutoplay() {
+      stopAutoplay();
+      autoplayTimer = setInterval(() => {
+        goToSlide(currentIndex + 1);
+      }, 6500);
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+
+    function pauseAutoplay() {
+      stopAutoplay();
+    }
+
+    function resumeAutoplay() {
+      startAutoplay();
+    }
+
+    viewport.addEventListener('mouseenter', pauseAutoplay);
+    viewport.addEventListener('mouseleave', resumeAutoplay);
+
+    startAutoplay();
   }
 })();

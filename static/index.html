@@ -7,7 +7,7 @@
   <meta name="description" content="MarketPulse delivers objective market signals, volatility tracking, and risk warnings. No price predictions. No trade calls. We show the data, you make the decisions.">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=2.6">
+  <link rel="stylesheet" href="/css/style.css?v=2.7">
 </head>
 <body data-node-id="15:9" data-name="index.html">
 
@@ -255,24 +255,328 @@
     </section>
 
     <!-- =========================================================================
-         4. "UI display" Showcase (Figma 15:42) — Reserved Space
+         4. "UI display" Showcase — Interactive Swiping Terminal
          ========================================================================= -->
     <section class="ui-display-section snap-section" id="ui-display" data-node-id="15:42" data-name="UI display">
       <div class="container" data-node-id="15:43" data-name="Rectangle 27">
-        <div class="ui-placeholder-container">
-          <h3 class="placeholder-title">Platform Dashboard</h3>
-          <p class="placeholder-desc">
-            4-Factor risk telemetry dashboard: market regimes, asset telemetry, and trend strength.
-          </p>
-          <div style="margin-top: 18px;">
-            <a href="/dashboard.html" class="btn btn-primary launch-app-btn" id="openLiveDashboardBtn" style="display: inline-flex; align-items: center; gap: 8px;">
-              Open Live Dashboard
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
-              </svg>
-            </a>
+        
+        <div class="showcase-dashboard-wrap">
+          <div class="showcase-header">
+            <div class="showcase-badge">Live Interactive Telemetry</div>
+            <h2 class="section-title">Institutional Telemetry Dashboard</h2>
+            <p class="section-subtitle">
+              Explore mathematical volatility envelopes, 4-factor risk classification, and regime diagnostics across 20+ tracked assets.
+            </p>
+          </div>
+
+          <!-- Terminal Window Frame -->
+          <div class="showcase-window" id="showcaseDashboard">
+            <!-- Window Top Chrome -->
+            <div class="window-chrome">
+              <div class="window-controls">
+                <span class="ctrl-dot red"></span>
+                <span class="ctrl-dot yellow"></span>
+                <span class="ctrl-dot green"></span>
+              </div>
+              <div class="window-title-tab">
+                <span class="live-indicator-dot"></span>
+                <span>MarketPulse Terminal — Live Telemetry v2.8</span>
+              </div>
+              <div class="showcase-tabs" role="tablist">
+                <button type="button" class="showcase-tab active" data-slide="0">Asset Overview</button>
+                <button type="button" class="showcase-tab" data-slide="1">4-Factor Engine</button>
+                <button type="button" class="showcase-tab" data-slide="2">Regime Clusters</button>
+                <button type="button" class="showcase-tab" data-slide="3">Deep Inspection</button>
+              </div>
+            </div>
+
+            <!-- Viewport Slider -->
+            <div class="showcase-viewport" id="showcaseViewport">
+              <div class="showcase-track" id="showcaseTrack">
+                
+                <!-- Slide 0: Live Asset Grid -->
+                <div class="showcase-slide">
+                  <div class="slide-grid-cards">
+                    <!-- Mini Card 1 -->
+                    <div class="mini-stock-card">
+                      <div class="mini-card-header">
+                        <div class="mini-card-left">
+                          <div class="mini-card-logo">RE</div>
+                          <div class="mini-card-meta">
+                            <span class="mini-card-name">Reliance Industries</span>
+                            <span class="mini-card-ticker">RELIANCE.NS</span>
+                          </div>
+                        </div>
+                        <span class="mini-risk-badge low">Risk 14/100</span>
+                      </div>
+                      <div class="mini-card-price-row">
+                        <span class="mini-card-price">₹1,274.50</span>
+                        <span class="mini-card-delta pos">+1.20%</span>
+                      </div>
+                      <div class="mini-card-factors">
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">RSI (14)</span>
+                          <span class="mini-factor-val">54.2 <span>BAL</span></span>
+                        </div>
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">ATR Volatility</span>
+                          <span class="mini-factor-val">1.15x <span>NRM</span></span>
+                        </div>
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">EMA (50)</span>
+                          <span class="mini-factor-val">₹1,262 <span>BULL</span></span>
+                        </div>
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">Strength (ADX)</span>
+                          <span class="mini-factor-val">28.4% <span>STR</span></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Mini Card 2 -->
+                    <div class="mini-stock-card">
+                      <div class="mini-card-header">
+                        <div class="mini-card-left">
+                          <div class="mini-card-logo">TC</div>
+                          <div class="mini-card-meta">
+                            <span class="mini-card-name">Tata Consultancy</span>
+                            <span class="mini-card-ticker">TCS.NS</span>
+                          </div>
+                        </div>
+                        <span class="mini-risk-badge low">Risk 18/100</span>
+                      </div>
+                      <div class="mini-card-price-row">
+                        <span class="mini-card-price">₹3,920.00</span>
+                        <span class="mini-card-delta neg">-0.45%</span>
+                      </div>
+                      <div class="mini-card-factors">
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">RSI (14)</span>
+                          <span class="mini-factor-val">48.0 <span>BAL</span></span>
+                        </div>
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">ATR Volatility</span>
+                          <span class="mini-factor-val">0.92x <span>NRM</span></span>
+                        </div>
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">EMA (50)</span>
+                          <span class="mini-factor-val">₹3,935 <span>NEUT</span></span>
+                        </div>
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">Strength (ADX)</span>
+                          <span class="mini-factor-val">21.0% <span>MOD</span></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Mini Card 3 -->
+                    <div class="mini-stock-card">
+                      <div class="mini-card-header">
+                        <div class="mini-card-left">
+                          <div class="mini-card-logo">SM</div>
+                          <div class="mini-card-meta">
+                            <span class="mini-card-name">Super Micro Computer</span>
+                            <span class="mini-card-ticker">SMCI</span>
+                          </div>
+                        </div>
+                        <span class="mini-risk-badge high">Risk 68/100</span>
+                      </div>
+                      <div class="mini-card-price-row">
+                        <span class="mini-card-price">$42.50</span>
+                        <span class="mini-card-delta pos">+4.80%</span>
+                      </div>
+                      <div class="mini-card-factors">
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">RSI (14)</span>
+                          <span class="mini-factor-val">67.5 <span>OB</span></span>
+                        </div>
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">ATR Volatility</span>
+                          <span class="mini-factor-val">2.14x <span>ELV</span></span>
+                        </div>
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">EMA (50)</span>
+                          <span class="mini-factor-val">$39.80 <span>BULL</span></span>
+                        </div>
+                        <div class="mini-factor-box">
+                          <span class="mini-factor-label">Strength (ADX)</span>
+                          <span class="mini-factor-val">36.8% <span>STR</span></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 1: 4-Factor Matrix -->
+                <div class="showcase-slide">
+                  <div class="slide-factor-matrix">
+                    <div class="factor-feature-card">
+                      <span class="factor-card-num">01 / MOMENTUM</span>
+                      <h4 class="factor-card-title">RSI (14) Velocity</h4>
+                      <p class="factor-card-desc">Measures internal price velocity, identifying true exhaustion vs healthy continuation.</p>
+                      <div class="factor-card-stat">
+                        <span>Wilder Envelope</span>
+                        <span style="color: #52B788;">Balanced 54.2</span>
+                      </div>
+                    </div>
+                    <div class="factor-feature-card">
+                      <span class="factor-card-num">02 / DISPERSION</span>
+                      <h4 class="factor-card-title">ATR Volatility</h4>
+                      <p class="factor-card-desc">Calculates dynamic true range expansion across rolling historical volatility baselines.</p>
+                      <div class="factor-card-stat">
+                        <span>Expansion Ratio</span>
+                        <span style="color: var(--accent-purple-hover);">1.15x Normal</span>
+                      </div>
+                    </div>
+                    <div class="factor-feature-card">
+                      <span class="factor-card-num">03 / STRUCTURAL</span>
+                      <h4 class="factor-card-title">EMA Dual Horizon</h4>
+                      <p class="factor-card-desc">Detects directional drift and multi-timeframe divergence without lagging indicators.</p>
+                      <div class="factor-card-stat">
+                        <span>20 / 50 Cross</span>
+                        <span style="color: #52B788;">Bullish Drift</span>
+                      </div>
+                    </div>
+                    <div class="factor-feature-card">
+                      <span class="factor-card-num">04 / CONVICTION</span>
+                      <h4 class="factor-card-title">Wilder's ADX</h4>
+                      <p class="factor-card-desc">Quantifies trend strength independent of price direction, isolating choppy regimes.</p>
+                      <div class="factor-card-stat">
+                        <span>Directional Power</span>
+                        <span style="color: #52B788;">32% Strong</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 2: Regime Clusters -->
+                <div class="showcase-slide">
+                  <div class="slide-regimes-view">
+                    <div class="regime-clusters-list">
+                      <div class="regime-item">
+                        <div class="regime-left">
+                          <span class="regime-dot bullish"></span>
+                          <span class="regime-name">Trending Momentum Equities</span>
+                        </div>
+                        <span class="regime-count">6 Active Stocks</span>
+                      </div>
+                      <div class="regime-item">
+                        <div class="regime-left">
+                          <span class="regime-dot steady"></span>
+                          <span class="regime-name">Top Prominence Bellwethers</span>
+                        </div>
+                        <span class="regime-count">14 High Liquid</span>
+                      </div>
+                      <div class="regime-item">
+                        <div class="regime-left">
+                          <span class="regime-dot elevated"></span>
+                          <span class="regime-name">Elevated Volatility Air Pockets</span>
+                        </div>
+                        <span class="regime-count">5 High Turbulence</span>
+                      </div>
+                      <div class="regime-item">
+                        <div class="regime-left">
+                          <span class="regime-dot neutral"></span>
+                          <span class="regime-name">Capital Preservation Safe Havens</span>
+                        </div>
+                        <span class="regime-count">4 Low Volatility</span>
+                      </div>
+                    </div>
+                    <div class="regime-info-block">
+                      <h4 class="regime-info-title">Zero Guesswork. Strict Physics.</h4>
+                      <p class="regime-info-text">
+                        Every asset is objectively clustered into mathematical risk categories. No trading recommendations or subjective speculation.
+                      </p>
+                      <div class="regime-metric-pill-row">
+                        <span class="regime-pill">20 Equities</span>
+                        <span class="regime-pill">Hourly IST Sync</span>
+                        <span class="regime-pill">0 Delay Bias</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slide 3: Deep Inspection -->
+                <div class="showcase-slide">
+                  <div class="slide-deep-inspect">
+                    <div class="inspect-gauge-box">
+                      <svg class="inspect-gauge-svg" viewBox="0 0 200 110">
+                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#241D38" stroke-width="12" stroke-linecap="round"/>
+                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#52B788" stroke-width="12" stroke-linecap="round" stroke-dasharray="251.327" stroke-dashoffset="216.14"/>
+                      </svg>
+                      <span class="inspect-score-val">14<span style="font-size: 0.9rem; color: var(--text-muted);">/100</span></span>
+                      <span class="inspect-score-lbl">LOW RISK REGIME</span>
+                    </div>
+                    <div class="inspect-details-col">
+                      <div class="inspect-title-row">
+                        <h4 class="inspect-title">RELIANCE.NS • Energy Core</h4>
+                        <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">Snapshot: Hourly IST</span>
+                      </div>
+                      <div class="inspect-bars-wrap">
+                        <div class="inspect-bar-item">
+                          <div class="inspect-bar-header">
+                            <span>Volatility Stability</span>
+                            <span>86% Optimal</span>
+                          </div>
+                          <div class="inspect-bar-track"><div class="inspect-bar-fill" style="width: 86%;"></div></div>
+                        </div>
+                        <div class="inspect-bar-item">
+                          <div class="inspect-bar-header">
+                            <span>Trend Directional Conviction</span>
+                            <span>78% Strong</span>
+                          </div>
+                          <div class="inspect-bar-track"><div class="inspect-bar-fill" style="width: 78%;"></div></div>
+                        </div>
+                        <div class="inspect-bar-item">
+                          <div class="inspect-bar-header">
+                            <span>Momentum Equilibrium (RSI)</span>
+                            <span>92% Balanced</span>
+                          </div>
+                          <div class="inspect-bar-track"><div class="inspect-bar-fill" style="width: 92%;"></div></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Showcase Window Footer Controls -->
+            <div class="showcase-footer">
+              <div class="showcase-arrows">
+                <button type="button" class="showcase-arrow" id="showcasePrevBtn" title="Previous View" aria-label="Previous">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+                <button type="button" class="showcase-arrow" id="showcaseNextBtn" title="Next View" aria-label="Next">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="showcase-dots" id="showcaseDots">
+                <span class="showcase-dot active" data-slide="0"></span>
+                <span class="showcase-dot" data-slide="1"></span>
+                <span class="showcase-dot" data-slide="2"></span>
+                <span class="showcase-dot" data-slide="3"></span>
+              </div>
+
+              <div class="showcase-action">
+                <a href="/dashboard.html" class="btn btn-primary btn-sm launch-app-btn" style="padding: 6px 14px; font-size: 0.78rem;">
+                  <span>Launch Live Terminal</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
     </section>
 
@@ -351,10 +655,11 @@
         </div>
 
         <div class="pricing-grid">
-          <!-- Mock Card 1 (Figma 15:38) -->
-          <div class="pricing-card" data-node-id="15:38" data-name="Rectangle 23">
+          <!-- Mock Card 1: Free Tier (Active) -->
+          <div class="pricing-card is-free-tier" data-node-id="15:38" data-name="Rectangle 23">
+            <span class="featured-badge active-tier">Active • Free Tier</span>
             <h3 class="pricing-plan-name">Observer</h3>
-            <p class="pricing-plan-desc">For passive market participants monitoring broad safety states.</p>
+            <p class="pricing-plan-desc">Full access to live 4-factor regimes, volatility envelopes, and hourly telemetry feeds.</p>
             <div class="pricing-price-wrap">
               <span class="pricing-amount">Free</span>
               <span class="pricing-period">forever</span>
@@ -364,32 +669,44 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20 6L9 17l-5-5"/>
                 </svg>
-                <span>End-of-day market regime updates</span>
+                <span>Full real-time 4-factor risk score engine</span>
               </li>
               <li class="pricing-feature-item">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20 6L9 17l-5-5"/>
                 </svg>
-                <span>Top 10 index volatility scores</span>
+                <span>Hourly Indian Standard Time (IST) auto-refresh</span>
               </li>
               <li class="pricing-feature-item">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20 6L9 17l-5-5"/>
                 </svg>
-                <span>Standard watchlist (5 symbols)</span>
+                <span>Full inspection drawer with radial SVG gauge</span>
+              </li>
+              <li class="pricing-feature-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span>Dynamic bookmark & portfolio watchlist tracking</span>
               </li>
             </ul>
-            <button class="btn btn-secondary" disabled>Current Baseline</button>
+            <button type="button" class="btn btn-primary launch-app-btn">Access Free Terminal</button>
           </div>
 
-          <!-- Mock Card 2 (Figma 15:39 - Featured) -->
-          <div class="pricing-card featured" data-node-id="15:39" data-name="Rectangle 24">
-            <span class="featured-badge">Standard</span>
+          <!-- Mock Card 2: Active Trader (Paid - Crossed Pattern / Not For Sale) -->
+          <div class="pricing-card featured is-crossed" data-node-id="15:39" data-name="Rectangle 24">
+            <div class="not-for-sale-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              <span>Not For Sale</span>
+            </div>
             <h3 class="pricing-plan-name">Active Trader</h3>
-            <p class="pricing-plan-desc">Full real-time signal diagnostics and risk zone sorting.</p>
+            <p class="pricing-plan-desc">Speculative tier disabled. All analytics remain freely accessible to everyone.</p>
             <div class="pricing-price-wrap">
-              <span class="pricing-amount">$29</span>
-              <span class="pricing-period">/ month (Planned)</span>
+              <span class="pricing-amount" style="text-decoration: line-through; opacity: 0.6;">$29</span>
+              <span class="pricing-period">/ month (Unavailable)</span>
             </div>
             <ul class="pricing-features">
               <li class="pricing-feature-item">
@@ -417,16 +734,23 @@
                 <span>Custom threshold triggers</span>
               </li>
             </ul>
-            <button class="btn btn-primary" disabled>Coming Soon</button>
+            <button class="btn btn-disabled-crossed" disabled>Not For Sale • Free Access</button>
           </div>
 
-          <!-- Mock Card 3 (Figma 15:40) -->
-          <div class="pricing-card" data-node-id="15:40" data-name="Rectangle 25">
+          <!-- Mock Card 3: Institutional (Paid - Crossed Pattern / Not For Sale) -->
+          <div class="pricing-card is-crossed" data-node-id="15:40" data-name="Rectangle 25">
+            <div class="not-for-sale-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              <span>Not For Sale</span>
+            </div>
             <h3 class="pricing-plan-name">Institutional</h3>
-            <p class="pricing-plan-desc">Direct programmatic access to the risk evaluation engine.</p>
+            <p class="pricing-plan-desc">Enterprise tier locked. Open financial telemetry is distributed without paywalls.</p>
             <div class="pricing-price-wrap">
-              <span class="pricing-amount">Custom</span>
-              <span class="pricing-period">/ annual</span>
+              <span class="pricing-amount" style="text-decoration: line-through; opacity: 0.6;">Custom</span>
+              <span class="pricing-period">/ annual (Unavailable)</span>
             </div>
             <ul class="pricing-features">
               <li class="pricing-feature-item">
@@ -448,7 +772,7 @@
                 <span>Dedicated SLA & enterprise support</span>
               </li>
             </ul>
-            <button class="btn btn-secondary" disabled>Inquire</button>
+            <button class="btn btn-disabled-crossed" disabled>Not For Sale • Open Source</button>
           </div>
         </div>
       </div>
@@ -691,6 +1015,6 @@
   </div>
 
   <script src="/js/auth.js?v=1.0"></script>
-  <script src="/js/landing.js?v=2.7"></script>
+  <script src="/js/landing.js?v=2.8"></script>
 </body>
 </html>
