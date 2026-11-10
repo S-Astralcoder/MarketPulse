@@ -184,7 +184,9 @@ def compute_market_pulse(df: pd.DataFrame) -> dict[str, Any]:
     regime_risk = min(100.0, adx_chop_score + conflict_score)
 
     # Weighted composite score clamped to [0, 100]
-    composite_risk = (0.40 * trend_risk) + (0.35 * volatility_risk) + (0.25 * regime_risk)
+    composite_risk = (
+        (0.40 * trend_risk) + (0.35 * volatility_risk) + (0.25 * regime_risk)
+    )
     risk_score = round(min(100.0, max(0.0, composite_risk)))
 
     if risk_score <= 34:
