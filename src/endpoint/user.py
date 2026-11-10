@@ -2,9 +2,15 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
+<<<<<<< HEAD
 from src.database import AsyncSession, get_db
 from src.model import RegisterPayload, SignInPayload
 from src.service.user_service import register_user, sigin_user
+=======
+from src.service.user_service import register_user, sigin_user
+from src.database import AsyncSession, get_db
+from src.model import RegisterPayload, SignInPayload
+>>>>>>> dfedc1209474304fef47f3661f02b7b6fd975419
 
 user_router = APIRouter(prefix="/user", tags=["user"])
 
