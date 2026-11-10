@@ -1,11 +1,8 @@
 from fastapi import APIRouter
 
-from model import RegisterPayload, SignInPayload
+from src.model import RegisterPayload, SignInPayload
 
 user_router = APIRouter(prefix="/user", tags=["user"])
-
-
-# TODO: Later Implement user authentication code
 
 
 @user_router.post("/register")

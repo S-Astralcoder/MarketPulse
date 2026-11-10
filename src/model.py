@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class Trend(Enum):
@@ -28,9 +28,11 @@ class VolitilityStatus(Enum):
 
 
 class SignInPayload(BaseModel):
+    model_config = ConfigDict(regex_engine="python-re")
     name: str = Field(min_length=2)
     password: str = Field(
         min_length=8,
+        max_length=50,
         pattern=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).+$",
     )
 

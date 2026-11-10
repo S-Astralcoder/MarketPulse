@@ -1,20 +1,21 @@
-"""Inilization of database
+"""Added google_id and picture_url and removed the non nullable constraint for hass_password and inialized new database
 
-Revision ID: 256191ac8870
+Revision ID: a9fac6095121
 Revises: 
-Create Date: 2026-11-09 12:21:24.723499
+Create Date: 2026-11-10 10:19:22.103278
 
 """
-from collections.abc import Sequence
+from typing import Sequence, Union
 
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision: str = '256191ac8870'
-down_revision: str | Sequence[str] | None = None
-branch_labels: str | Sequence[str] | None = None
-depends_on: str | Sequence[str] | None = None
+revision: str = 'a9fac6095121'
+down_revision: Union[str, Sequence[str], None] = None
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
@@ -38,7 +39,7 @@ def upgrade() -> None:
     sa.Column('ema_slow', sa.Integer(), nullable=False),
     sa.Column('trend_direction', sa.Enum('BULLISH', 'NEUTRAL', 'BEARISH', name='trend'), nullable=False),
     sa.Column('adx', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('uuid', name=op.f('pk_metrics'))
     )
     op.create_table('stock',
@@ -53,13 +54,16 @@ def upgrade() -> None:
     )
     op.create_table('user',
     sa.Column('uuid', sa.Uuid(), nullable=False),
+    sa.Column('google_id', sa.String(length=50), nullable=True),
+    sa.Column('picture_url', sa.String(length=500), nullable=True),
     sa.Column('username', sa.String(length=100), nullable=False),
     sa.Column('email', sa.String(length=254), nullable=False),
-    sa.Column('hash_password', sa.String(length=100), nullable=False),
+    sa.Column('hash_password', sa.String(length=100), nullable=True),
     sa.Column('created_date', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('updated_date', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('uuid', name=op.f('pk_user')),
     sa.UniqueConstraint('email', name=op.f('uq_user_email')),
+    sa.UniqueConstraint('google_id', name=op.f('uq_user_google_id')),
     sa.UniqueConstraint('username', 'email', name=op.f('uq_user_username'))
     )
     # ### end Alembic commands ###

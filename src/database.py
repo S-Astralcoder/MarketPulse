@@ -65,9 +65,14 @@ class User(Base):
     uuid: Mapped[UUID] = mapped_column(
         Uuid, default=uuid4, primary_key=True, nullable=False
     )
+
+    google_id: Mapped[str | None] = mapped_column(
+        String(50), unique=True, nullable=True
+    )
+    picture_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     username: Mapped[str] = mapped_column(String(100), nullable=False)
     email: Mapped[EmailStr] = mapped_column(String(254), unique=True, nullable=False)
-    hash_password: Mapped[str] = mapped_column(String(100), nullable=False)
+    hash_password: Mapped[str | None] = mapped_column(String(100), nullable=True)
     created_date: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
