@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 
+from model import RegisterPayload, SignInPayload
+
 user_router = APIRouter(prefix="/user", tags=["user"])
 
 
@@ -7,12 +9,12 @@ user_router = APIRouter(prefix="/user", tags=["user"])
 
 
 @user_router.post("/register")
-def register():
+def register(register: RegisterPayload):
     pass
 
 
 @user_router.post("/signup")
-def signup():
+def signup(sigin: SignInPayload):
     pass
 
 
