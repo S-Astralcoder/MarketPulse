@@ -80,15 +80,19 @@
         return false;
       }
 
-      // 2. Server-side validation check
+      // 2. Server-side validation check via POST /user/access
       try {
         const res = await fetch('/user/access', {
-          method: 'GET',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${activeToken}`,
             'x-access-token': activeToken
-          }
+          },
+          body: JSON.stringify({
+            access_token: activeToken,
+            token_type: 'Bearer'
+          })
         });
 
         if (res.ok) {
@@ -102,16 +106,9 @@
           return false;
         }
 
-        // 422: FastAPI schema mismatch when FastAPI expects body on GET
-        if (res.status === 422) {
-          console.warn('Backend /user/access returned 422 (FastAPI expects body on GET). Allowing session based on verified unexpired JWT.');
-          return true;
-        }
-
         return false;
       } catch (err) {
         console.warn('Network error during verifyAccess:', err);
-        // Fallback to local JWT expiration check if offline/network hiccup
         return !this.isTokenExpired(activeToken);
       }
     },
@@ -180,7 +177,7 @@
     },
 
     /**
-     * Fetch user profile info via GET /user/info
+     * Fetch user profile info via POST /user/info
      */
     async getUserInfo() {
       const token = this.getStoredToken();
@@ -188,11 +185,15 @@
 
       try {
         const res = await fetch('/user/info', {
-          method: 'GET',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-          }
+          },
+          body: JSON.stringify({
+            access_token: token,
+            token_type: 'Bearer'
+          })
         });
         if (!res.ok) return null;
         return await res.json();
@@ -262,7 +263,7 @@
     },
 
     /**
-     * Fetch tracked stock metrics via GET /metric/tracked
+     * Fetch tracked stock metrics via POST /metric/tracked
      */
     async getTrackedMetrics() {
       const token = this.getStoredToken();
@@ -270,11 +271,15 @@
 
       try {
         const res = await fetch('/metric/tracked', {
-          method: 'GET',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-          }
+          },
+          body: JSON.stringify({
+            access_token: token,
+            token_type: 'Bearer'
+          })
         });
 
         if (!res.ok) return [];

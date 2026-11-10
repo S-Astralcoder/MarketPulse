@@ -744,7 +744,14 @@ async function fetchMarketMetrics() {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const res = await fetch('/metric/', { headers });
+    const res = await fetch('/metric/', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        access_token: token,
+        token_type: 'Bearer'
+      })
+    });
     if (!res.ok) {
       console.warn(`Metrics fetch error: HTTP ${res.status}`);
       return;
