@@ -145,23 +145,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /**
- * 1. Fixed Monospaced Refresh Timer Tick & Auto-Fetch
+ * 1. Clock-Synchronized IST Hourly Refresh Countdown & Auto-Fetch Trigger
+ * Synchronizes with Indian Standard Time (UTC+05:30) top-of-the-hour (:00:00 IST).
  */
 function initRefreshTimer() {
   const timerEl = document.getElementById('refreshTimer');
   if (!timerEl) return;
 
-  let secondsLeft = 42;
+  const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+  const HOUR_MS = 60 * 60 * 1000;
 
-  setInterval(() => {
-    secondsLeft--;
-    if (secondsLeft < 0) {
-      secondsLeft = 42;
+  let lastExecutedHourKey = Math.floor((Date.now() + IST_OFFSET_MS) / HOUR_MS);
+
+  function updateTimer() {
+    const now = Date.now();
+    const currentHourKey = Math.floor((now + IST_OFFSET_MS) / HOUR_MS);
+
+    // If an IST top-of-the-hour boundary was crossed, refresh market telemetry
+    if (currentHourKey > lastExecutedHourKey) {
+      lastExecutedHourKey = currentHourKey;
       fetchMarketMetrics();
     }
-    const formattedSec = secondsLeft < 10 ? `0${secondsLeft}` : `${secondsLeft}`;
-    timerEl.textContent = `00:${formattedSec}`;
-  }, 1000);
+
+    const msInHour = (now + IST_OFFSET_MS) % HOUR_MS;
+    const msRemaining = HOUR_MS - msInHour;
+    const totalSec = Math.floor(msRemaining / 1000);
+    const mins = Math.floor(totalSec / 60);
+    const secs = totalSec % 60;
+
+    const formattedMins = mins < 10 ? `0${mins}` : `${mins}`;
+    const formattedSecs = secs < 10 ? `0${secs}` : `${secs}`;
+    timerEl.textContent = `${formattedMins}:${formattedSecs}`;
+  }
+
+  // Initial immediate tick, then repeat every second
+  updateTimer();
+  setInterval(updateTimer, 1000);
 }
 
 /**
