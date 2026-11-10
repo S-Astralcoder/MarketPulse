@@ -498,10 +498,19 @@ function openStockDetailModal(stock) {
   // Panel 04: Regime & Directional Strength
   document.getElementById('modalAdx').textContent = stock.adx;
   const adxBadge = document.getElementById('modalAdxStrengthBadge');
-  adxBadge.textContent = stock.adx >= 25 ? 'STRONG TREND' : 'RANGEBOUND';
-  adxBadge.className = `hierarchy-badge ${stock.adx >= 25 ? 'strong' : 'moderate'}`;
+  const isStrongTrend = stock.adx >= 25;
+  adxBadge.textContent = isStrongTrend ? 'STRONG TREND' : 'RANGEBOUND';
+  adxBadge.className = `hierarchy-badge ${isStrongTrend ? 'strong' : 'moderate'}`;
+  
+  const adxCharEl = document.getElementById('modalAdxChar');
+  if (adxCharEl) {
+    adxCharEl.textContent = isStrongTrend ? 'Trending Market' : 'Consolidation / Range';
+  }
+  
   document.getElementById('modalAdxDesc').textContent = 
-    stock.adx >= 25 ? "Wilder's ADX indicates persistent directional trend velocity." : "Wilder's ADX indicates low directional conviction / consolidation.";
+    isStrongTrend 
+      ? "Wilder's ADX indicates persistent directional trend velocity." 
+      : "Wilder's ADX indicates low directional conviction / consolidation.";
 
   // Metadata Footer
   document.getElementById('modalUpdatedTime').textContent = `Snapshot: ${stock.updatedAt}`;

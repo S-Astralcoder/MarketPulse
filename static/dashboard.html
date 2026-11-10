@@ -473,17 +473,17 @@
 
           <div class="hierarchical-grid">
             
-            <!-- 1. Trend & Moving Averages -->
+            <!-- 1. Trend Architecture -->
             <div class="hierarchy-card">
               <div class="hierarchy-card-head">
-                <div class="head-num">01</div>
-                <div class="head-title-wrap">
+                <div class="head-left-wrap">
+                  <span class="head-num">01</span>
                   <span class="head-title">Trend Architecture</span>
                   <span class="head-subtitle">40% Composite Weight</span>
                 </div>
                 <span class="hierarchy-badge" id="modalTrendDirectionBadge">BULLISH</span>
               </div>
-              <div class="hierarchy-fields-grid">
+              <div class="hierarchy-fields-row">
                 <div class="field-item">
                   <span class="field-label">Fast EMA (20)</span>
                   <span class="field-value tabular-num" id="modalEmaFast">--</span>
@@ -492,8 +492,8 @@
                   <span class="field-label">Slow EMA (50)</span>
                   <span class="field-value tabular-num" id="modalEmaSlow">--</span>
                 </div>
-                <div class="field-item field-full">
-                  <span class="field-label">EMA Spread Dynamics</span>
+                <div class="field-item field-flex">
+                  <span class="field-label">EMA Dynamics & Spread</span>
                   <span class="field-value" id="modalEmaSpreadDesc">--</span>
                 </div>
               </div>
@@ -502,14 +502,14 @@
             <!-- 2. Volatility Analysis -->
             <div class="hierarchy-card">
               <div class="hierarchy-card-head">
-                <div class="head-num">02</div>
-                <div class="head-title-wrap">
+                <div class="head-left-wrap">
+                  <span class="head-num">02</span>
                   <span class="head-title">Volatility & Dispersion</span>
                   <span class="head-subtitle">35% Composite Weight</span>
                 </div>
                 <span class="hierarchy-badge" id="modalVolStatusBadge">NORMAL</span>
               </div>
-              <div class="hierarchy-fields-grid">
+              <div class="hierarchy-fields-row">
                 <div class="field-item">
                   <span class="field-label">Average True Range (ATR 14)</span>
                   <span class="field-value tabular-num" id="modalAtr">--</span>
@@ -518,7 +518,7 @@
                   <span class="field-label">Normalized ATR (NATR)</span>
                   <span class="field-value tabular-num" id="modalNatr">--%</span>
                 </div>
-                <div class="field-item field-full">
+                <div class="field-item field-flex">
                   <span class="field-label">ATR Ratio vs 50-SMA Baseline</span>
                   <span class="field-value" id="modalAtrRatioDesc">--</span>
                 </div>
@@ -528,14 +528,14 @@
             <!-- 3. Momentum & Oscillator -->
             <div class="hierarchy-card">
               <div class="hierarchy-card-head">
-                <div class="head-num">03</div>
-                <div class="head-title-wrap">
+                <div class="head-left-wrap">
+                  <span class="head-num">03</span>
                   <span class="head-title">Momentum Oscillator</span>
                   <span class="head-subtitle">Wilder's RSI (14)</span>
                 </div>
                 <span class="hierarchy-badge" id="modalRsiMovementBadge">BALANCED</span>
               </div>
-              <div class="hierarchy-fields-grid">
+              <div class="hierarchy-fields-row">
                 <div class="field-item">
                   <span class="field-label">RSI Index (0-100)</span>
                   <span class="field-value tabular-num" id="modalRsiVal">--</span>
@@ -544,7 +544,8 @@
                   <span class="field-label">Regime Band</span>
                   <span class="field-value" id="modalRsiBand">30 - 70 Balanced Zone</span>
                 </div>
-                <div class="field-item field-full">
+                <div class="field-item field-flex">
+                  <span class="field-label">RSI Oscillator Spectrum</span>
                   <div class="rsi-meter-track">
                     <div class="rsi-oversold-zone" title="Oversold (<=30)"></div>
                     <div class="rsi-balanced-zone" title="Balanced (30-70)"></div>
@@ -558,21 +559,25 @@
             <!-- 4. Regime Strength (ADX) -->
             <div class="hierarchy-card">
               <div class="hierarchy-card-head">
-                <div class="head-num">04</div>
-                <div class="head-title-wrap">
+                <div class="head-left-wrap">
+                  <span class="head-num">04</span>
                   <span class="head-title">Regime & Directional Strength</span>
                   <span class="head-subtitle">25% Composite Weight</span>
                 </div>
-                <span class="hierarchy-badge" id="modalAdxStrengthBadge">STRONG</span>
+                <span class="hierarchy-badge" id="modalAdxStrengthBadge">STRONG TREND</span>
               </div>
-              <div class="hierarchy-fields-grid">
+              <div class="hierarchy-fields-row">
                 <div class="field-item">
                   <span class="field-label">ADX Index (14)</span>
                   <span class="field-value tabular-num" id="modalAdx">--</span>
                 </div>
                 <div class="field-item">
                   <span class="field-label">Trend Character</span>
-                  <span class="field-value" id="modalAdxDesc">Trending Market</span>
+                  <span class="field-value" id="modalAdxChar">Trending Market</span>
+                </div>
+                <div class="field-item field-flex">
+                  <span class="field-label">Regime Telemetry</span>
+                  <span class="field-value" id="modalAdxDesc">Wilder's ADX indicates persistent directional trend velocity.</span>
                 </div>
               </div>
             </div>

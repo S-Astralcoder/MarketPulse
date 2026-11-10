@@ -610,8 +610,8 @@ html, body {
 .stock-modal-shell {
   position: relative;
   z-index: 2001;
-  width: min(1140px, 96vw);
-  max-height: min(820px, 92vh);
+  width: min(1220px, 96vw);
+  max-height: min(840px, 94vh);
   background-color: var(--bg-card);
   border: 1px solid rgba(139, 92, 246, 0.3);
   border-radius: 24px;
@@ -968,8 +968,10 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 6px;
+  padding-bottom: 12px;
+  padding-right: 56px; /* Guaranteed safety clearance preventing overlap with close button */
   border-bottom: 1px solid var(--border-subtle);
+  min-height: 40px;
 }
 
 .data-header-title {
@@ -980,31 +982,63 @@ html, body {
 }
 
 .data-header-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 11px;
-  font-weight: 500;
-  color: var(--text-tertiary);
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: var(--bg-surface);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.data-header-tag::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-purple);
+  box-shadow: 0 0 6px var(--accent-purple);
 }
 
 .hierarchical-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
 }
 
 .hierarchy-card {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: 14px;
-  padding: 14px 16px;
+  padding: 12px 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
+  transition: border-color 0.15s ease;
+}
+
+.hierarchy-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
 }
 
 .hierarchy-card-head {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.head-left-wrap {
+  display: flex;
+  align-items: center;
   gap: 10px;
+  min-width: 0;
+  flex-wrap: nowrap;
 }
 
 .head-num {
@@ -1012,34 +1046,39 @@ html, body {
   font-weight: 800;
   color: var(--accent-purple);
   background: var(--accent-purple-subtle);
-  padding: 3px 6px;
+  padding: 2px 7px;
   border-radius: 5px;
-}
-
-.head-title-wrap {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-width: 0;
+  flex-shrink: 0;
 }
 
 .head-title {
-  font-size: 12.5px;
+  font-size: 13.5px;
   font-weight: 700;
   color: #ffffff;
+  white-space: nowrap;
 }
 
 .head-subtitle {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-tertiary);
   font-weight: 500;
+  white-space: nowrap;
+}
+
+.head-subtitle::before {
+  content: "•";
+  margin-right: 6px;
+  opacity: 0.5;
 }
 
 .hierarchy-badge {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 5px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
 }
 
 .hierarchy-badge.bullish,
@@ -1066,34 +1105,40 @@ html, body {
   border: 1px solid rgba(245, 158, 11, 0.35);
 }
 
-.hierarchy-fields-grid {
+.hierarchy-fields-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px 12px;
+  grid-template-columns: 140px 170px 1fr;
+  gap: 14px;
+  align-items: center;
 }
 
 .field-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
-.field-full {
-  grid-column: 1 / -1;
+.field-flex {
+  min-width: 0;
 }
 
 .field-label {
   font-size: 10px;
   color: var(--text-tertiary);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .field-value {
   font-size: 12.5px;
   font-weight: 700;
   color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* RSI Slider Meter */
