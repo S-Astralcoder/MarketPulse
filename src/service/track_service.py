@@ -18,7 +18,7 @@ async def add_stock_track(symbol: str, user_id: UUID, db: AsyncSession):
 
 
 async def remove_stock_track(symbol: str, user_id: UUID, db: AsyncSession):
-    track = db.scalar(
+    track = await db.scalar(
         select(TrackStock).where(
             TrackStock.user_uuid == user_id, TrackStock.stock_symbol == symbol
         )
