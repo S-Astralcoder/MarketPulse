@@ -1,10 +1,10 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends
 
-from service.user_security import get_signed_in_user
 from src.database import AsyncSession, User, get_db
 from src.model import RegisterPayload, SignInPayload
+from src.service.user_security import get_signed_in_user
 from src.service.user_service import register_user, signin_user
 
 user_router = APIRouter(prefix="/user", tags=["user"])
@@ -34,3 +34,10 @@ async def user_info(
     del user_data.hash_password
     del user_data.google_id
     return user_data
+
+
+@user_router.get("/access")
+async def check_access(
+    user_data: Annotated[User, Depends(get_signed_in_user)],
+) -> Literal[True]:
+    return True
