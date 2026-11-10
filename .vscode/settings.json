@@ -1,6 +1,9 @@
 {
     "cSpell.words": [
+        "checkpw",
         "dbapi",
+        "gensalt",
+        "hashpw",
         "poolclass"
     ],
     "python.terminal.useEnvFile": true

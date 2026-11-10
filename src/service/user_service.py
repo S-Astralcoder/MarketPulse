@@ -31,8 +31,8 @@ async def register_user(register: RegisterPayload, db: AsyncSession) -> str:
     return jwt_token
 
 
-async def sigin_user(sigin: SignInPayload, db: AsyncSession):
-    user_data = await db.scalar(select(User).where(User.email == sigin.email))
+async def signin_user(signin: SignInPayload, db: AsyncSession):
+    user_data = await db.scalar(select(User).where(User.email == signin.email))
     if not user_data:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="User doesn't exists!"
@@ -45,7 +45,7 @@ async def sigin_user(sigin: SignInPayload, db: AsyncSession):
         )
 
     if bcrypt.checkpw(
-        password=sigin.password.encode("utf-8"),
+        password=signin.password.encode("utf-8"),
         hashed_password=user_data.hash_password.encode("utf-8"),
     ):
         raise HTTPException(
@@ -53,6 +53,6 @@ async def sigin_user(sigin: SignInPayload, db: AsyncSession):
             detail="The given password is Invalid!",
         )
 
-    jwt_token = await generate_jwt_token(email=sigin.email, password=sigin.password)
+    jwt_token = await generate_jwt_token(email=signin.email, password=signin.password)
 
     return jwt_token

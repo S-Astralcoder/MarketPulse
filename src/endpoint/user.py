@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 from src.database import AsyncSession, get_db
 from src.model import RegisterPayload, SignInPayload
-from src.service.user_service import register_user, sigin_user
+from src.service.user_service import register_user, signin_user
 
 user_router = APIRouter(prefix="/user", tags=["user"])
 
@@ -19,7 +19,7 @@ async def register(
 
 @user_router.post("/signup")
 async def signup(
-    sigin: SignInPayload, db: Annotated[AsyncSession, Depends(get_db)]
+    signin: SignInPayload, db: Annotated[AsyncSession, Depends(get_db)]
 ) -> dict[str, str]:
-    token = await sigin_user(sigin=sigin, db=db)
+    token = await signin_user(signin=signin, db=db)
     return {"access_token": token, "token_type": "Bearer"}
