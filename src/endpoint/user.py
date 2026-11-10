@@ -31,8 +31,9 @@ async def user_info(
     user_data: Annotated[User, Depends(get_signed_in_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    del user_data.hash_password
-    del user_data.google_id
+    user_dict = user_data.to_dict()
+    user_dict.pop("google_id")
+    user_dict.pop("hash_password")
     return user_data
 
 
