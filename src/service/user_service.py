@@ -44,7 +44,7 @@ async def signin_user(signin: SignInPayload, db: AsyncSession):
             detail="User can't exist since google auth is not implemented.",
         )
 
-    if bcrypt.checkpw(
+    if not bcrypt.checkpw(
         password=signin.password.encode("utf-8"),
         hashed_password=user_data.hash_password.encode("utf-8"),
     ):

@@ -25,5 +25,9 @@ async def untrack(
     user_data: Annotated[User, Depends(get_signed_in_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    await remove_stock_track(symbol=stock_symbol, user_id=user_data.uuid, db=db)
-    return {"message": "Untracked Successfully!"}
+    result = await remove_stock_track(
+        symbol=stock_symbol, user_id=user_data.uuid, db=db
+    )
+    if result:
+        return {"message": "Untracked Successfully!"}
+    return {"message": "Stock Tracker doesn't exist!"}

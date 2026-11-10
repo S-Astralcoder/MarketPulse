@@ -26,7 +26,7 @@ async def signup(
     return {"access_token": token, "token_type": "Bearer"}
 
 
-@user_router.get("/info")
+@user_router.post("/info")
 async def user_info(
     user_data: Annotated[User, Depends(get_signed_in_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
@@ -36,7 +36,7 @@ async def user_info(
     return user_data
 
 
-@user_router.get("/access")
+@user_router.post("/access")
 async def check_access(
     user_data: Annotated[User, Depends(get_signed_in_user)],
 ) -> Literal[True]:

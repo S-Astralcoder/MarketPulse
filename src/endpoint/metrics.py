@@ -10,7 +10,7 @@ from src.service.user_security import get_signed_in_user
 metrics = APIRouter(prefix="/metric", tags=["metric"])
 
 
-@metrics.get("/")
+@metrics.post("/")
 async def get_market_metrics(
     db: Annotated[AsyncSession, Depends(get_db)],
     user_data: Annotated[User, Depends(get_signed_in_user)],
@@ -26,7 +26,7 @@ async def get_market_metrics(
     return data.all()
 
 
-@metrics.get("/tracked")
+@metrics.post("/tracked")
 async def get_tracked_metrics(
     db: Annotated[AsyncSession, Depends(get_db)],
     user_data: Annotated[User, Depends(get_signed_in_user)],
