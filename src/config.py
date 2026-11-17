@@ -15,6 +15,9 @@ class ConfigSettings(BaseSettings):
     JWT_EXPIRE_DAYS: int = 30
     JWT_ALGO: str = "HS256"
 
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     @field_validator(

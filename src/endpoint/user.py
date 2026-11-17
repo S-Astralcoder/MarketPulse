@@ -1,11 +1,20 @@
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
 
+from src.config import get_config_settings
 from src.database import AsyncSession, User, get_db
-from src.model import RegisterPayload, SignInPayload
-from src.service.user_security import get_signed_in_user
-from src.service.user_service import register_user, signin_user
+from src.model import GooglePayload, RegisterPayload, SignInPayload
+from src.service.user_security import (
+    get_signed_in_user,
+)
+from src.service.user_service import (
+    authenticate_google_user,
+    register_user,
+    signin_user,
+)
 
 user_router = APIRouter(prefix="/user", tags=["user"])
 
@@ -42,3 +51,12 @@ async def check_access(
     user_data: Annotated[User, Depends(get_signed_in_user)],
 ) -> Literal[True]:
     return True
+
+
+@user_router.post("/api/auth/google")
+async def google_auth(
+    google: GooglePayload,
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    token = await authenticate_google_user(google=google, db=db)
+    return {"access_token": token, "token_type": "Bearer"}

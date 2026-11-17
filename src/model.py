@@ -44,3 +44,7 @@ class RegisterPayload(SignInPayload):
 class AccessTokenPayload(BaseModel):
     token_type: str = "Bearer"
     access_token: str
+
+
+class GooglePayload(BaseModel):
+    token: str

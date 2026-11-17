@@ -30,6 +30,21 @@ async def generate_jwt_token(email: str, password: str) -> str:
     return token
 
 
+async def generate_jwt_token_using_google_id(google_id: str) -> str:
+    expire_date = datetime.now(tz=UTC) + timedelta(days=config.JWT_EXPIRE_DAYS)
+
+    payload = {
+        "google_id": google_id,
+        "exp": expire_date,
+        "iat": datetime.now(tz=UTC),
+    }
+
+    token = jwt.encode(
+        payload=payload, key=config.JWT_SECRET, algorithm=config.JWT_ALGO
+    )
+    return token
+
+
 async def decode_jwt_token(token: str) -> dict:
     decoded_payload = jwt.decode(
         jwt=token, key=config.JWT_SECRET, algorithms=config.JWT_ALGO
@@ -50,25 +65,34 @@ async def get_signed_in_user(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="The token is invalid"
         )
+    if "email" in user_jwt_payload:
+        user_data = await db.scalar(
+            select(User).where(User.email == user_jwt_payload["email"])
+        )
+        if user_data is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="User doesn't exist"
+            )
+        if user_data.hash_password is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User can't exist since google auth is not implemented",
+            )
+        if not bcrypt.checkpw(
+            password=user_jwt_payload["password"].encode("utf-8"),
+            hashed_password=user_data.hash_password.encode("utf-8"),
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="The password in token doesn't match",
+            )
+    else:
+        user_data = await db.scalar(
+            select(User).where(User.google_id == user_jwt_payload["google_id"])
+        )
+        if user_data is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="User doesn't exist"
+            )
 
-    user_data = await db.scalar(
-        select(User).where(User.email == user_jwt_payload["email"])
-    )
-    if user_data is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="User doesn't exist"
-        )
-    if user_data.hash_password is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User can't exist since google auth is not implemented",
-        )
-    if not bcrypt.checkpw(
-        password=user_jwt_payload["password"].encode("utf-8"),
-        hashed_password=user_data.hash_password.encode("utf-8"),
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The password in token doesn't match",
-        )
     return user_data
