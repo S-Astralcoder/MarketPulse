@@ -921,20 +921,8 @@
               <p class="auth-form-desc">Authenticate to access live market regime signals and telemetry feeds.</p>
             </div>
 
-            <!-- Google Sign-In Placeholder -->
-            <button type="button" class="btn btn-social-google btn-block" id="googleSignInBtn">
-              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill="#4285F4"
-                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z" />
-                <path fill="#34A853"
-                  d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z" />
-                <path fill="#FBBC05"
-                  d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15Z" />
-                <path fill="#EA4335"
-                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z" />
-              </svg>
-              <span>Continue with Google</span>
-            </button>
+            <!-- Target container for Google button -->
+            <div id="google-btn" class="google-btn-container"></div>
 
             <div class="auth-divider">
               <span>or sign in with email</span>
@@ -992,20 +980,8 @@
               </p>
             </div>
 
-            <!-- Google Sign-Up Placeholder -->
-            <button type="button" class="btn btn-social-google btn-block" id="googleSignUpBtn">
-              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill="#4285F4"
-                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z" />
-                <path fill="#34A853"
-                  d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z" />
-                <path fill="#FBBC05"
-                  d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15Z" />
-                <path fill="#EA4335"
-                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z" />
-              </svg>
-              <span>Sign up with Google</span>
-            </button>
+            <!-- Target container for Google button -->
+            <div id="google-signup-btn" class="google-btn-container"></div>
 
             <div class="auth-divider">
               <span>or register with email</span>
@@ -1119,9 +1095,101 @@
     </div>
   </div>
 
-  <script src="/js/auth.js?v=1.0"></script>
-  <script src="/js/landing.js?v=2.8"></script>
+  <script src="/js/auth.js?v=1.1"></script>
+  <script src="/js/landing.js?v=2.9"></script>
+  <!-- Load Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <script>
+    function handleCredentialResponse(response) {
+      // response.credential contains the signed ID token (JWT) from Google
+      const idToken = response.credential;
+
+      const endpoint = "/user/api/auth/google";
+      fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: idToken }),
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            // Fallback to /api/auth/google if router prefix differs
+            if (res.status === 404 || res.status === 405) {
+              const fallbackRes = await fetch("/api/auth/google", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: idToken }),
+              });
+              if (!fallbackRes.ok) throw new Error("Authentication failed on server");
+              return fallbackRes.json();
+            }
+            throw new Error("Authentication failed on server");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          // Store token in AuthService / localStorage so dashboard route guard permits access
+          if (data && data.access_token) {
+            if (window.AuthService && window.AuthService.setStoredToken) {
+              window.AuthService.setStoredToken(data.access_token);
+            } else {
+              localStorage.setItem("mp_jwt_token", data.access_token);
+            }
+          }
+          // User is now authenticated; redirect or reload UI
+          window.location.href = "/dashboard.html";
+        })
+        .catch((err) => {
+          console.error("Sign-in error:", err);
+          const errBanner = document.getElementById("signInError") || document.getElementById("signUpError");
+          if (errBanner) {
+            errBanner.textContent = "Google Sign-In failed. Please try again or use email credentials.";
+            errBanner.classList.add("is-visible");
+          }
+        });
+    }
+
+    function initGoogleAuth() {
+      if (typeof google === "undefined" || !google.accounts || !google.accounts.id) {
+        setTimeout(initGoogleAuth, 80);
+        return;
+      }
+
+      google.accounts.id.initialize({
+        client_id: "664418129002-b4fde4d8jct89ovacl87dfr0uve2n3lb.apps.googleusercontent.com",
+        callback: handleCredentialResponse,
+      });
+
+      const googleBtn = document.getElementById("google-btn");
+      if (googleBtn) {
+        google.accounts.id.renderButton(
+          googleBtn,
+          { theme: "outline", size: "large", type: "standard", shape: "rectangular" }
+        );
+      }
+
+      const googleSignUpBtn = document.getElementById("google-signup-btn");
+      if (googleSignUpBtn) {
+        google.accounts.id.renderButton(
+          googleSignUpBtn,
+          { theme: "outline", size: "large", type: "standard", shape: "rectangular" }
+        );
+      }
+
+      // Optional: display the One Tap prompt
+      // google.accounts.id.prompt();
+    }
+
+    window.onload = function () {
+      initGoogleAuth();
+    };
+
+    if (document.readyState === "complete") {
+      initGoogleAuth();
+    }
+  </script>
 </body>
 
 </html>

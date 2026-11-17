@@ -342,21 +342,6 @@
       switchToSignIn.addEventListener('click', () => switchTab('signin'));
     }
 
-    // Google Sign-In placeholder note
-    const googleSignInBtn = document.getElementById('googleSignInBtn');
-    const googleSignUpBtn = document.getElementById('googleSignUpBtn');
-    [googleSignInBtn, googleSignUpBtn].forEach((btn) => {
-      if (!btn) return;
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const errBanner = btn.closest('form')?.querySelector('.auth-error-banner');
-        if (errBanner) {
-          errBanner.textContent = 'Google OAuth is currently in development. Please use email credentials.';
-          errBanner.classList.add('is-visible');
-        }
-      });
-    });
-
     // Wire Sign-In Form (POST /user/signup)
     if (formSignIn) {
       formSignIn.addEventListener('submit', async (e) => {

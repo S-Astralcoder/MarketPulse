@@ -1661,7 +1661,22 @@ button {
   min-height: 32px;
 }
 
-/* Google Social Auth Placeholder */
+/* Google Social Auth Container & Button */
+.google-btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+  min-height: 44px;
+}
+
+.google-btn-container > div {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
 .btn-social-google {
   display: flex;
   align-items: center;

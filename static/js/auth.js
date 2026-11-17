@@ -143,6 +143,43 @@
     },
 
     /**
+     * Authenticate via Google ID Token via POST /user/api/auth/google
+     */
+    async signInWithGoogle(idToken) {
+      try {
+        let res = await fetch('/user/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: idToken })
+        });
+
+        if (res.status === 404 || res.status === 405) {
+          res = await fetch('/api/auth/google', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: idToken })
+          });
+        }
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          const detail = data.detail || (Array.isArray(data.detail) ? data.detail[0]?.msg : 'Google authentication failed.');
+          return { success: false, error: typeof detail === 'string' ? detail : 'Google authentication rejected.' };
+        }
+
+        if (data.access_token) {
+          this.setStoredToken(data.access_token);
+          return { success: true, token: data.access_token };
+        }
+
+        return { success: false, error: 'No access token returned from server.' };
+      } catch (err) {
+        return { success: false, error: 'Network error connecting to Google authentication server.' };
+      }
+    },
+
+    /**
      * Register new user via POST /user/register
      */
     async register(name, email, password) {
