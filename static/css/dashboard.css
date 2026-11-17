@@ -292,6 +292,11 @@ html, body {
   gap: 10px;
   padding-top: 6px;
   border-top: 1px solid var(--border-subtle);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .user-avatar {
@@ -312,10 +317,11 @@ html, body {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  flex: 1;
+  flex: 1 1 auto;
+  max-width: 125px;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, #000 65%, transparent 98%);
-  mask-image: linear-gradient(to right, #000 65%, transparent 98%);
+  -webkit-mask-image: linear-gradient(to right, #000 60%, transparent 100%);
+  mask-image: linear-gradient(to right, #000 60%, transparent 100%);
 }
 
 .user-name {
@@ -324,6 +330,9 @@ html, body {
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
 }
 
 .user-role {
@@ -331,6 +340,9 @@ html, body {
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
 }
 
 .user-logout-btn {
@@ -1611,7 +1623,7 @@ html, body {
   background-color: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -1622,6 +1634,7 @@ html, body {
 
 .profile-modal-overlay.is-open,
 .alerts-modal-overlay.is-open {
+  display: flex !important;
   opacity: 1;
   pointer-events: auto;
 }
@@ -1878,23 +1891,85 @@ html, body {
   animation: flashPulse 1s ease 2;
 }
 
-/* Review / Compact View Layout Mode */
+/* Review / Compact Horizontal List Layout Mode */
 .cards-grid.review-mode {
-  grid-template-columns: 1fr;
-  gap: 10px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
 }
 
 .cards-grid.review-mode .stock-card {
-  width: 100%;
-  padding: 12px 18px;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 68px !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 12px 20px !important;
+  gap: 20px !important;
+  border-radius: 14px !important;
 }
 
-.cards-grid.review-mode .stock-card .card-top-row {
-  margin-bottom: 8px;
+.cards-grid.review-mode .stock-card .card-header {
+  width: auto !important;
+  flex: 0 0 280px !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
 }
 
-.cards-grid.review-mode .stock-card .indicators-quad {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+.cards-grid.review-mode .stock-card .stock-meta {
+  align-items: flex-start !important;
+  text-align: left !important;
+  max-width: 150px !important;
+}
+
+.cards-grid.review-mode .stock-card .market-status-row {
+  flex: 0 1 200px !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.cards-grid.review-mode .stock-card .metrics-grid {
+  flex-direction: row !important;
+  flex: 1 1 auto !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  width: auto !important;
+  margin: 0 !important;
+}
+
+.cards-grid.review-mode .stock-card .metrics-row {
+  width: auto !important;
+  gap: 10px !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+}
+
+.cards-grid.review-mode .stock-card .metric-block {
+  min-width: 95px !important;
+  height: 48px !important;
+  padding: 4px 10px !important;
+  border-radius: 9px !important;
+}
+
+@media (max-width: 1024px) {
+  .cards-grid.review-mode .stock-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .cards-grid.review-mode .stock-card .card-header {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    justify-content: space-between !important;
+  }
+  .cards-grid.review-mode .stock-card .metrics-grid {
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+  }
 }

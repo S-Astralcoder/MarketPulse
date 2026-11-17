@@ -68,9 +68,34 @@ async function enforceAuthRouteGuard() {
 }
 
 /**
+ * Top-Level Account Profile Modal Controllers
+ */
+function openProfileModal() {
+  const profileModal = document.getElementById('profileModal');
+  if (!profileModal) return;
+  const trackedCountEl = document.getElementById('profileTrackedCount');
+  if (trackedCountEl) trackedCountEl.textContent = trackedTickers ? trackedTickers.size : 0;
+  const alertCountEl = document.getElementById('profileAlertCount');
+  if (alertCountEl) alertCountEl.textContent = window.currentHighRiskTracked ? window.currentHighRiskTracked.length : 0;
+  profileModal.style.display = 'flex';
+  profileModal.classList.add('is-open');
+  profileModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProfileModal() {
+  const profileModal = document.getElementById('profileModal');
+  if (!profileModal) return;
+  profileModal.classList.remove('is-open');
+  profileModal.setAttribute('aria-hidden', 'true');
+  profileModal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+/**
  * User Profile & Logout Controller
  */
-async function initUserProfile() {
+function initUserProfile() {
   const auth = window.AuthService;
   if (!auth) return;
 
@@ -79,88 +104,54 @@ async function initUserProfile() {
   const roleEl = document.getElementById('userRole');
   const avatarEl = document.getElementById('userAvatarText');
 
-  const profileModal = document.getElementById('profileModal');
   const profileUsernameEl = document.getElementById('profileUsername');
   const profileEmailEl = document.getElementById('profileEmail');
   const profileAvatarTextLargeEl = document.getElementById('profileAvatarTextLarge');
   const profileProviderBadgeEl = document.getElementById('profileProviderBadge');
-  const accountBtn = document.getElementById('accountBtn');
-  const profileModalCloseBtn = document.getElementById('profileModalCloseBtn');
-  const profileSignOutBtn = document.getElementById('profileSignOutBtn');
 
-  const user = await auth.getUserInfo();
+  // 1. Immediately populate from local JWT token without blocking
   let email = 'trader@domain.com';
   let username = 'Analyst';
   let isGoogle = false;
 
-  if (user && user.email) {
-    email = user.email;
-    username = user.username || user.name || email.split('@')[0];
-    isGoogle = !!user.picture_url;
-  } else {
-    const token = auth.getStoredToken();
-    const payload = auth.decodeJwt(token);
-    if (payload && payload.email) {
-      email = payload.email;
-      username = email.split('@')[0];
+  const token = auth.getStoredToken();
+  const payload = auth.decodeJwt(token);
+  if (payload && payload.email) {
+    email = payload.email;
+    username = email.split('@')[0];
+  }
+
+  function renderUserUI(uName, uEmail, isGgl) {
+    if (headerEmailEl) headerEmailEl.textContent = uEmail;
+    if (nameEl) nameEl.textContent = uName;
+    if (roleEl) roleEl.textContent = uEmail;
+
+    if (profileUsernameEl) profileUsernameEl.textContent = uName;
+    if (profileEmailEl) profileEmailEl.textContent = uEmail;
+    if (profileProviderBadgeEl) {
+      profileProviderBadgeEl.textContent = isGgl ? 'Google OAuth Account' : 'MarketPulse Terminal ID';
     }
+
+    const parts = uName.trim().split(/\s+/);
+    const initials = parts.length >= 2
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : uName.slice(0, 2).toUpperCase();
+
+    if (avatarEl) avatarEl.textContent = initials;
+    if (profileAvatarTextLargeEl) profileAvatarTextLargeEl.textContent = initials;
   }
 
-  // Populate Header & Sidebar
-  if (headerEmailEl) headerEmailEl.textContent = email;
-  if (nameEl) nameEl.textContent = username;
-  if (roleEl) roleEl.textContent = email;
+  renderUserUI(username, email, isGoogle);
 
-  // Populate Profile Modal
-  if (profileUsernameEl) profileUsernameEl.textContent = username;
-  if (profileEmailEl) profileEmailEl.textContent = email;
-  if (profileProviderBadgeEl) {
-    profileProviderBadgeEl.textContent = isGoogle ? 'Google OAuth Account' : 'MarketPulse Terminal ID';
-  }
-
-  const parts = username.trim().split(/\s+/);
-  const initials = parts.length >= 2
-    ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-    : username.slice(0, 2).toUpperCase();
-
-  if (avatarEl) avatarEl.textContent = initials;
-  if (profileAvatarTextLargeEl) profileAvatarTextLargeEl.textContent = initials;
-
-  // Account Profile Popover events
-  function openProfileModal() {
-    if (!profileModal) return;
-    profileModal.classList.add('is-open');
-    profileModal.setAttribute('aria-hidden', 'false');
-  }
-
-  function closeProfileModal() {
-    if (!profileModal) return;
-    profileModal.classList.remove('is-open');
-    profileModal.setAttribute('aria-hidden', 'true');
-  }
-
-  if (accountBtn) accountBtn.addEventListener('click', openProfileModal);
-  if (profileModalCloseBtn) profileModalCloseBtn.addEventListener('click', closeProfileModal);
-  if (profileModal) {
-    profileModal.addEventListener('click', (e) => {
-      if (e.target === profileModal) closeProfileModal();
-    });
-  }
-
-  // Wire sign-out buttons
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      auth.logout();
-    });
-  }
-  if (profileSignOutBtn) {
-    profileSignOutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      auth.logout();
-    });
-  }
+  // 2. Asynchronously fetch full user info to refresh profile details
+  auth.getUserInfo().then((user) => {
+    if (user && user.email) {
+      email = user.email;
+      username = user.username || user.name || email.split('@')[0];
+      isGoogle = !!user.picture_url;
+      renderUserUI(username, email, isGoogle);
+    }
+  }).catch(() => {});
 }
 
 /**
@@ -196,60 +187,47 @@ async function loadTrackedMetrics() {
 /**
  * Review / Grid View Mode Toggle Controller
  */
-function initViewModeAction() {
+function applyViewMode(reviewMode) {
+  const grids = document.querySelectorAll('.cards-grid');
+  grids.forEach((grid) => {
+    grid.classList.toggle('review-mode', reviewMode);
+  });
+
   const viewModeBtn = document.getElementById('viewModeBtn');
   const viewModeIcon = document.getElementById('viewModeIcon');
-  if (!viewModeBtn) return;
-
-  const savedMode = localStorage.getItem('mp_dashboard_view_mode') || 'grid';
-  let isReviewMode = savedMode === 'review';
-
-  function applyViewMode(reviewMode) {
-    const grids = document.querySelectorAll('.cards-grid');
-    grids.forEach((grid) => {
-      grid.classList.toggle('review-mode', reviewMode);
-    });
-
+  if (viewModeBtn) {
     viewModeBtn.classList.toggle('active', reviewMode);
     viewModeBtn.title = reviewMode ? 'Review Mode Active (Click for Grid View)' : 'Toggle Grid / Review Mode';
+  }
 
-    if (viewModeIcon) {
-      if (reviewMode) {
-        viewModeIcon.innerHTML = `
-          <line x1="8" y1="6" x2="21" y2="6"></line>
-          <line x1="8" y1="12" x2="21" y2="12"></line>
-          <line x1="8" y1="18" x2="21" y2="18"></line>
-          <line x1="3" y1="6" x2="3.01" y2="6"></line>
-          <line x1="3" y1="12" x2="3.01" y2="12"></line>
-          <line x1="3" y1="18" x2="3.01" y2="18"></line>
-        `;
-      } else {
-        viewModeIcon.innerHTML = `
-          <rect x="3" y="3" width="7" height="7"></rect>
-          <rect x="14" y="3" width="7" height="7"></rect>
-          <rect x="14" y="14" width="7" height="7"></rect>
-          <rect x="3" y="14" width="7" height="7"></rect>
-        `;
-      }
+  if (viewModeIcon) {
+    if (reviewMode) {
+      viewModeIcon.innerHTML = `
+        <line x1="8" y1="6" x2="21" y2="6"></line>
+        <line x1="8" y1="12" x2="21" y2="12"></line>
+        <line x1="8" y1="18" x2="21" y2="18"></line>
+        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+      `;
+    } else {
+      viewModeIcon.innerHTML = `
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      `;
     }
   }
+}
 
-  if (isReviewMode) {
-    applyViewMode(true);
-  }
-
-  viewModeBtn.addEventListener('click', () => {
-    isReviewMode = !isReviewMode;
-    applyViewMode(isReviewMode);
-    localStorage.setItem('mp_dashboard_view_mode', isReviewMode ? 'review' : 'grid');
-  });
+function initViewModeAction() {
+  const savedMode = localStorage.getItem('mp_dashboard_view_mode') || 'grid';
+  applyViewMode(savedMode === 'review');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // 0. Route protection gate
-  const authenticated = await enforceAuthRouteGuard();
-  if (!authenticated) return;
-
+  // 1. Initialize local UI components and handlers immediately so clicks respond with zero delay
   initRefreshTimer();
   initAutoScrollNavigation();
   initRightClickTracking();
@@ -259,6 +237,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   initStockCardClick();
   initModalEvents();
   initUserProfile();
+
+  // 2. Auth Route Guard check
+  const authenticated = await enforceAuthRouteGuard();
+  if (!authenticated) return;
+
+  // 3. Load backend data once verified
   await loadTrackedMetrics();
   fetchMarketMetrics();
 });
@@ -372,16 +356,17 @@ function updateTrackedTelemetry() {
 
   trackedTickers.forEach((ticker) => {
     const origCard = document.querySelector(`.category-section:not(#bookmarked) .stock-card[data-ticker="${ticker}"]`);
-    const risk = parseInt(origCard?.getAttribute('data-risk') || '0', 10);
+    const cardRisk = parseInt(origCard?.getAttribute('data-risk') || '0', 10);
     const cached = window.cachedStocksByTicker ? window.cachedStocksByTicker.get(ticker) : null;
+    const risk = cached?.risk_score !== undefined ? Number(cached.risk_score) : (cached?.risk !== undefined ? Number(cached.risk) : cardRisk);
     if (risk > 40) {
       trackedRiskyCount++;
       highRiskTrackedList.push({
         ticker,
         name: cached?.name || origCard?.querySelector('.stock-name')?.textContent || ticker,
         risk,
-        riskLevel: cached?.risk_level || (risk >= 70 ? 'HIGH_RISK' : 'ELEVATED'),
-        price: cached?.price ? `₹${cached.price.toLocaleString('en-IN')}` : origCard?.querySelector('.card-price')?.textContent || '--'
+        riskLevel: cached?.risk_level || cached?.riskLevel || (risk >= 70 ? 'HIGH_RISK' : 'ELEVATED'),
+        price: cached?.price ? (typeof cached.price === 'string' ? cached.price : `₹${cached.price.toLocaleString('en-IN')}`) : (origCard?.querySelector('.card-price')?.textContent || '--')
       });
     }
   });
@@ -416,8 +401,10 @@ function updateTrackedTelemetry() {
       bookmarkedGrid.innerHTML = '';
     } else {
       bookmarkedEmpty.style.display = 'none';
-      bookmarkedGrid.style.display = 'grid';
+      bookmarkedGrid.style.display = '';
       bookmarkedGrid.innerHTML = '';
+      const isReview = localStorage.getItem('mp_dashboard_view_mode') === 'review';
+      bookmarkedGrid.classList.toggle('review-mode', isReview);
 
       trackedTickers.forEach((ticker) => {
         const cached = window.cachedStocksByTicker ? window.cachedStocksByTicker.get(ticker) : null;
@@ -564,75 +551,86 @@ function initRightClickTracking() {
 /**
  * 4. Alert Action (Tracked Risk Alerts with Risk > 40)
  */
+function renderAlertsModalContent() {
+  const alertsModalBody = document.getElementById('alertsModalBody');
+  if (!alertsModalBody) return;
+
+  updateTrackedTelemetry();
+  const items = window.currentHighRiskTracked || [];
+  alertsModalBody.innerHTML = '';
+
+  if (items.length === 0) {
+    if (trackedTickers.size === 0) {
+      alertsModalBody.innerHTML = `
+        <div class="alert-empty-box">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+          <p><strong>No Tracked Symbols</strong><br>Bookmark stocks to monitor real-time risk alerts.</p>
+        </div>
+      `;
+    } else {
+      alertsModalBody.innerHTML = `
+        <div class="alert-empty-box">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <p><strong style="color: #10B981;">Telemetry Nominal</strong><br>All ${trackedTickers.size} tracked stocks have risk ≤ 40.</p>
+        </div>
+      `;
+    }
+  } else {
+    items.forEach((item) => {
+      const row = document.createElement('div');
+      row.className = 'alert-item-card';
+      row.innerHTML = `
+        <div class="alert-item-info">
+          <span class="alert-item-symbol">${item.ticker} <span class="badge-tag tag-risky">RISK &gt; 40</span></span>
+          <span class="alert-item-name">${item.name} · ${item.price}</span>
+        </div>
+        <div class="alert-item-badge">
+          Risk: ${item.risk}/100
+        </div>
+      `;
+      row.addEventListener('click', () => {
+        closeAlertsModal();
+        const card = document.querySelector(`.stock-card[data-ticker="${item.ticker}"]`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.classList.add('flash-attention');
+          setTimeout(() => card.classList.remove('flash-attention'), 2000);
+        }
+      });
+      alertsModalBody.appendChild(row);
+    });
+  }
+}
+
+function openAlertsModal() {
+  const alertsModal = document.getElementById('alertsModal');
+  if (!alertsModal) return;
+  renderAlertsModalContent();
+  alertsModal.style.display = 'flex';
+  alertsModal.classList.add('is-open');
+  alertsModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAlertsModal() {
+  const alertsModal = document.getElementById('alertsModal');
+  if (!alertsModal) return;
+  alertsModal.classList.remove('is-open');
+  alertsModal.setAttribute('aria-hidden', 'true');
+  alertsModal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
 function initAlertsAction() {
   const alertsToggle = document.getElementById('alertsToggle');
   const headerNotificationsBtn = document.getElementById('headerNotificationsBtn');
   const alertsModal = document.getElementById('alertsModal');
   const alertsModalCloseBtn = document.getElementById('alertsModalCloseBtn');
-  const alertsModalBody = document.getElementById('alertsModalBody');
-
-  function openAlertsModal() {
-    if (!alertsModal || !alertsModalBody) return;
-    const items = window.currentHighRiskTracked || [];
-    alertsModalBody.innerHTML = '';
-
-    if (items.length === 0) {
-      if (trackedTickers.size === 0) {
-        alertsModalBody.innerHTML = `
-          <div class="alert-empty-box">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-            </svg>
-            <p><strong>No Tracked Symbols</strong><br>Bookmark stocks to monitor real-time risk alerts.</p>
-          </div>
-        `;
-      } else {
-        alertsModalBody.innerHTML = `
-          <div class="alert-empty-box">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            <p><strong style="color: #10B981;">Telemetry Nominal</strong><br>All ${trackedTickers.size} tracked stocks have risk ≤ 40.</p>
-          </div>
-        `;
-      }
-    } else {
-      items.forEach((item) => {
-        const row = document.createElement('div');
-        row.className = 'alert-item-card';
-        row.innerHTML = `
-          <div class="alert-item-info">
-            <span class="alert-item-symbol">${item.ticker} <span class="badge-tag tag-risky">RISK &gt; 40</span></span>
-            <span class="alert-item-name">${item.name} · ${item.price}</span>
-          </div>
-          <div class="alert-item-badge">
-            Risk: ${item.risk}/100
-          </div>
-        `;
-        row.addEventListener('click', () => {
-          closeAlertsModal();
-          const card = document.querySelector(`.stock-card[data-ticker="${item.ticker}"]`);
-          if (card) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            card.classList.add('flash-attention');
-            setTimeout(() => card.classList.remove('flash-attention'), 2000);
-          }
-        });
-        alertsModalBody.appendChild(row);
-      });
-    }
-
-    alertsModal.classList.add('is-open');
-    alertsModal.setAttribute('aria-hidden', 'false');
-  }
-
-  function closeAlertsModal() {
-    if (alertsModal) {
-      alertsModal.classList.remove('is-open');
-      alertsModal.setAttribute('aria-hidden', 'true');
-    }
-  }
 
   if (alertsToggle) alertsToggle.addEventListener('click', openAlertsModal);
   if (headerNotificationsBtn) headerNotificationsBtn.addEventListener('click', openAlertsModal);
@@ -738,11 +736,77 @@ function initModalEvents() {
   }
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.style.display !== 'none') {
-      closeStockDetailModal();
+    if (e.key === 'Escape') {
+      if (modal && modal.style.display !== 'none') {
+        closeStockDetailModal();
+      }
+      closeProfileModal();
+      closeAlertsModal();
     }
   });
 }
+
+// Global resilient document-level click delegation
+document.addEventListener('click', (e) => {
+  // 1. Account Profile Button
+  if (e.target.closest('#accountBtn')) {
+    e.preventDefault();
+    openProfileModal();
+    return;
+  }
+
+  // 2. Profile Modal Close Button
+  if (e.target.closest('#profileModalCloseBtn')) {
+    e.preventDefault();
+    closeProfileModal();
+    return;
+  }
+
+  // 3. Profile Modal Backdrop click
+  const profModal = document.getElementById('profileModal');
+  if (profModal && e.target === profModal) {
+    closeProfileModal();
+    return;
+  }
+
+  // 4. Alerts Triggers (Sidebar pill or Header notifications bell)
+  if (e.target.closest('#alertsToggle') || e.target.closest('#headerNotificationsBtn')) {
+    e.preventDefault();
+    openAlertsModal();
+    return;
+  }
+
+  // 5. Alerts Modal Close Button
+  if (e.target.closest('#alertsModalCloseBtn')) {
+    e.preventDefault();
+    closeAlertsModal();
+    return;
+  }
+
+  // 6. Alerts Modal Backdrop click
+  const alModal = document.getElementById('alertsModal');
+  if (alModal && e.target === alModal) {
+    closeAlertsModal();
+    return;
+  }
+
+  // 7. View Mode Grid / Review Toggle Button
+  if (e.target.closest('#viewModeBtn')) {
+    e.preventDefault();
+    const currentMode = localStorage.getItem('mp_dashboard_view_mode') || 'grid';
+    const nextMode = currentMode === 'review' ? 'grid' : 'review';
+    applyViewMode(nextMode === 'review');
+    localStorage.setItem('mp_dashboard_view_mode', nextMode);
+    return;
+  }
+
+  // 8. Sign Out Triggers (Sidebar logout button or profile modal signout button)
+  if (e.target.closest('#logoutBtn') || e.target.closest('#profileSignOutBtn')) {
+    e.preventDefault();
+    if (window.AuthService) window.AuthService.logout();
+    return;
+  }
+});
 
 function openStockDetailModal(stock) {
   const modal = document.getElementById('stockDetailModal');
@@ -1121,7 +1185,9 @@ function populateSection(sectionId, stocks) {
     grid.style.display = 'none';
   } else {
     if (emptyState) emptyState.style.display = 'none';
-    grid.style.display = 'grid';
+    grid.style.display = '';
+    const isReview = localStorage.getItem('mp_dashboard_view_mode') === 'review';
+    grid.classList.toggle('review-mode', isReview);
 
     stocks.forEach((item) => {
       const card = renderStockCardFromTemplate(item);

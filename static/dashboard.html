@@ -9,7 +9,7 @@
     content="MarketPulse real-time objective risk telemetry. 4-factor regime detection via EMA, ATR, ADX (Regime), and RSI without predictive bias.">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/dashboard.css?v=5.1">
+  <link rel="stylesheet" href="/css/dashboard.css?v=6.0">
 </head>
 
 <body data-node-id="40:2" data-name="Dashboard">
@@ -115,7 +115,7 @@
       </div>
 
       <!-- Bottom User Panel -->
-      <div class="user-panel" data-node-id="45:106">
+      <div class="user-panel" data-node-id="45:106" style="overflow: hidden; max-width: 100%; box-sizing: border-box;">
 
         <!-- Refresh Countdown -->
         <div class="refresh-box" title="Hourly Indian Standard Time refresh">
@@ -137,13 +137,13 @@
         </div>
 
         <!-- User Profile -->
-        <div class="user-profile-row" data-node-id="45:125">
+        <div class="user-profile-row" data-node-id="45:125" style="overflow: hidden; max-width: 100%; min-width: 0; box-sizing: border-box;">
           <div class="user-avatar" id="userAvatar" data-node-id="45:126">
             <span id="userAvatarText" data-node-id="45:127">AL</span>
           </div>
-          <div class="user-info" data-node-id="45:128">
-            <span class="user-name" id="userName" data-node-id="45:129">Alex Lane</span>
-            <span class="user-role" id="userRole" data-node-id="45:130">Analyst</span>
+          <div class="user-info" data-node-id="45:128" style="overflow: hidden; min-width: 0; flex: 1; max-width: calc(100% - 72px);">
+            <span class="user-name" id="userName" data-node-id="45:129" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;">Alex Lane</span>
+            <span class="user-role" id="userRole" data-node-id="45:130" style="overflow: hidden; white-space: nowrap; display: block; -webkit-mask-image: linear-gradient(to right, #000 60%, transparent 100%); mask-image: linear-gradient(to right, #000 60%, transparent 100%); max-width: 100%;">Analyst</span>
           </div>
           <button type="button" class="user-logout-btn" id="logoutBtn" title="Sign Out of Terminal"
             aria-label="Sign Out">
@@ -659,7 +659,7 @@
   <!-- =========================================================================
        4. Account Profile Modal (Full User Profile & Sign Out)
        ========================================================================= -->
-  <div class="profile-modal-overlay" id="profileModal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="profile-modal-overlay" id="profileModal" aria-hidden="true" role="dialog" aria-modal="true" style="display: none;">
     <div class="profile-modal-card">
       <div class="profile-modal-header">
         <div class="profile-header-title">
@@ -725,7 +725,7 @@
   <!-- =========================================================================
        5. Risk Alerts Modal (Tracked Stocks with Risk > 40)
        ========================================================================= -->
-  <div class="alerts-modal-overlay" id="alertsModal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="alerts-modal-overlay" id="alertsModal" aria-hidden="true" role="dialog" aria-modal="true" style="display: none;">
     <div class="alerts-modal-card">
       <div class="alerts-modal-header">
         <div class="alerts-header-title">
@@ -749,8 +749,8 @@
     </div>
   </div>
 
-  <script src="/js/auth.js?v=1.2"></script>
-  <script src="/js/dashboard.js?v=5.3"></script>
+  <script src="/js/auth.js?v=6.0"></script>
+  <script src="/js/dashboard.js?v=6.0"></script>
 </body>
 
 </html>

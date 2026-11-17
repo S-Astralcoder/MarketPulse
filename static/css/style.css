@@ -1669,28 +1669,14 @@ button {
   width: 100%;
   margin-bottom: 14px;
   min-height: 44px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-surface-inset);
-  border: 1px solid var(--border-subtle);
-  padding: 2px 4px;
-  transition: all 0.2s ease;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
-.google-btn-container:hover {
-  border-color: var(--border-strong);
-  background-color: var(--bg-surface-hover);
-  box-shadow: 0 0 16px rgba(66, 133, 244, 0.16);
-}
-
-.google-btn-container > div {
-  width: 100% !important;
-  display: flex !important;
-  justify-content: center !important;
-}
-
+.google-btn-container > div,
 .google-btn-container iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
   color-scheme: dark !important;
   margin: 0 auto !important;
 }
