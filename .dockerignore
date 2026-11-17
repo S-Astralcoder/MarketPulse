@@ -1,0 +1,12 @@
+.venv
+.env
+database.db
+.workspace
+.vscode
+.github
+tests
+.ruff_cache
+__pycache__
+*.pyc
+Dockerfile
+.dockerignore

@@ -6,8 +6,8 @@ class ConfigSettings(BaseSettings):
     MARKET_OPEN_TIME: str = "9:14"
     MARKET_CLOSE_TIME: str = "15:45"
 
-    CORN_JOB_SECOND: int | None = 0
-    CORN_JOB_MINUTE: int | None = None
+    CORN_JOB_SECOND: int | None = None
+    CORN_JOB_MINUTE: int | None = 0
     CORN_JOB_HOUR: int | None = None
     CORN_JOB_DAY: int | None = None
 
@@ -17,6 +17,8 @@ class ConfigSettings(BaseSettings):
 
     GOOGLE_CLIENT_ID: str
     GOOGLE_CLIENT_SECRET: str
+
+    DATABASE_URL: str = ""
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -31,6 +33,15 @@ class ConfigSettings(BaseSettings):
     def empty_str_to_none(cls, v):
         if v == "":
             return None
+        return v
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def fix_database_url(cls, v: str) -> str:
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        if v.startswith("postgresql://") and not v.startswith("postgresql+asyncpg://"):
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
         return v
 
 

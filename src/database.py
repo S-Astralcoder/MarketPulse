@@ -25,10 +25,13 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
+from src.config import get_config_settings
 from src.model import RiskLevel, RsiMovementStatus, Trend, VolitilityStatus
 
+config = get_config_settings()
+
 async_engine = create_async_engine(
-    url="sqlite+aiosqlite:///./database.db", echo=True, pool_pre_ping=True
+    url=config.DATABASE_URL, echo=True, pool_pre_ping=True
 )
 
 AsyncSessionFactory = async_sessionmaker(
