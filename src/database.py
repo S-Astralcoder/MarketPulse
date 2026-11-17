@@ -31,7 +31,7 @@ from src.model import RiskLevel, RsiMovementStatus, Trend, VolitilityStatus
 config = get_config_settings()
 
 async_engine = create_async_engine(
-    url=config.DATABASE_URL, echo=True, pool_pre_ping=True
+    url=config.DATABASE_URL, echo=False, pool_pre_ping=True
 )
 
 AsyncSessionFactory = async_sessionmaker(
