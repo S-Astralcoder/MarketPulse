@@ -72,8 +72,10 @@ async def authenticate_google_user(google: GooglePayload, db: AsyncSession):
             id_token=google.token,
             request=google_requests.Request(),
             audience=config.GOOGLE_CLIENT_ID,
+            clock_skew_in_seconds=60,
         )
-    except ValueError:
+    except ValueError as e:
+        print(e)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Credentials."
         )

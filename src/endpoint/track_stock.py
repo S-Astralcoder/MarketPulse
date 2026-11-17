@@ -1,8 +1,9 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
+from sqlalchemy import select
 
-from src.database import AsyncSession, User, get_db
+from src.database import AsyncSession, TrackStock, User, get_db
 from src.service.track_service import add_stock_track, remove_stock_track
 from src.service.user_security import get_signed_in_user
 
@@ -31,3 +32,14 @@ async def untrack(
     if result:
         return {"message": "Untracked Successfully!"}
     return {"message": "Stock Tracker doesn't exist!"}
+
+
+@track_stock.get("")
+async def tracked_stock(
+    user_data: Annotated[User, Depends(get_signed_in_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    tracked_symbols = await db.scalars(
+        select(TrackStock).where(TrackStock.user_uuid == user_data.uuid)
+    )
+    return tracked_symbols.all()
