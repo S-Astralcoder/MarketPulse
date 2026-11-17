@@ -34,7 +34,7 @@ async def untrack(
     return {"message": "Stock Tracker doesn't exist!"}
 
 
-@track_stock.get("")
+@track_stock.post("/tracked_list")
 async def tracked_stock(
     user_data: Annotated[User, Depends(get_signed_in_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
