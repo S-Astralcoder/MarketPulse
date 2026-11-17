@@ -1672,13 +1672,17 @@ button {
   box-sizing: border-box;
 }
 
-.google-btn-container > div,
-.google-btn-container iframe {
+.google-btn-container > div {
+  display: flex !important;
+  justify-content: center !important;
   width: 100% !important;
-  max-width: 100% !important;
-  min-width: 100% !important;
-  color-scheme: dark !important;
+  max-width: 400px !important;
   margin: 0 auto !important;
+}
+
+.google-btn-container iframe {
+  margin: 0 auto !important;
+  color-scheme: dark !important;
 }
 
 .btn-social-google {
