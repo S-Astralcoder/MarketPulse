@@ -1,10 +1,7 @@
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
-from google.auth.transport import requests as google_requests
-from google.oauth2 import id_token
+from fastapi import APIRouter, Depends
 
-from src.config import get_config_settings
 from src.database import AsyncSession, User, get_db
 from src.model import GooglePayload, RegisterPayload, SignInPayload
 from src.service.user_security import (
