@@ -74,32 +74,80 @@ async function initUserProfile() {
   const auth = window.AuthService;
   if (!auth) return;
 
-  const user = await auth.getUserInfo();
-  if (user && user.username) {
-    const nameEl = document.getElementById('userName');
-    const roleEl = document.getElementById('userRole');
-    const avatarEl = document.getElementById('userAvatarText');
+  const headerEmailEl = document.getElementById('headerUserEmail');
+  const nameEl = document.getElementById('userName');
+  const roleEl = document.getElementById('userRole');
+  const avatarEl = document.getElementById('userAvatarText');
 
-    if (nameEl) nameEl.textContent = user.username;
-    if (roleEl) roleEl.textContent = user.email || 'Analyst';
-    if (avatarEl) {
-      const parts = user.username.trim().split(/\s+/);
-      const initials = parts.length >= 2
-        ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-        : user.username.slice(0, 2).toUpperCase();
-      avatarEl.textContent = initials;
-    }
+  const profileModal = document.getElementById('profileModal');
+  const profileUsernameEl = document.getElementById('profileUsername');
+  const profileEmailEl = document.getElementById('profileEmail');
+  const profileAvatarTextLargeEl = document.getElementById('profileAvatarTextLarge');
+  const profileProviderBadgeEl = document.getElementById('profileProviderBadge');
+  const accountBtn = document.getElementById('accountBtn');
+  const profileModalCloseBtn = document.getElementById('profileModalCloseBtn');
+  const profileSignOutBtn = document.getElementById('profileSignOutBtn');
+
+  const user = await auth.getUserInfo();
+  let email = 'trader@domain.com';
+  let username = 'Analyst';
+  let isGoogle = false;
+
+  if (user && user.email) {
+    email = user.email;
+    username = user.username || user.name || email.split('@')[0];
+    isGoogle = !!user.picture_url;
   } else {
-    // Decode local JWT payload if profile endpoint pending
     const token = auth.getStoredToken();
     const payload = auth.decodeJwt(token);
     if (payload && payload.email) {
-      const roleEl = document.getElementById('userRole');
-      if (roleEl) roleEl.textContent = payload.email;
+      email = payload.email;
+      username = email.split('@')[0];
     }
   }
 
-  // Wire sign-out button
+  // Populate Header & Sidebar
+  if (headerEmailEl) headerEmailEl.textContent = email;
+  if (nameEl) nameEl.textContent = username;
+  if (roleEl) roleEl.textContent = email;
+
+  // Populate Profile Modal
+  if (profileUsernameEl) profileUsernameEl.textContent = username;
+  if (profileEmailEl) profileEmailEl.textContent = email;
+  if (profileProviderBadgeEl) {
+    profileProviderBadgeEl.textContent = isGoogle ? 'Google OAuth Account' : 'MarketPulse Terminal ID';
+  }
+
+  const parts = username.trim().split(/\s+/);
+  const initials = parts.length >= 2
+    ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    : username.slice(0, 2).toUpperCase();
+
+  if (avatarEl) avatarEl.textContent = initials;
+  if (profileAvatarTextLargeEl) profileAvatarTextLargeEl.textContent = initials;
+
+  // Account Profile Popover events
+  function openProfileModal() {
+    if (!profileModal) return;
+    profileModal.classList.add('is-open');
+    profileModal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeProfileModal() {
+    if (!profileModal) return;
+    profileModal.classList.remove('is-open');
+    profileModal.setAttribute('aria-hidden', 'true');
+  }
+
+  if (accountBtn) accountBtn.addEventListener('click', openProfileModal);
+  if (profileModalCloseBtn) profileModalCloseBtn.addEventListener('click', closeProfileModal);
+  if (profileModal) {
+    profileModal.addEventListener('click', (e) => {
+      if (e.target === profileModal) closeProfileModal();
+    });
+  }
+
+  // Wire sign-out buttons
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
@@ -107,24 +155,94 @@ async function initUserProfile() {
       auth.logout();
     });
   }
+  if (profileSignOutBtn) {
+    profileSignOutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      auth.logout();
+    });
+  }
 }
 
 /**
- * Initial load of user-tracked stocks from GET /metric/tracked
+ * Initial load of user-tracked stocks from user's POST /track/tracked_list
  */
 async function loadTrackedMetrics() {
   const auth = window.AuthService;
   if (!auth) return;
 
-  const trackedList = await auth.getTrackedMetrics();
-  if (Array.isArray(trackedList) && trackedList.length > 0) {
-    trackedList.forEach((item) => {
-      if (item && item.symbol) {
-        trackedTickers.add(item.symbol);
-      }
+  // 1. Fetch tracked symbols from user's /track/tracked_list endpoint
+  const symbols = await auth.getTrackedSymbols();
+  if (Array.isArray(symbols) && symbols.length > 0) {
+    symbols.forEach((sym) => {
+      if (sym) trackedTickers.add(sym);
     });
-    updateTrackedTelemetry();
   }
+
+  // 2. Also augment with POST /metric/tracked if available
+  if (trackedTickers.size === 0) {
+    const trackedList = await auth.getTrackedMetrics();
+    if (Array.isArray(trackedList) && trackedList.length > 0) {
+      trackedList.forEach((item) => {
+        if (item && item.symbol) {
+          trackedTickers.add(item.symbol);
+        }
+      });
+    }
+  }
+
+  updateTrackedTelemetry();
+}
+
+/**
+ * Review / Grid View Mode Toggle Controller
+ */
+function initViewModeAction() {
+  const viewModeBtn = document.getElementById('viewModeBtn');
+  const viewModeIcon = document.getElementById('viewModeIcon');
+  if (!viewModeBtn) return;
+
+  const savedMode = localStorage.getItem('mp_dashboard_view_mode') || 'grid';
+  let isReviewMode = savedMode === 'review';
+
+  function applyViewMode(reviewMode) {
+    const grids = document.querySelectorAll('.cards-grid');
+    grids.forEach((grid) => {
+      grid.classList.toggle('review-mode', reviewMode);
+    });
+
+    viewModeBtn.classList.toggle('active', reviewMode);
+    viewModeBtn.title = reviewMode ? 'Review Mode Active (Click for Grid View)' : 'Toggle Grid / Review Mode';
+
+    if (viewModeIcon) {
+      if (reviewMode) {
+        viewModeIcon.innerHTML = `
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        `;
+      } else {
+        viewModeIcon.innerHTML = `
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        `;
+      }
+    }
+  }
+
+  if (isReviewMode) {
+    applyViewMode(true);
+  }
+
+  viewModeBtn.addEventListener('click', () => {
+    isReviewMode = !isReviewMode;
+    applyViewMode(isReviewMode);
+    localStorage.setItem('mp_dashboard_view_mode', isReviewMode ? 'review' : 'grid');
+  });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -136,6 +254,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initAutoScrollNavigation();
   initRightClickTracking();
   initAlertsAction();
+  initViewModeAction();
   initSearch();
   initStockCardClick();
   initModalEvents();
@@ -247,18 +366,46 @@ function updateTrackedTelemetry() {
   if (sidebarCountEl) sidebarCountEl.textContent = count;
   if (badgeCountEl) badgeCountEl.textContent = `${count} ${count === 1 ? 'stock' : 'stocks'}`;
 
-  // Calculate alerts strictly from tracked stocks
+  // Calculate alerts strictly from tracked stocks with Risk > 40
   let trackedRiskyCount = 0;
+  const highRiskTrackedList = [];
+
   trackedTickers.forEach((ticker) => {
     const origCard = document.querySelector(`.category-section:not(#bookmarked) .stock-card[data-ticker="${ticker}"]`);
     const risk = parseInt(origCard?.getAttribute('data-risk') || '0', 10);
-    if (risk >= 60) {
+    const cached = window.cachedStocksByTicker ? window.cachedStocksByTicker.get(ticker) : null;
+    if (risk > 40) {
       trackedRiskyCount++;
+      highRiskTrackedList.push({
+        ticker,
+        name: cached?.name || origCard?.querySelector('.stock-name')?.textContent || ticker,
+        risk,
+        riskLevel: cached?.risk_level || (risk >= 70 ? 'HIGH_RISK' : 'ELEVATED'),
+        price: cached?.price ? `₹${cached.price.toLocaleString('en-IN')}` : origCard?.querySelector('.card-price')?.textContent || '--'
+      });
     }
   });
 
+  window.currentHighRiskTracked = highRiskTrackedList;
+
   if (alertCountEl) {
     alertCountEl.textContent = trackedRiskyCount;
+  }
+
+  const headerAlertCountEl = document.getElementById('headerAlertCount');
+  if (headerAlertCountEl) {
+    headerAlertCountEl.textContent = trackedRiskyCount;
+    headerAlertCountEl.style.display = trackedRiskyCount > 0 ? 'inline-block' : 'none';
+  }
+
+  const profileAlertCountEl = document.getElementById('profileAlertCount');
+  if (profileAlertCountEl) {
+    profileAlertCountEl.textContent = trackedRiskyCount;
+  }
+
+  const profileTrackedCountEl = document.getElementById('profileTrackedCount');
+  if (profileTrackedCountEl) {
+    profileTrackedCountEl.textContent = count;
   }
 
   // Populate bookmarked section
@@ -415,22 +562,86 @@ function initRightClickTracking() {
 }
 
 /**
- * 4. Alert Action
+ * 4. Alert Action (Tracked Risk Alerts with Risk > 40)
  */
 function initAlertsAction() {
   const alertsToggle = document.getElementById('alertsToggle');
-  const bookmarkedSection = document.getElementById('bookmarked');
-  const riskySection = document.getElementById('risky-stocks');
+  const headerNotificationsBtn = document.getElementById('headerNotificationsBtn');
+  const alertsModal = document.getElementById('alertsModal');
+  const alertsModalCloseBtn = document.getElementById('alertsModalCloseBtn');
+  const alertsModalBody = document.getElementById('alertsModalBody');
 
-  if (!alertsToggle) return;
+  function openAlertsModal() {
+    if (!alertsModal || !alertsModalBody) return;
+    const items = window.currentHighRiskTracked || [];
+    alertsModalBody.innerHTML = '';
 
-  alertsToggle.addEventListener('click', () => {
-    if (trackedTickers.size > 0 && bookmarkedSection) {
-      bookmarkedSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else if (riskySection) {
-      riskySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (items.length === 0) {
+      if (trackedTickers.size === 0) {
+        alertsModalBody.innerHTML = `
+          <div class="alert-empty-box">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+            <p><strong>No Tracked Symbols</strong><br>Bookmark stocks to monitor real-time risk alerts.</p>
+          </div>
+        `;
+      } else {
+        alertsModalBody.innerHTML = `
+          <div class="alert-empty-box">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <p><strong style="color: #10B981;">Telemetry Nominal</strong><br>All ${trackedTickers.size} tracked stocks have risk ≤ 40.</p>
+          </div>
+        `;
+      }
+    } else {
+      items.forEach((item) => {
+        const row = document.createElement('div');
+        row.className = 'alert-item-card';
+        row.innerHTML = `
+          <div class="alert-item-info">
+            <span class="alert-item-symbol">${item.ticker} <span class="badge-tag tag-risky">RISK &gt; 40</span></span>
+            <span class="alert-item-name">${item.name} · ${item.price}</span>
+          </div>
+          <div class="alert-item-badge">
+            Risk: ${item.risk}/100
+          </div>
+        `;
+        row.addEventListener('click', () => {
+          closeAlertsModal();
+          const card = document.querySelector(`.stock-card[data-ticker="${item.ticker}"]`);
+          if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.classList.add('flash-attention');
+            setTimeout(() => card.classList.remove('flash-attention'), 2000);
+          }
+        });
+        alertsModalBody.appendChild(row);
+      });
     }
-  });
+
+    alertsModal.classList.add('is-open');
+    alertsModal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeAlertsModal() {
+    if (alertsModal) {
+      alertsModal.classList.remove('is-open');
+      alertsModal.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  if (alertsToggle) alertsToggle.addEventListener('click', openAlertsModal);
+  if (headerNotificationsBtn) headerNotificationsBtn.addEventListener('click', openAlertsModal);
+  if (alertsModalCloseBtn) alertsModalCloseBtn.addEventListener('click', closeAlertsModal);
+  if (alertsModal) {
+    alertsModal.addEventListener('click', (e) => {
+      if (e.target === alertsModal) closeAlertsModal();
+    });
+  }
 }
 
 /**

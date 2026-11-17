@@ -300,6 +300,53 @@
     },
 
     /**
+     * Fetch tracked stock symbols via POST /track/tracked_list (or fallback /track/list)
+     */
+    async getTrackedSymbols() {
+      const token = this.getStoredToken();
+      if (!token) return [];
+
+      try {
+        let res = await fetch('/track/tracked_list', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            access_token: token,
+            token_type: 'Bearer'
+          })
+        });
+
+        if (res.status === 404 || res.status === 405) {
+          res = await fetch('/track/list', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              access_token: token,
+              token_type: 'Bearer'
+            })
+          });
+        }
+
+        if (!res.ok) return [];
+        const data = await res.json().catch(() => []);
+        if (!Array.isArray(data)) return [];
+
+        return data
+          .map((item) => (typeof item === 'string' ? item : item.stock_symbol || item.symbol))
+          .filter(Boolean);
+      } catch (e) {
+        console.warn('Error fetching tracked symbols:', e);
+        return [];
+      }
+    },
+
+    /**
      * Fetch tracked stock metrics via POST /metric/tracked
      */
     async getTrackedMetrics() {
