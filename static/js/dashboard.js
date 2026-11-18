@@ -229,6 +229,7 @@ function initViewModeAction() {
 document.addEventListener('DOMContentLoaded', async () => {
   // 1. Initialize local UI components and handlers immediately so clicks respond with zero delay
   initRefreshTimer();
+  initMobileDrawer();
   initAutoScrollNavigation();
   initRightClickTracking();
   initAlertsAction();
@@ -246,6 +247,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadTrackedMetrics();
   fetchMarketMetrics();
 });
+
+/**
+ * Mobile Navigation Drawer Controller
+ */
+function initMobileDrawer() {
+  const menuBtn = document.getElementById('dashMobileMenuBtn');
+  const closeBtn = document.getElementById('navPanelCloseBtn');
+  const navPanel = document.getElementById('navPanel');
+  const backdrop = document.getElementById('navPanelBackdrop');
+
+  if (!navPanel) return;
+
+  function openDrawer() {
+    navPanel.classList.add('is-open');
+    if (backdrop) backdrop.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    navPanel.classList.remove('is-open');
+    if (backdrop) backdrop.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  if (menuBtn) menuBtn.addEventListener('click', openDrawer);
+  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+  if (backdrop) backdrop.addEventListener('click', closeDrawer);
+}
 
 /**
  * 1. Clock-Synchronized IST Hourly Refresh Countdown & Auto-Fetch Trigger
@@ -287,24 +316,45 @@ function initRefreshTimer() {
 }
 
 /**
- * 2. Auto-Scroll Navigation Sidebar
+ * 2. Auto-Scroll Navigation Sidebar & Mobile Category Strip Controller
  */
 function initAutoScrollNavigation() {
   const navBtns = document.querySelectorAll('#categoryNavList .nav-item-btn');
+  const stripPills = document.querySelectorAll('#categoryStripScroll .strip-pill');
   const sections = document.querySelectorAll('.category-section');
   const viewport = document.getElementById('dashboardViewport');
+  const navPanel = document.getElementById('navPanel');
+  const navBackdrop = document.getElementById('navPanelBackdrop');
 
   if (!viewport || sections.length === 0) return;
 
-  // Click to smooth-scroll
+  function closeMobileDrawer() {
+    if (navPanel) navPanel.classList.remove('is-open');
+    if (navBackdrop) navBackdrop.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  function scrollToSection(targetId) {
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Click on sidebar buttons
   navBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const targetId = btn.getAttribute('data-target');
-      const targetSection = document.getElementById(targetId);
+      scrollToSection(targetId);
+      closeMobileDrawer();
+    });
+  });
 
-      if (targetSection) {
-        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+  // Click on mobile category strip pills
+  stripPills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const targetId = pill.getAttribute('data-target');
+      scrollToSection(targetId);
     });
   });
 
@@ -320,10 +370,13 @@ function initAutoScrollNavigation() {
       if (entry.isIntersecting) {
         const id = entry.target.getAttribute('id');
         navBtns.forEach((btn) => {
-          if (btn.getAttribute('data-target') === id) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
+          btn.classList.toggle('active', btn.getAttribute('data-target') === id);
+        });
+        stripPills.forEach((pill) => {
+          const isActive = pill.getAttribute('data-target') === id;
+          pill.classList.toggle('active', isActive);
+          if (isActive) {
+            pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
           }
         });
       }
@@ -341,6 +394,7 @@ let activeContextMenuTicker = null;
 
 function updateTrackedTelemetry() {
   const sidebarCountEl = document.getElementById('sidebarBookmarkedCount');
+  const stripCountEl = document.getElementById('stripBookmarkedCount');
   const badgeCountEl = document.getElementById('bookmarkedCountBadge');
   const alertCountEl = document.getElementById('alertCount');
   const bookmarkedGrid = document.getElementById('bookmarkedCardsGrid');
@@ -348,6 +402,7 @@ function updateTrackedTelemetry() {
 
   const count = trackedTickers.size;
   if (sidebarCountEl) sidebarCountEl.textContent = count;
+  if (stripCountEl) stripCountEl.textContent = count;
   if (badgeCountEl) badgeCountEl.textContent = `${count} ${count === 1 ? 'stock' : 'stocks'}`;
 
   // Calculate alerts strictly from tracked stocks with Risk > 40
@@ -1172,10 +1227,12 @@ function populateSection(sectionId, stocks) {
   const emptyState = section.querySelector('.empty-state');
   const badge = section.querySelector('.section-badge');
   const navCountEl = document.querySelector(`#categoryNavList .nav-item-btn[data-target="${sectionId}"] .nav-count`);
+  const stripCountEl = document.querySelector(`#categoryStripScroll .strip-pill[data-target="${sectionId}"] .strip-count`);
 
   const count = stocks.length;
   if (badge) badge.textContent = `${count} ${count === 1 ? 'stock' : 'stocks'}`;
   if (navCountEl) navCountEl.textContent = count;
+  if (stripCountEl) stripCountEl.textContent = count;
 
   if (!grid) return;
   grid.innerHTML = '';

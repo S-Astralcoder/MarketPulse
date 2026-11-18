@@ -90,14 +90,14 @@
 
   // Immediate global click delegation for any auth & launch triggers
   document.addEventListener('click', function (e) {
-    const launchTrigger = e.target.closest('#openSignUpBtn, .launch-app-btn, a[href="#dashboard"]');
+    const launchTrigger = e.target.closest('#openSignUpBtn, #mobileOpenSignUpBtn, .launch-app-btn, a[href="#dashboard"]');
     if (launchTrigger) {
       e.preventDefault();
       window.handleLaunchDashboard(e);
       return;
     }
 
-    const authTrigger = e.target.closest('#openSignInBtn, [data-open-modal], a[href="#signin"], a[href="#signup"]');
+    const authTrigger = e.target.closest('#openSignInBtn, #mobileOpenSignInBtn, [data-open-modal], a[href="#signin"], a[href="#signup"]');
     if (authTrigger) {
       e.preventDefault();
       const isSignUp = authTrigger.getAttribute('href') === '#signup' ||
@@ -109,8 +109,59 @@
   // Self-booting lifecycle
   function boot() {
     initLandingNavigation();
+    initMobileNav();
     initAuthModal();
     initShowcaseSwiper();
+  }
+
+  function initMobileNav() {
+    const toggleBtn = document.getElementById('mobileMenuToggle');
+    const drawer = document.getElementById('mobileNavDrawer');
+    const closeBtn = document.getElementById('mobileNavClose');
+    const backdrop = document.getElementById('mobileNavBackdrop');
+    const mobileLinks = document.querySelectorAll('.mobile-nav-item, .mobile-brand-link');
+
+    if (!drawer) return;
+
+    function openDrawer() {
+      drawer.classList.add('is-open');
+      drawer.setAttribute('aria-hidden', 'false');
+      if (toggleBtn) {
+        toggleBtn.classList.add('is-active');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      }
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('is-open');
+      drawer.setAttribute('aria-hidden', 'true');
+      if (toggleBtn) {
+        toggleBtn.classList.remove('is-active');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+      document.body.style.overflow = '';
+    }
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (drawer.classList.contains('is-open')) {
+          closeDrawer();
+        } else {
+          openDrawer();
+        }
+      });
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+    mobileLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
+        closeDrawer();
+      });
+    });
   }
 
   if (document.readyState === 'loading') {
