@@ -43,6 +43,9 @@ async def get_tracked_metrics(
     data = await db.scalars(
         select(StockMetrics)
         .join(TrackStock, TrackStock.stock_symbol == StockMetrics.symbol)
-        .where(StockMetrics.created_at >= latest_date)
+        .where(
+            StockMetrics.created_at >= latest_date,
+            TrackStock.user_uuid == user_data.uuid,
+        )
     )
     return data.all()
