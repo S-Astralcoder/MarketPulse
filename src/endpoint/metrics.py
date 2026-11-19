@@ -6,6 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import StockMetrics, TrackStock, User, get_db
 from src.service.user_security import get_signed_in_user
+from datetime import timedelta
+
 
 metrics = APIRouter(prefix="/metric", tags=["metric"])
 
@@ -20,6 +22,7 @@ async def get_market_metrics(
     )
     if latest_date is None:
         return
+    latest_date = latest_date - timedelta(minutes=10)
     data = await db.scalars(
         select(StockMetrics).where(StockMetrics.created_at >= latest_date)
     )
@@ -36,6 +39,7 @@ async def get_tracked_metrics(
     )
     if latest_date is None:
         return
+    latest_date = latest_date - timedelta(minutes=10)
     data = await db.scalars(
         select(StockMetrics)
         .join(TrackStock, TrackStock.stock_symbol == StockMetrics.symbol)
