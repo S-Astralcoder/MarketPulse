@@ -188,20 +188,24 @@ async function loadTrackedMetrics() {
  * Review / Grid View Mode Toggle Controller
  */
 function applyViewMode(reviewMode) {
+  // Mobile UI always defaults to standard card layout and never uses review mode
+  const isMobile = window.innerWidth <= 860;
+  const activeMode = isMobile ? false : reviewMode;
+
   const grids = document.querySelectorAll('.cards-grid');
   grids.forEach((grid) => {
-    grid.classList.toggle('review-mode', reviewMode);
+    grid.classList.toggle('review-mode', activeMode);
   });
 
   const viewModeBtn = document.getElementById('viewModeBtn');
   const viewModeIcon = document.getElementById('viewModeIcon');
   if (viewModeBtn) {
-    viewModeBtn.classList.toggle('active', reviewMode);
-    viewModeBtn.title = reviewMode ? 'Review Mode Active (Click for Grid View)' : 'Toggle Grid / Review Mode';
+    viewModeBtn.classList.toggle('active', activeMode);
+    viewModeBtn.title = activeMode ? 'Review Mode Active (Click for Grid View)' : 'Toggle Grid / Review Mode';
   }
 
   if (viewModeIcon) {
-    if (reviewMode) {
+    if (activeMode) {
       viewModeIcon.innerHTML = `
         <line x1="8" y1="6" x2="21" y2="6"></line>
         <line x1="8" y1="12" x2="21" y2="12"></line>
@@ -222,9 +226,22 @@ function applyViewMode(reviewMode) {
 }
 
 function initViewModeAction() {
+  if (window.innerWidth <= 860) {
+    applyViewMode(false);
+    return;
+  }
   const savedMode = localStorage.getItem('mp_dashboard_view_mode') || 'grid';
   applyViewMode(savedMode === 'review');
 }
+
+window.addEventListener('resize', () => {
+  if (window.innerWidth <= 860) {
+    applyViewMode(false);
+  } else {
+    const savedMode = localStorage.getItem('mp_dashboard_view_mode') || 'grid';
+    applyViewMode(savedMode === 'review');
+  }
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
   // 1. Initialize local UI components and handlers immediately so clicks respond with zero delay
@@ -436,6 +453,12 @@ function updateTrackedTelemetry() {
   if (headerAlertCountEl) {
     headerAlertCountEl.textContent = trackedRiskyCount;
     headerAlertCountEl.style.display = trackedRiskyCount > 0 ? 'inline-block' : 'none';
+  }
+
+  const mobileAlertCountEl = document.getElementById('mobileAlertCount');
+  if (mobileAlertCountEl) {
+    mobileAlertCountEl.textContent = trackedRiskyCount;
+    mobileAlertCountEl.style.display = trackedRiskyCount > 0 ? 'inline-block' : 'none';
   }
 
   const profileAlertCountEl = document.getElementById('profileAlertCount');
@@ -804,7 +827,7 @@ function initModalEvents() {
 // Global resilient document-level click delegation
 document.addEventListener('click', (e) => {
   // 1. Account Profile Button
-  if (e.target.closest('#accountBtn')) {
+  if (e.target.closest('#accountBtn') || e.target.closest('#mobileAccountBtn')) {
     e.preventDefault();
     openProfileModal();
     return;
@@ -825,7 +848,7 @@ document.addEventListener('click', (e) => {
   }
 
   // 4. Alerts Triggers (Sidebar pill or Header notifications bell)
-  if (e.target.closest('#alertsToggle') || e.target.closest('#headerNotificationsBtn')) {
+  if (e.target.closest('#alertsToggle') || e.target.closest('#headerNotificationsBtn') || e.target.closest('#mobileNotificationsBtn')) {
     e.preventDefault();
     openAlertsModal();
     return;
@@ -848,6 +871,7 @@ document.addEventListener('click', (e) => {
   // 7. View Mode Grid / Review Toggle Button
   if (e.target.closest('#viewModeBtn')) {
     e.preventDefault();
+    if (window.innerWidth <= 860) return;
     const currentMode = localStorage.getItem('mp_dashboard_view_mode') || 'grid';
     const nextMode = currentMode === 'review' ? 'grid' : 'review';
     applyViewMode(nextMode === 'review');

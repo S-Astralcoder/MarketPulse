@@ -9,7 +9,7 @@
     content="MarketPulse real-time objective risk telemetry. 4-factor regime detection via EMA, ATR, ADX (Regime), and RSI without predictive bias.">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/dashboard.css?v=6.0">
+  <link rel="stylesheet" href="/css/dashboard.css?v=7.0">
 </head>
 
 <body data-node-id="40:2" data-name="Dashboard">
@@ -31,7 +31,7 @@
             <img src="/assets/favicon.svg" alt="MarketPulse" width="32" height="32" class="brand-icon-img">
             <span class="brand-title">MarketPulse</span>
           </a>
-          <button class="nav-panel-close-btn" id="navPanelCloseBtn" aria-label="Close navigation">
+          <button class="nav-panel-close-btn" id="navPanelCloseBtn" aria-label="Close navigation" style="display: none;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -179,8 +179,8 @@
       <!-- Top Header Controls (Figma 46:106) -->
       <header class="dashboard-header" data-node-id="46:106" data-name="header controls">
 
-        <!-- Mobile Header Bar: Brand + Mobile Toggle + Utility Controls -->
-        <div class="dash-mobile-bar">
+        <!-- Mobile Header Bar: Brand + Mobile Toggle + Mobile Action Controls (Mobile only) -->
+        <div class="dash-mobile-bar" id="dashMobileBar" style="display: none;">
           <div class="dash-mobile-left">
             <button class="dash-mobile-menu-btn" id="dashMobileMenuBtn" aria-label="Open Navigation Sidebar" title="Menu">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -195,37 +195,19 @@
             </a>
           </div>
 
-          <!-- Utility Button Cluster -->
-          <div class="utility-cluster" data-node-id="46:109" data-name="utility cluster">
-            <!-- User Email Display (hidden on compact mobile) -->
-            <div class="header-user-display" id="headerUserDisplay" title="Current authenticated operator">
-              <span class="user-status-dot"></span>
-              <span class="header-user-email" id="headerUserEmail">trader@domain.com</span>
-            </div>
-
-            <!-- Notifications / Risk Alerts Trigger -->
-            <button class="btn-icon" id="headerNotificationsBtn" title="Tracked Risk Alerts (Risk > 40)" aria-label="Notifications">
+          <div class="dash-mobile-actions">
+            <!-- Mobile Notifications Trigger -->
+            <button class="btn-icon" id="mobileNotificationsBtn" title="Tracked Risk Alerts (Risk > 40)" aria-label="Notifications">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
-              <span class="header-badge-count" id="headerAlertCount" style="display: none;">0</span>
+              <span class="header-badge-count" id="mobileAlertCount" style="display: none;">0</span>
             </button>
 
-            <!-- Review / View Mode Toggle -->
-            <button class="btn-icon active" id="viewModeBtn" title="Toggle Grid / Review Mode" aria-label="View Mode">
-              <svg id="viewModeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="7" height="7" />
-                <rect x="14" y="3" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" />
-              </svg>
-            </button>
-
-            <!-- Account Profile Trigger -->
-            <button class="btn-icon" id="accountBtn" title="Account Profile & Settings" aria-label="Account Profile">
+            <!-- Mobile Account Profile Trigger -->
+            <button class="btn-icon" id="mobileAccountBtn" title="Account Profile & Settings" aria-label="Account Profile">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -235,7 +217,7 @@
           </div>
         </div>
 
-        <!-- Search Input -->
+        <!-- Search Input (Desktop: Left element; Mobile: Full-width row 2) -->
         <div class="search-container" data-node-id="46:107" data-name="search bar">
           <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -246,10 +228,49 @@
             placeholder="Search tickers or company names..." autocomplete="off" spellcheck="false">
         </div>
 
+        <!-- Desktop Utility Button Cluster: Always on right for desktop; hidden on mobile -->
+        <div class="utility-cluster" data-node-id="46:109" data-name="utility cluster">
+          <!-- User Email Display -->
+          <div class="header-user-display" id="headerUserDisplay" title="Current authenticated operator">
+            <span class="user-status-dot"></span>
+            <span class="header-user-email" id="headerUserEmail">trader@domain.com</span>
+          </div>
+
+          <!-- Notifications / Risk Alerts Trigger -->
+          <button class="btn-icon" id="headerNotificationsBtn" title="Tracked Risk Alerts (Risk > 40)" aria-label="Notifications">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <span class="header-badge-count" id="headerAlertCount" style="display: none;">0</span>
+          </button>
+
+          <!-- Review / View Mode Toggle (Desktop only) -->
+          <button class="btn-icon active" id="viewModeBtn" title="Toggle Grid / Review Mode" aria-label="View Mode">
+            <svg id="viewModeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+          </button>
+
+          <!-- Account Profile Trigger -->
+          <button class="btn-icon" id="accountBtn" title="Account Profile & Settings" aria-label="Account Profile">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+        </div>
+
       </header>
 
       <!-- Sticky Quick-Switch Category Filter Strip for Mobile / Tablets -->
-      <nav class="mobile-category-strip" id="mobileCategoryStrip" aria-label="Category quick filter">
+      <nav class="mobile-category-strip" id="mobileCategoryStrip" aria-label="Category quick filter" style="display: none;">
         <div class="category-strip-scroll" id="categoryStripScroll">
           <button class="strip-pill active" data-target="bookmarked">
             <span>Bookmarked</span>
@@ -610,7 +631,7 @@
                 </div>
                 <div class="field-item field-flex">
                   <span class="field-label">EMA Dynamics & Spread</span>
-                  <span class="field-value" id="modalEmaSpreadDesc">--</span>
+                  <span class="field-value field-desc" id="modalEmaSpreadDesc">--</span>
                 </div>
               </div>
             </div>
@@ -627,7 +648,7 @@
               </div>
               <div class="hierarchy-fields-row">
                 <div class="field-item">
-                  <span class="field-label">Average True Range (ATR 14)</span>
+                  <span class="field-label">ATR (14-Period)</span>
                   <span class="field-value tabular-num" id="modalAtr">--</span>
                 </div>
                 <div class="field-item">
@@ -636,7 +657,7 @@
                 </div>
                 <div class="field-item field-flex">
                   <span class="field-label">ATR Ratio vs 50-SMA Baseline</span>
-                  <span class="field-value" id="modalAtrRatioDesc">--</span>
+                  <span class="field-value field-desc" id="modalAtrRatioDesc">--</span>
                 </div>
               </div>
             </div>
@@ -693,7 +714,7 @@
                 </div>
                 <div class="field-item field-flex">
                   <span class="field-label">Regime Telemetry</span>
-                  <span class="field-value" id="modalAdxDesc">Wilder's ADX indicates persistent directional trend
+                  <span class="field-value field-desc" id="modalAdxDesc">Wilder's ADX indicates persistent directional trend
                     velocity.</span>
                 </div>
               </div>

@@ -163,9 +163,9 @@ html, body {
   border-color: var(--accent-purple);
 }
 
-/* Desktop default: mobile elements inside header are unrolled */
+/* Desktop default: mobile navigation drawer and mobile header bar elements are hidden */
 .dash-mobile-bar {
-  display: contents;
+  display: none !important;
 }
 
 .dash-mobile-left {
@@ -177,6 +177,10 @@ html, body {
 }
 
 .dash-mobile-brand {
+  display: none;
+}
+
+.dash-mobile-actions {
   display: none;
 }
 
@@ -705,6 +709,7 @@ html, body {
   border-radius: 24px;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.06);
   overflow: hidden;
+  overflow-x: hidden !important;
   display: flex;
   flex-direction: column;
   animation: modalScaleIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
@@ -806,11 +811,13 @@ html, body {
 
 .stock-modal-body {
   display: grid;
-  grid-template-columns: 370px 1fr;
+  grid-template-columns: 360px 1fr;
   gap: 28px;
-  padding: 30px;
+  padding: 26px 30px;
   overflow-y: auto;
+  overflow-x: hidden !important;
   max-height: 100%;
+  box-sizing: border-box;
 }
 
 /* Modal Left Column: Visual & Executive Overview */
@@ -1159,6 +1166,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .head-left-wrap {
@@ -1166,7 +1174,8 @@ html, body {
   align-items: center;
   gap: 10px;
   min-width: 0;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
 }
 
 .head-num {
@@ -1183,7 +1192,8 @@ html, body {
   font-size: 13.5px;
   font-weight: 700;
   color: #ffffff;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .head-subtitle {
@@ -1243,9 +1253,9 @@ html, body {
 
 .hierarchy-fields-row {
   display: grid;
-  grid-template-columns: 140px 170px 1fr;
+  grid-template-columns: minmax(110px, 130px) minmax(130px, 160px) 1fr;
   gap: 14px;
-  align-items: center;
+  align-items: start;
 }
 
 .field-item {
@@ -1265,7 +1275,8 @@ html, body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.25;
 }
 
 .field-value {
@@ -1275,6 +1286,15 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.field-value.field-desc,
+.field-flex .field-value {
+  white-space: normal !important;
+  word-break: break-word !important;
+  line-height: 1.4 !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
 }
 
 /* RSI Slider Meter */
@@ -1337,7 +1357,7 @@ html, body {
   border-radius: 4px;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 860px) {
   .stock-modal-body {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -1660,7 +1680,7 @@ html, body {
   }
 
   .dash-mobile-bar {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: space-between;
     width: 100%;
@@ -1711,7 +1731,15 @@ html, body {
   }
 
   .utility-cluster {
-    display: flex;
+    display: none !important;
+  }
+
+  #viewModeBtn {
+    display: none !important;
+  }
+
+  .dash-mobile-actions {
+    display: flex !important;
     align-items: center;
     gap: 8px;
   }
@@ -1735,7 +1763,7 @@ html, body {
 
   /* Mobile Horizontal Category Quick-Filter Strip */
   .mobile-category-strip {
-    display: block;
+    display: block !important;
     width: 100%;
     background-color: #0b0714;
     border-bottom: 1px solid var(--border-subtle);
@@ -1925,6 +1953,7 @@ html, body {
     max-width: calc(100vw - 16px) !important;
     max-height: 94dvh !important;
     border-radius: 16px !important;
+    box-sizing: border-box !important;
   }
 
   .modal-top-bar {
@@ -1950,6 +1979,8 @@ html, body {
     grid-template-columns: 1fr !important;
     padding: 14px !important;
     gap: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .modal-visual-column {
@@ -1978,7 +2009,11 @@ html, body {
 
   .hierarchy-fields-row {
     grid-template-columns: 1fr 1fr !important;
-    gap: 10px;
+    gap: 10px !important;
+  }
+
+  .hierarchy-fields-row .field-flex {
+    grid-column: 1 / -1 !important;
   }
 
   .hierarchy-badge {
